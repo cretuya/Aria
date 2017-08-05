@@ -1,0 +1,29 @@
+@font-face{
+  font-family: Milkshake;
+  src: url('../fonts/Milkshake.otf');
+}
+
+@font-face{
+  font-family: Montserrat;
+  src: url('../fonts/Montserrat.ttf');
+}
+
+@font-face{
+  font-family: Karla;
+  src: url(../fonts/Karla.ttf);
+}
+
+@font-face{
+  font-family: Bebas;
+  src: url('../fonts/Bebas.otf');
+}
+
+@font-face{
+  font-family: Roboto-Light;
+  src: url(../fonts/Roboto-Light.ttf);
+}
+
+@font-face{
+  font-family: NotoSans-Regular;
+  src: url(../fonts/NotoSans-Regular.ttf);
+}
