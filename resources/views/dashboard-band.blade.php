@@ -489,12 +489,6 @@
 </div>
 </body>
 <script type="text/javascript">
-function viewSongs()
-{
-  var id = $(this).data('album-id');
-
-  alert(id);
-}
 
 $(document).ready(function()
 {
