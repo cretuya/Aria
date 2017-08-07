@@ -154,8 +154,7 @@
              @else
               @foreach ($albums as $album)
               <li class="active">
-              <a href="#" data-toggle="tab" data-id="{{$album->album_id}}" onclick="viewSongs(this);">  {{$album->album_name}}
-
+              <a href="#" data-toggle="tab"  class="viewSongs" data-id= "{{$album->album_id}}">  {{$album->album_name}}
                 <button class="btn pull-right addSong" style="margin-top: -7px;" data-id="{{$album->album_id}}"><span class="fa fa-plus"></span></button>
                 <button class="btn pull-right delete" style="margin-top: -7px;" value="{{$album->album_id}}"><span class="fa fa-close"></span></button>
                 <button class="btn pull-right edit" style="margin-top: -7px;" data-name="{{$album->album_name}}" data-id="{{$album->album_id}}" data-desc="{{$album->album_desc}}"><span class="fa fa-pencil"></span>
@@ -167,12 +166,7 @@
            @endif
           </ul>
         </nav>
-       </div>
-
-
-<!--                 <li class="active"><a href="#tab1" data-toggle="tab">Lorem ipsum <button class="btn pull-right" style="margin-top: -7px;"><span class="fa fa-close"></span></button><button class="btn pull-right" style="margin-top: -7px;"><span class="fa fa-pencil"></span></button></a></li>
-                <li class=""><a href="#tab2" data-toggle="tab">Dolor asit amet <button class="btn pull-right" style="margin-top: -7px;"><span class="fa fa-close"></span></button><button class="btn pull-right" style="margin-top: -7px;"><span class="fa fa-pencil"></span></button></a></li>
-                <li class=""><a href="#tab3" data-toggle="tab">Stet clita <button class="btn pull-right" style="margin-top: -7px;"><span class="fa fa-close"></span></button><button class="btn pull-right" style="margin-top: -7px;"><span class="fa fa-pencil"></span></button></a></li>         -->                       
+       </div>               
 
 
         <div class="tab-content">
@@ -236,45 +230,6 @@
       @endif
       </div>
 
-<!--         <div class="col-sm-3">
-          <div class="card">
-            <img class="card-img-top" src="{{asset('assets/img/oln.jpg')}}">
-            <p class="card-block">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quam velit quisquam veniam excepturi temporibus inventore corporis dicta sit culpa veritatis placeat earum, dolorum asperiores, delectus dolore voluptatibus, at magnam nobis!
-            </p>
-            <button class="btn pull-right"><span class="fa fa-close"></span></button><button class="btn pull-right"><span class="fa fa-pencil"></span></button>
-          </div>
-        </div>
-
-        <div class="col-sm-3">
-          <div class="card">
-            <img class="card-img-top" src="{{asset('assets/img/oln.jpg')}}">
-            <p class="card-block">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quam velit quisquam veniam excepturi temporibus inventore corporis dicta sit culpa veritatis placeat earum, dolorum asperiores, delectus dolore voluptatibus, at magnam nobis!
-            </p>
-            <button class="btn pull-right"><span class="fa fa-close"></span></button><button class="btn pull-right"><span class="fa fa-pencil"></span></button>
-          </div>
-        </div>
-
-        <div class="col-sm-3">
-          <div class="card">
-            <img class="card-img-top" src="{{asset('assets/img/oln.jpg')}}">
-            <p class="card-block">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quam velit quisquam veniam excepturi temporibus inventore corporis dicta sit culpa veritatis placeat earum, dolorum asperiores, delectus dolore voluptatibus, at magnam nobis!
-            </p>
-            <button class="btn pull-right"><span class="fa fa-close"></span></button><button class="btn pull-right"><span class="fa fa-pencil"></span></button>
-          </div>
-        </div>
-
-        <div class="col-sm-3">
-          <div class="card">
-            <img class="card-img-top" src="{{asset('assets/img/oln.jpg')}}">
-            <p class="card-block">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quam velit quisquam veniam excepturi temporibus inventore corporis dicta sit culpa veritatis placeat earum, dolorum asperiores, delectus dolore voluptatibus, at magnam nobis!
-            </p>
-            <button class="btn pull-right"><span class="fa fa-close"></span></button><button class="btn pull-right"><span class="fa fa-pencil"></span></button>
-          </div>
-        </div> -->
 
       </div>
     </div>
@@ -534,9 +489,9 @@
 </div>
 </body>
 <script type="text/javascript">
-function viewSongs($id)
+function viewSongs()
 {
-  var id = $(this).data('id');
+  var id = $(this).data('album-id');
 
   alert(id);
 }
@@ -602,6 +557,11 @@ $(document).ready(function()
           $('.modal-body #album_id').val(id);
           $('#add-song-modal').modal('show');
      });
+    $('#showAlbums').on('click', '.viewSongs', function()
+    {
+        var id = $(this).data('id');
+        alert(id);
+    });
 
  });
 </script>
