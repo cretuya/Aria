@@ -31,7 +31,7 @@ class VideoController extends Controller
             ]);
         }
         
-        return redirect('/'.$band->band_name);
+        return redirect('/'.$band->band_name.'/manage');
     }
     public function addPathforVideos($video)
     {
@@ -70,12 +70,12 @@ class VideoController extends Controller
             'video_desc' => $desc,
             ]);
 
-        return redirect('/'.$bname);
+        return redirect('/'.$bname.'/manage');
     }
     public function deleteVideo($bname, $vid)
     {
         $delete = Video::where('video_id', $vid)->delete();
-        return redirect('/'.$bname);
+        return redirect('/'.$bname.'/manage');
     }
 
 }

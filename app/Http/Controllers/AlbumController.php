@@ -36,7 +36,7 @@ class AlbumController extends Controller
             return redirect('/'); 
         }
         
-        return redirect('/'.$band->band_name);
+        return redirect('/'.$band->band_name.'/manage');
     }
 
     public function viewAlbum($bname, $aid)
@@ -74,7 +74,7 @@ class AlbumController extends Controller
         {
             
         }
-         return redirect('/'.$bname);
+         return redirect('/'.$bname.'/manage');
     }
     public function deleteAlbum($aid)
     {
@@ -84,7 +84,7 @@ class AlbumController extends Controller
         $delete = Album::where('album_id', $aid)->delete();
 
 
-        return redirect('/'.$band->band_name);
+        return redirect('/'.$band->band_name.'/manage');
     }
 
 }

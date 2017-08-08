@@ -48,7 +48,7 @@ class BandController extends Controller
 			// 'band_desc' => $desc,
 		]);
 
-		return redirect('/'.$create->band_name);
+		return redirect('/'.$create->band_name.'/manage');
 	}
 
 	public function followBand($bname)

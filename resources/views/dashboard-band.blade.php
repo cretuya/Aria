@@ -10,6 +10,7 @@
 
 @include('layouts.navbar')
 <body>
+<meta name ="csrf-token" content = "{{csrf_token() }}"/>
 <br><br><br>
 
 <div class="container-fluid" style="padding-left: 30px; padding-right: 30px">
@@ -172,38 +173,15 @@
         <div class="tab-content">
 
           <div class="tab-pane active song-pane" id="tab1">
-          <h4>TAB1</h4>
-             <ul class="list-group">
-               <li class="list-group-item"><label>Linkin Park - Faint</label><audio controls><source src="song.mp3"></audio></li>
+          <h4 class="tabtitle"></h4>
+             <ul class="list-group tablist">
+<!--                <li class="list-group-item"><label>Linkin Park - Faint</label><audio controls><source src="song.mp3"></audio></li>
                <li class="list-group-item"><label>Linkin Park - In The End</label><audio controls><source src="song.mp3"></audio></li>
                <li class="list-group-item"><label>Linkin Park - New Divide</label><audio controls><source src="song.mp3"></audio></li>
                <li class="list-group-item"><label>Linkin Park - Numb</label><audio controls><source src="song.mp3"></audio></li>
                <li class="list-group-item"><label>Linkin Park - Breaking The Habit</label><audio controls><source src="song.mp3"></audio></li>
-               <li class="list-group-item"><label>Linkin Park - Points of Authority</label><audio controls><source src="song.mp3"></audio></li>
+               <li class="list-group-item"><label>Linkin Park - Points of Authority</label><audio controls><source src="song.mp3"></audio></li> -->
              </ul>
-          </div>
-          <div class="tab-pane song-pane" id="tab2">
-          <h4>TAB2</h4>
-            <ul class="list-group">
-              <li class="list-group-item"><label>Linkin Park - Faint</label><audio controls><source src="song.mp3"></audio></li>
-              <li class="list-group-item"><label>Linkin Park - In The End</label><audio controls><source src="song.mp3"></audio></li>
-              <li class="list-group-item"><label>Linkin Park - New Divide</label><audio controls><source src="song.mp3"></audio></li>
-              <li class="list-group-item"><label>Linkin Park - Numb</label><audio controls><source src="song.mp3"></audio></li>
-              <li class="list-group-item"><label>Linkin Park - Breaking The Habit</label><audio controls><source src="song.mp3"></audio></li>
-              <li class="list-group-item"><label>Linkin Park - Points of Authority</label><audio controls><source src="song.mp3"></audio></li>
-            </ul>
-
-          </div>
-          <div class="tab-pane song-pane" id="tab3">
-          <h4>TAB3</h4>
-            <ul class="list-group">
-              <li class="list-group-item"><label>Linkin Park - Faint</label><audio controls><source src="song.mp3"></audio></li>
-              <li class="list-group-item"><label>Linkin Park - In The End</label><audio controls><source src="song.mp3"></audio></li>
-              <li class="list-group-item"><label>Linkin Park - New Divide</label><audio controls><source src="song.mp3"></audio></li>
-              <li class="list-group-item"><label>Linkin Park - Numb</label><audio controls><source src="song.mp3"></audio></li>
-              <li class="list-group-item"><label>Linkin Park - Breaking The Habit</label><audio controls><source src="song.mp3"></audio></li>
-              <li class="list-group-item"><label>Linkin Park - Points of Authority</label><audio controls><source src="song.mp3"></audio></li>
-            </ul>
           </div>
 
         </div>
@@ -248,7 +226,7 @@
 
     <!-- Modal content-->
     <div class="modal-content">
-    <form method="post" action="{{'./'.$band->band_name.'/addVideo'}}" enctype="multipart/form-data">
+    <form method="post" action="{{'../'.$band->band_name.'/addVideo'}}" enctype="multipart/form-data">
         {{csrf_field()}}
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -278,7 +256,7 @@
 
     <!-- Modal content-->
     <div class="modal-content">
-    <form method="post" action="{{$band->band_name.'/updateVideo'}}" enctype="multipart/form-data">
+    <form method="post" action="{{'../'.$band->band_name.'/updateVideo'}}" enctype="multipart/form-data">
         {{csrf_field()}}
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -308,7 +286,7 @@
 
     <!-- Modal content-->
     <div class="modal-content">
-    <form method="post" action="{{'./'.$band->band_name.'/addAlbum'}}" enctype="multipart/form-data">
+    <form method="post" action="{{'../'.$band->band_name.'/addAlbum'}}" enctype="multipart/form-data">
         {{csrf_field()}}
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -340,7 +318,7 @@
 
     <!-- Modal content-->
     <div class="modal-content">
-    <form method="post" action="{{$band->band_name.'/updateAlbum'}}" enctype="multipart/form-data">
+    <form method="post" action="{{'../'.$band->band_name.'/updateAlbum'}}" enctype="multipart/form-data">
         {{csrf_field()}}
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -375,7 +353,7 @@
 
     <!-- Modal content-->
     <div class="modal-content">
-    <form method="post" action="{{'./'.$band->band_name.'/addArticle'}}" enctype="multipart/form-data">
+    <form method="post" action="{{'../'.$band->band_name.'/addArticle'}}" enctype="multipart/form-data">
         {{csrf_field()}}
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -405,7 +383,7 @@
 
     <!-- Modal content-->
     <div class="modal-content">
-    <form method="post" action="{{'./'.$band->band_name.'/updateArticle'}}" enctype="multipart/form-data">
+    <form method="post" action="{{'../'.$band->band_name.'/updateArticle'}}" enctype="multipart/form-data">
         {{csrf_field()}}
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -437,7 +415,7 @@
 
     <!-- Modal content-->
     <div class="modal-content">
-    <form method="post" action="{{'./'.$band->band_name.'/addSongs'}}" enctype="multipart/form-data">
+    <form method="post" action="{{'../'.$band->band_name.'/addSongs'}}" enctype="multipart/form-data">
         {{csrf_field()}}
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -497,7 +475,7 @@ $(document).ready(function()
         var val = $(this).val();
         if(confirm('Do you want to delete this video?'))
         {
-            window.location.href = './deleteVideo/'+val;
+            window.location.href = '../deleteVideo/'+val;
         }
      });
      $('#showVideos').on('click', '.edit', function(){
@@ -513,7 +491,7 @@ $(document).ready(function()
         var val = $(this).val();
         if(confirm('Do you want to delete this article?'))
         {
-            window.location.href = './deleteArticle/'+val;
+            window.location.href = '../deleteArticle/'+val;
         }
      });
      $('#showArticles').on('click', '.edit', function(){
@@ -532,7 +510,7 @@ $(document).ready(function()
         var val = $(this).val();
         if(confirm('Do you want to delete this album?'))
         {
-            window.location.href = './deleteAlbum/'+val;
+            window.location.href = '../deleteAlbum/'+val;
         }
      });
      $('#showAlbums').on('click', '.edit', function(){
@@ -553,9 +531,36 @@ $(document).ready(function()
      });
     $('#showAlbums').on('click', '.viewSongs', function()
     {
-        var id = $(this).data('id');
-        alert(id);
+        var album_id = $(this).data('id');
+
+        viewSongs(album_id);
     });
+    function viewSongs($id)
+    {
+        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+        alert($id);
+        var bname = $('#bandName').val();
+        alert(bname);
+        $.ajax({
+          method : "post",
+          url : "../"+bname+"/viewSongs",
+          data : { '_token' : CSRF_TOKEN,
+            'id' : $id
+          },
+          success: function(contents){
+            $('.tabtitle').text($id);
+              $.each(contents, function(key, value)
+              {
+                // console.log(value.song_audio);
+                var song = value.song_audio;
+                console.log(song);
+              $('.tablist').append('<li class="list-group-item"><label>'+value.song_audio+'</label><audio controls><source src="{{ URL::asset("assets/music/'+song+'")}}" type="audio/mpeg"></audio></li>'); 
+              });
+          }
+
+
+        });
+    }
 
  });
 </script>

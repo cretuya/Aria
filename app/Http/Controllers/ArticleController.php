@@ -24,7 +24,7 @@ class ArticleController extends Controller
         	'band_id' => $band->band_id,
         	'art_id' => $create->art_id , 
         ]);
-        return redirect('/'.$band->band_name);
+        return redirect('/'.$band->band_name.'/manage');
     }
     public function viewArticle($bname, $aid)
     {
@@ -43,7 +43,7 @@ class ArticleController extends Controller
 
 
 
-        return redirect('/'.$band->band_name);
+        return redirect('/'.$band->band_name.'/manage');
     }
     public function editArticle($bname,$aid)
     {
@@ -63,6 +63,6 @@ class ArticleController extends Controller
             'art_title' => $title,
             'content' => $content,
         ]);
-        return redirect('/'.$bname);
+        return redirect('/'.$bname.'/manage');
     }    
 }

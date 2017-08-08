@@ -15,7 +15,7 @@ class Album_Contents extends Model
 
 	public function song()
 	{
-		return $this->belongsTo('App\Song');
+		return $this->belongsTo('App\Song', 'song_id', 'song_id');
 	}
 
 	public function album()

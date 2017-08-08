@@ -49,7 +49,7 @@ class SongController extends Controller
             ]);
             
         }
-		return redirect('/'.$bname);
+		return redirect('/'.$bname.'/manage');
 	}
     public function addPathforSongs($audio)
     {
@@ -73,9 +73,18 @@ class SongController extends Controller
         return $audio;
     }
 
-    public function viewSongs($aid)
+    public function viewSongs(Request $request, $bname)
     {
-    	$songs = Album_Contents::where('album_id', $aid)->get();
+        $testing = Array();
+    	$albums = Album_Contents::where('album_id' , $request->input('id'))->get();
+        foreach ($albums as $album)
+        {
+            $song = Song::where('song_id', $album->song_id)->first();
+            array_push($testing, $song);
+        }
+
+
+        return response ()->json($testing);
 
     }
 
@@ -101,11 +110,11 @@ class SongController extends Controller
     		'song_desc' => $title,
     		'genre_id' => $genre,
     	]);
-    	return redirect('/'.$band->band_name.'/'.$cont->album_id.'/songs');
+    	return redirect('/'.$band->band_name.'/manage');
     }
     public function deleteSong($bid, $aid, $sid)
     {
     	$delete = Song::where('song_id', $sid)->delete();
-    	return redirect('/'.$bid);
+    	return redirect('/'.$bid.'/manage');
     }
 }

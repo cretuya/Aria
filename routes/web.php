@@ -30,7 +30,7 @@ Route::middleware(['auth'])->group(function(){
 	Route::post('edit/profile', 'UserController@updateUser');
 
 	Route::post('createband', 'BandController@createBand');
-	Route::get('{band_name}', 'BandController@index');
+	Route::get('{band_name}/manage', 'BandController@index');
 
 	Route::get('{band_name}/albums', 'AlbumController@index');
 	Route::post('{band_name}/addAlbum' , 'AlbumController@addAlbum');
@@ -41,7 +41,7 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::get('{band_name}/{album_id}/songs', 'SongController@index');
 	Route::post('{band_name}/addSongs' , 'SongController@addSongs');
-	Route::get('{album_id}/viewSongs', 'SongController@viewSongs');
+	Route::post('{band_name}/viewSongs', 'SongController@viewSongs');
 	Route::get('editSong/{song_id}', 'SongController@editSong');
 	Route::post('updateSong/{song_id}', 'SongController@updateSong');
 	Route::get('{band_name}/{album_id}/deleteSong/{song_id}', 'SongController@deleteSong');
