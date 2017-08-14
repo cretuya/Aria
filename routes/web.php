@@ -43,8 +43,8 @@ Route::middleware(['auth'])->group(function(){
 	Route::post('{band_name}/addSongs' , 'SongController@addSongs');
 	Route::post('{band_name}/viewSongs', 'SongController@viewSongs');
 	Route::get('editSong/{song_id}', 'SongController@editSong');
-	Route::post('updateSong/{song_id}', 'SongController@updateSong');
-	Route::get('{band_name}/{album_id}/deleteSong/{song_id}', 'SongController@deleteSong');
+	Route::post('{band_name}/updateSong', 'SongController@updateSong');
+	Route::post('deleteSong/{song_id}', 'SongController@deleteSong');
 
 	Route::post('{band_name}/addVideo', 'VideoController@addVideo');
 	Route::get('{band_name}/editVideo/{video_id}' , 'VideoController@editVideo');

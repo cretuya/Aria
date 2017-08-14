@@ -26,9 +26,13 @@ class BandController extends Controller
 		$albums = Album::where('band_id', $band->band_id)->get();
 		$articles = BandArticle::where('band_id' , $band->band_id)->get();
 		$genres = Genre::all();
-		$contents = Album_Contents::all();
+		$songs = array();
+		foreach ($albums as $album)
+		{
+			array_push($songs, Song::where('album_id', $album->album_id)->get());
+		}
 
-		return view('dashboard-band' , compact('band','videos', 'albums', 'articles', 'genres', 'contents'));
+		return view('dashboard-band' , compact('band','videos', 'albums', 'articles', 'genres', 'songs'));
 	}
 	public function createBand(Request $request)
 	{

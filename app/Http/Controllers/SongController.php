@@ -37,15 +37,7 @@ class SongController extends Controller
                 'song_desc' => $title,
                 'song_audio' => $audioPath,
                 'genre_id' => $genre,
-            ]);
-  			$createContents = Album_Contents::create([
-  				'album_id' => $aid->album_id,
-  				'song_id' => $createSong->song_id,
-  			]);
-            $createBandSongs = BandSong::create([
-                'band_id' => $band->band_id,
-                'song_id' => $createSong->song_id,
-
+                'album_id' => $id,
             ]);
             
         }
@@ -76,15 +68,15 @@ class SongController extends Controller
     public function viewSongs(Request $request, $bname)
     {
         $testing = Array();
-    	$albums = Album_Contents::where('album_id' , $request->input('id'))->get();
-        foreach ($albums as $album)
-        {
-            $song = Song::where('song_id', $album->song_id)->first();
-            array_push($testing, $song);
-        }
+        $aname = Album::where('album_id', $request->input('id'))->first();
+    	$songs = Song::where('album_id' , $request->input('id'))->get();
+        // foreach ($albums as $album)
+        // {
+        //     $song = Song::where('song_id', $album->song_id)->first();
+        //     array_push($testing, $song);
+        // }
 
-
-        return response ()->json($testing);
+        return response ()->json(['songs' => $songs , 'album' => $aname]);
 
     }
 
@@ -98,23 +90,29 @@ class SongController extends Controller
     	return view('edit-song', compact('song', 'album', 'band'));
     }
 
-    public function updateSong(Request $request, $sid)
+    public function updateSong(Request $request)
     {
-    	$cont = Album_Contents::where('song_id', $sid)->first();
-    	$album = Album::where('album_id', $cont->album_id)->first();
+    	// $cont = Album_Contents::where('song_id', $sid)->first();
+        dd($request);
+        $id = Song::find($request->input('song_id'));
+    	$album = Album::where('album_id', $id->album_id)->first();
     	$band = Band::where('band_id', $album->band_id)->first();
-    	$title = $request->input('song_desc');
+    	$desc = $request->input('song_desc');
     	$genre = $request->input('genre_id');
 
-    	$update = Song::where('song_id', $sid)->update([
-    		'song_desc' => $title,
+    	$update = Song::where('song_id', $id)->update([
+    		'song_desc' => $desc,
     		'genre_id' => $genre,
+            'album_id' => $album->album_id,
     	]);
+
+
     	return redirect('/'.$band->band_name.'/manage');
     }
-    public function deleteSong($bid, $aid, $sid)
+    public function deleteSong($sid)
     {
+        $id = Song::where('song_id', $sid)->first();
     	$delete = Song::where('song_id', $sid)->delete();
-    	return redirect('/'.$bid.'/manage');
+    	return response ()->json($id); 
     }
 }

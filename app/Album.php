@@ -20,8 +20,8 @@ class Album extends Model
 	{
 		return $this->belongsTo('App\Band', 'band_id', 'band_id');
 	}
-	public function contents()
+	public function songs()
 	{
-		return $this->hasMany('App\Album-Contents');
+		return $this->hasMany('App\Songs','album_id');
 	}
 }

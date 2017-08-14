@@ -17,7 +17,7 @@ class CreateGenresTable extends Migration
             $table->increments('genre_id');
             $table->string('genre_name', 20);
             $table->string('genre_desc', 50);
-            $table->timestamps();
+            // $table->timestamps();
         });
     }
 

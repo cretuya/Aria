@@ -14,18 +14,15 @@ class Song extends Model
 		'song_desc' ,
 		'song_audio' ,
 		'genre_id' , 
+		'album_id' ,
 	];
 
 	public function genres()
 	{
 		return $this->hasMany('App\Genre', 'genre_id');
 	} 
-	public function content()
+	public function album()
 	{
-		return $this->hasMany('App\Album-Contents');
-	}
-	public function bandsongs()
-	{
-		return $this->hasMany('App\BandSong');
+		return $this->belongsTo('App\Album', 'album_id', 'album_id');
 	}
 }

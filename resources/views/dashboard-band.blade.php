@@ -153,15 +153,21 @@
             <ul class="nav tabs">
              @if ($albums == null)
              @else
+
               @foreach ($albums as $album)
+
+
+
               <li class="active">
-              <a href="#" data-toggle="tab"  class="viewSongs" data-id= "{{$album->album_id}}">  {{$album->album_name}}
+              <a href="#" data-toggle="tab" class="viewSongs" data-id= "{{$album->album_id}}">  {{$album->album_name}}
                 <button class="btn pull-right addSong" style="margin-top: -7px;" data-id="{{$album->album_id}}"><span class="fa fa-plus"></span></button>
                 <button class="btn pull-right delete" style="margin-top: -7px;" value="{{$album->album_id}}"><span class="fa fa-close"></span></button>
                 <button class="btn pull-right edit" style="margin-top: -7px;" data-name="{{$album->album_name}}" data-id="{{$album->album_id}}" data-desc="{{$album->album_desc}}"><span class="fa fa-pencil"></span>
                 </button>
 
               </a></li>
+
+
 
               @endforeach
            @endif
@@ -170,21 +176,16 @@
        </div>               
 
 
+       <div id="showSongs">
         <div class="tab-content">
-
-          <div class="tab-pane active song-pane" id="tab1">
+          <div class="tab-pane active song-pane">
           <h4 class="tabtitle"></h4>
              <ul class="list-group tablist">
-<!--                <li class="list-group-item"><label>Linkin Park - Faint</label><audio controls><source src="song.mp3"></audio></li>
-               <li class="list-group-item"><label>Linkin Park - In The End</label><audio controls><source src="song.mp3"></audio></li>
-               <li class="list-group-item"><label>Linkin Park - New Divide</label><audio controls><source src="song.mp3"></audio></li>
-               <li class="list-group-item"><label>Linkin Park - Numb</label><audio controls><source src="song.mp3"></audio></li>
-               <li class="list-group-item"><label>Linkin Park - Breaking The Habit</label><audio controls><source src="song.mp3"></audio></li>
-               <li class="list-group-item"><label>Linkin Park - Points of Authority</label><audio controls><source src="song.mp3"></audio></li> -->
              </ul>
           </div>
-
         </div>
+        </div>
+
         </div>          
       </div>
     </div>
@@ -201,7 +202,7 @@
       @else
        @foreach ($articles as $article)
 
-       <a href="{{'./'.$band->band_name.'/viewArticle/'.$article->art_id}}">{{$article->article->art_title}}</a> <button class="btn pull-right delete" value="{{$article->art_id}}"><span class="fa fa-close"></span></button><button class="btn pull-right edit" data-toggle="modal" data-content="{{$article->article->content}}" data-title="{{$article->article->art_title}}" data-id="{{$article->art_id}}"><span class="fa fa-pencil"></span></button>
+       <a href="{{'../'.$band->band_name.'/viewArticle/'.$article->art_id}}">{{$article->article->art_title}}</a> <button class="btn pull-right delete" value="{{$article->art_id}}"><span class="fa fa-close"></span></button><button class="btn pull-right edit" data-toggle="modal" data-content="{{$article->article->content}}" data-title="{{$article->article->art_title}}" data-id="{{$article->art_id}}"><span class="fa fa-pencil"></span></button>
        <br><br>
 
        @endforeach
@@ -419,17 +420,17 @@
         {{csrf_field()}}
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Add Songs</h4>
+        <h4 class="modal-title">Add Song</h4>
       </div>
       <div class="modal-body">
         
-        Song Title:<br>
+        Song Description:<br>
         <input type="text" name="song_desc"><br>
         <input type="file" name="song_audio[]" accept="audio/*" multiple><br>
         <input type="text" name="album_id" id="album_id"><br>
         <select name="genre_id">
             @foreach($genres as $genre)
-            <option value='{{$genre->genre_id}}'>{{$genre->genre_name}}</option>
+            <option value="{{$genre->genre_id}}">{{$genre->genre_name}}</option>
             @endforeach
         </select>
         <br>
@@ -438,6 +439,45 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-default" >Submit</button>
+      </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<!-- Edit Song Modal -->
+<div id="edit-song-modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+    <form method="post" action="{{'../'.$band->band_name.'/updateSong'}}" enctype="multipart/form-data">
+        {{csrf_field()}}
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Song</h4>
+      </div>
+      <div class="modal-body edit-modal">
+        
+        Song Description:<br>
+        <input type="text" name="song_desc" id="song_desc"><br><br>
+
+        <div class="showgenre">
+        <select name="genre_id" id="genre_id">
+            @foreach($genres as $genre)
+            <option value="{{$genre->genre_id}}">{{$genre->genre_name}}</option>
+            @endforeach
+        </select>
+        </div>
+        <br>
+        <input type="text" name="song_id" id="song_id">
+        <br>
+      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-default">Submit</button>
       </div>
       </form>
     </div>
@@ -455,7 +495,7 @@
         <h4 class="modal-title">Invites</h4>
       </div>
       <div class="modal-body">
-      <label>To be ivited as member:</label>
+      <label>To be invited as member:</label>
         <input type="text" name="">
       </div>
       <div class="modal-footer">
@@ -478,6 +518,7 @@ $(document).ready(function()
             window.location.href = '../deleteVideo/'+val;
         }
      });
+
      $('#showVideos').on('click', '.edit', function(){
           var desc = $(this).data('desc');
           var id = $(this).data('id');
@@ -486,6 +527,7 @@ $(document).ready(function()
           $('.modal-body #video_id').val(id);
           $('#video-edit-modal').modal('show');
      });
+
      $("#showArticles").on('click', '.delete' ,function(){
         
         var val = $(this).val();
@@ -494,6 +536,7 @@ $(document).ready(function()
             window.location.href = '../deleteArticle/'+val;
         }
      });
+
      $('#showArticles').on('click', '.edit', function(){
           var title = $(this).data('title');
           var id = $(this).data('id');
@@ -505,6 +548,7 @@ $(document).ready(function()
 
           $('#edit-article-modal').modal('show');
      });
+
      $("#showAlbums").on('click', '.delete' ,function(){
         
         var val = $(this).val();
@@ -513,6 +557,7 @@ $(document).ready(function()
             window.location.href = '../deleteAlbum/'+val;
         }
      });
+
      $('#showAlbums').on('click', '.edit', function(){
           var desc = $(this).data('desc');
           var id = $(this).data('id');
@@ -523,44 +568,128 @@ $(document).ready(function()
           $('.modal-body #album_name').val(name);
           $('#edit-album-modal').modal('show');
      });
+
      $('#showAlbums').on('click', '.addSong', function(){
           var id = $(this).data('id');
 
           $('.modal-body #album_id').val(id);
           $('#add-song-modal').modal('show');
      });
-    $('#showAlbums').on('click', '.viewSongs', function()
-    {
-        var album_id = $(this).data('id');
 
+    $('#showAlbums').on('click', '.viewSongs', function(){
+        var album_id = $(this).data('id');
         viewSongs(album_id);
     });
+
     function viewSongs($id)
     {
         var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-        alert($id);
+        // alert($id);
         var bname = $('#bandName').val();
-        alert(bname);
+        // alert(bname);
         $.ajax({
           method : "post",
           url : "../"+bname+"/viewSongs",
           data : { '_token' : CSRF_TOKEN,
             'id' : $id
           },
-          success: function(contents){
-            $('.tabtitle').text($id);
-              $.each(contents, function(key, value)
+          success: function(json){
+            $('.tabtitle').text(json.album.album_name);
+            $('.tablist li').remove();
+              $.each(json.songs, function(key, value)
               {
-                // console.log(value.song_audio);
                 var song = value.song_audio;
-                console.log(song);
-              $('.tablist').append('<li class="list-group-item"><label>'+value.song_audio+'</label><audio controls><source src="{{ URL::asset("assets/music/'+song+'")}}" type="audio/mpeg"></audio></li>'); 
+                var source = "{{url('/assets/music/')}}";
+                var audio = source +'/'+ song;
+
+               $('.tablist').append('<li id="listItem'+value.song_id+'" class="list-group-item"><label>'+value.song_audio+'</label><audio controls><source src="'+audio+'" type="audio/mpeg"></audio><button class="btn pull-right delete" value="'+value.song_id+'"><span class="fa fa-close"></span></button><button class="btn pull-right edit" data-toggle="modal" data-genre="'+value.genre_id+'" data-desc="'+value.song_desc+'" data-id="'+value.song_id+'"><span class="fa fa-pencil"></span></button></li>'); 
+
               });
+          },
+          error: function(a,b,c)
+          {
+            alert('Error');
+
+          }
+        });
+    }
+
+  $('#showSongs').on('click', '.delete', function()
+  {
+      var id = $(this).val();
+      alert(id);
+      if(confirm('Do you want to delete this song?'))
+        {
+            deleteSong(id);
+        }
+  });
+
+  function deleteSong($id)
+  {
+    console.log($id);
+    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+        $.ajax({
+          method : "post",
+          url : "../deleteSong/"+$id,
+          data : { '_token' : CSRF_TOKEN,
+            'id' : $id
+          },
+          success: function(song){
+            $('#listItem'+song.song_id).remove();
           }
 
 
         });
-    }
+
+  }
+
+
+  $('#showSongs').on('click', '.edit', function()
+  {
+      var id = $(this).data('id');
+      var gid = $(this).data('genre');
+      var desc = $(this).data('desc');
+      console.log(gid);
+
+          $('.modal-body #song_desc').val(desc);
+          $('.modal-body #song_id').val(id);
+          $('.showgenre select').val(gid);
+
+          $('#edit-song-modal').modal('show');
+  });
+  $('#updateSongbutton').click(function(){
+
+      var desc = $('.edit-modal #song_desc').val();
+      var id = $('.edit-modal #song_id').val();
+      var genre = $('.edit-modal #genre_id').val();
+
+
+      var data = new Array(id,desc,genre);
+      updateSong(data);
+      $('#edit-song-modal').modal('hide');
+  });
+  // function updateSong(data)
+  // {
+  //     var id = data[0];
+  //     var desc = data[1];
+  //     var genre = data[2];
+  //     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+
+  //       $.ajax({
+  //         method : "post",
+  //         url : "../updateSong",
+  //         data : { '_token' : CSRF_TOKEN,
+  //           'song_id' : id,
+  //           'song_desc' : desc,
+  //           'genre_id': genre
+  //         },
+  //         success: function(content){
+  //           alert('Success');
+  //         }
+
+
+  //       });  
+  // }
 
  });
 </script>
