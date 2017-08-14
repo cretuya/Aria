@@ -93,18 +93,19 @@ class SongController extends Controller
     public function updateSong(Request $request)
     {
     	// $cont = Album_Contents::where('song_id', $sid)->first();
-        dd($request);
+        // dd($request);
         $id = Song::find($request->input('song_id'));
     	$album = Album::where('album_id', $id->album_id)->first();
     	$band = Band::where('band_id', $album->band_id)->first();
     	$desc = $request->input('song_desc');
     	$genre = $request->input('genre_id');
 
-    	$update = Song::where('song_id', $id)->update([
+    	$update = $id->update([
     		'song_desc' => $desc,
     		'genre_id' => $genre,
             'album_id' => $album->album_id,
     	]);
+
 
 
     	return redirect('/'.$band->band_name.'/manage');
