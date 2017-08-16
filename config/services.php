@@ -38,7 +38,7 @@ return [
     'facebook' => [
         'client_id' => '1808581142490551',
         'client_secret' => '17e4d5df526a6e83997b41c9a9b9ba2e',
-        'redirect' => 'http://localhost/aria/public/login/facebook/callback',
+        'redirect' => 'http://localhost/Aria/public/login/facebook/callback',
     ],
 
 ];

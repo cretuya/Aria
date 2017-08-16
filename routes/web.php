@@ -23,7 +23,7 @@ Route::middleware(['auth'])->group(function(){
 	    return view('index');
 	});
 
-	Route::get('/user/profile', function () {
+	Route::get('user/profile', function () {
 	    return view('user-profile');
 	});
 
@@ -31,6 +31,11 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::post('createband', 'BandController@createBand');
 	Route::get('{band_name}/manage', 'BandController@index');
+
+	Route::post('editband', 'BandController@editBand');
+	Route::get('{band_name}/manage/search', 'BandController@search');
+	Route::post('addmember', 'BandMemberController@addBandMember');
+	Route::post('deletemember', 'BandMemberController@deleteBandMember');
 
 	Route::get('{band_name}/albums', 'AlbumController@index');
 	Route::post('{band_name}/addAlbum' , 'AlbumController@addAlbum');

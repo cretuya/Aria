@@ -21,7 +21,10 @@ class User extends Authenticatable
         'user_id', 'fname', 'lname', 'email', 'age', 'gender' , 'profpic', 'address',
     ];
 
-
+    public function bandmember()
+    {
+        return $this->hasMany('App\BandMember','user_id','user_id');
+    }
     
 
     /**

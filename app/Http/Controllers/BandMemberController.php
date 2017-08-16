@@ -21,22 +21,29 @@ class BandMemberController extends Controller
 	}
 	public function addBandMember(Request $request)
 	{	
-
-		$findMembertoAdd = User::Where('fullname',$request->input('add-band-member'))->select('user_id')->first();
-
-		$CurrentUserIsBandMember = Bandmember::Where('user_id',session('userSocial')['id'])->first();
-
-		if ($CurrentUserIsBandMember) {
-			$memberName = $request->input('add-band-member');
-			$role = $request->input('add-band-member-role');
-			
-			$bandmember = Bandmember::create([
-				'band_id' => $create->band_id,
-				'user_id' => $findMembertoAdd,
-				'role' => $role
+		// dd($request->input('add-band-member-band-id'));
+		$findMembertoAdd = User::Where('user_id',$request->input('add-band-member-id'))->first();
+		// dd($findMembertoAdd);
+		$bandmember = Bandmember::create([
+				'band_id' => $request->input('add-band-member-band-id'),
+				'user_id' => $findMembertoAdd->user_id,
+				'bandrole' => $request->input('add-band-member-role')
 				// 'band_desc' => $desc,
 			]);
-		}
+
+		// $CurrentUserIsBandMember = Bandmember::Where('user_id',session('userSocial')['id'])->first();
+
+		// if ($CurrentUserIsBandMember) {
+		// 	$memberName = $request->input('add-band-member');
+		// 	$role = $request->input('add-band-member-role');
+			
+		// 	$bandmember = Bandmember::create([
+		// 		'band_id' => $create->band_id,
+		// 		'user_id' => $findMembertoAdd,
+		// 		'role' => $role
+		// 		// 'band_desc' => $desc,
+		// 	]);
+		// }
 		// else
 		// {
 
@@ -53,10 +60,17 @@ class BandMemberController extends Controller
 
 		// }
 
-
+		$bandName=$request->input('add-band-member-band-name');
 		
 
-		return redirect('/'.$create->band_name);
+		return redirect('/'.$bandName."/manage");
+	}
+
+	public function deleteBandMember(Request $request){
+		$memberID=$request->input('band-member-id');
+		$delMember = Bandmember::where('user_id',$memberID)->first();
+		// dd($delMember);
+		$delMember->destroy();
 	}
 
 

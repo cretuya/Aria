@@ -562,7 +562,15 @@
           Band Name: <br>
           <input type="text" class="form-control" name="band_name" style="text-transform: capitalize;"><br>
           What's your role? <br>
-          <input type="text" class="form-control" name="band_role_create" style="text-transform: capitalize;""><br>
+          <select class="form-control" name="band_role_create">
+            <option value="Vocalist">Vocalist</option>
+            <option value="Lead Guitar">Lead Guitar</option>
+            <option value="Rythm Guitar">Rythm Guitar</option>
+            <option value="Keyboardist">Keyboardist</option>
+            <option value="Drummer">Drummer</option>
+            <option value="Bassist">Bassist</option>
+          </select>
+          <!-- <input type="text" class="form-control" name="band_role_create" style="text-transform: capitalize;""><br> -->
           <br>
         
       </div>

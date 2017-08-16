@@ -14,4 +14,12 @@ class Bandmember extends Model
         'bandrole'
     ];
 
+    public function band(){
+    	return $this->belongsTo('App\Band','band_id','band_id');
+    }
+
+    public function user(){
+    	return $this->belongsTo('App\User','user_id','user_id');
+    }
+    
 }

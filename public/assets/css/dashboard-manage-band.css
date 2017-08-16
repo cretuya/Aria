@@ -142,3 +142,16 @@ input[type=checkbox] {
     width: 100%;
     height: auto;
 }
+
+#dummyContainer {
+    display: block; 
+    position:relative
+}
+
+.ui-autocomplete {
+    position: absolute;
+}
+
+.ui-menu .ui-menu-item{
+  padding: 5px;
+}
