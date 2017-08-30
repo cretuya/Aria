@@ -16,3 +16,32 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::get('videos', 'Api\VideoController@videos');
+Route::get('addVideo', 'Api\VideoController@addVideo');
+Route::get('deleteVideo','Api\VideoController@deleteVideo');
+Route::get('editVideo', 'Api\VideoController@editVideo');
+Route::get('updateVideo', 'Api\VideoController@updateVideo');
+
+
+Route::get('albums', 'Api\AlbumController@albums');
+Route::get('addAlbum', 'Api\AlbumController@addAlbum');
+Route::get('deleteAlbum','Api\AlbumController@deleteAlbum');
+Route::get('editAlbum', 'Api\AlbumController@editAlbum');
+Route::get('updateAlbum', 'Api\AlbumController@updateAlbum');
+
+
+Route::get('songs', 'Api\SongController@songs');
+Route::get('addSongs' , 'Api\SongController@addSongs');
+Route::get('editSong', 'Api\SongController@editSong');
+Route::get('updateSong', 'Api\SongController@updateSong');
+Route::get('deleteSong', 'Api\SongController@deleteSong');
+
+Route::get('articles', 'Api\ArticleController@articles');
+Route::get('addArticle', 'Api\ArticleController@addArticle');
+Route::get('viewArticle', 'Api\ArticleController@viewArticle');
+Route::get('deleteArticle' , 'Api\ArticleController@deleteArticle');
+Route::get('editArticle', 'Api\ArticleController@editArticle');
+Route::get('updateArticle', 'Api\ArticleController@updateArticle');
+
