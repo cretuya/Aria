@@ -25,8 +25,14 @@
               </div>
           </div>
             <div class="panel-body" style="padding-bottom: 0px">
-              <p class="band-name-title"><a href="#">{{ session('userSocial')['first_name'] }} {{ session('userSocial')['last_name'] }}</a></p>
-              <p class="band-role-name">Lead Vocalist / Keyboardist</p>
+              <p class="band-name-title" style="text-align: center;"><a href="#">{{ session('userSocial')['first_name'] }} {{ session('userSocial')['last_name'] }}</a></p>
+              
+              @if(count($userHasBand) > 0)
+                <p class="band-role-name">{{$userBandRole[0]->bandrole}}</p>
+              @else
+
+              @endif
+              
               <ul class="list-group user-profile-ul" id="accordion">
                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
                   <li class="list-group-item">

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -21,32 +21,7 @@ use Laravel\Socialite\Facades\Socialite;
 
 class BandController extends Controller
 {
-	public function index($name)
-	{
 
-		$bands = Auth::user()->bandmember;
-
-		$band = Band::where('band_name' ,$name)->first();
-		$videos = BandVideo::where('band_id', $band->band_id)->get();
-		$albums = Album::where('band_id', $band->band_id)->get();
-		$articles = BandArticle::where('band_id' , $band->band_id)->get();
-		$genres = Genre::all();
-
-		$songs = array();
-		foreach ($albums as $album)
-		{
-			array_push($songs, Song::where('album_id', $album->album_id)->get());
-		}
-
-		$bandmembers = Bandmember::where('band_id',$band->band_id)->get();
-		$BandDetails = Band::where('band_id', $band->band_id)->first();
-
-        $bandGenreSelected = BandGenre::where('band_id', $band->band_id)->get();
-        // dd($bandGenreSelected);
-		
-
-		return view('dashboard-band' , compact('band','videos', 'albums', 'articles', 'genres', 'songs', 'bandmembers','BandDetails','bandGenreSelected'));
-	}
 	public function createBand(Request $request)
 	{
 		$name = $request->input('band_name');
@@ -66,12 +41,14 @@ class BandController extends Controller
 			// 'band_desc' => $desc,
 		]);
 
-		return redirect('/'.$create->band_name.'/manage');
+		// return redirect('/'.$create->band_name.'/manage');
+		return response ()->json($create,$bandmember);
 	}
 
 	public function followBand($bname)
 	{
 		$band = Band::where('band_name', $bname)->first();
+		return response ()->json($band);
 
 	}
 
@@ -110,7 +87,7 @@ class BandController extends Controller
     {
 
     	// dd($request);
-    	Band::where('band_id', $request->bandId)->update([
+    	$editbandDetails = Band::where('band_id', $request->bandId)->update([
                 "band_name" => $request->bandName,
                 "band_desc" => $request->bandDesc
                 ]);
@@ -124,20 +101,19 @@ class BandController extends Controller
     	if(count($bandhasGenre) == 2){
     		BandGenre::where('band_id', $request->bandId)->delete();
         }else{
-    		BandGenre::create([
+    		$bandGenre1 = BandGenre::create([
     			'band_id' => $request->bandId,
     			'genre_id' => $genreArrayChecked[0]
     			]);
 
-    		BandGenre::create([
+    		$bandGenre2 = BandGenre::create([
     			'band_id' => $request->bandId,
     			'genre_id' => $genreArrayChecked[1]
     			]);
     	}
 
-    	
-
-    	return redirect('/'.$band_Name.'/manage');
+    	// return redirect('/'.$band_Name.'/manage');
+    	return response ()->json($editbandDetails,$genreArrayChecked,$bandhasGenre,$bandGenre1,$bandGenre2);
     }
 
     public function addMemberstoBand(Request $request)
@@ -150,6 +126,7 @@ class BandController extends Controller
 				'user_id' => $findMembertoAdd,
 				'role' => $role
 			]);
+		return response ()->json($bandmember);
     }
 
     public function editBandPic(Request $request)
@@ -161,18 +138,20 @@ class BandController extends Controller
 
         $bandPicPath = $this->addPathBandPic($bandpic,$bandID,$bandName);
 
-    	Band::where('band_id', $request->bandId)->update([
+    	$bandphoto = Band::where('band_id', $request->bandId)->update([
     		"band_pic" => $bandPicPath
     		]);
 
-    	return redirect('/'.$bandName.'/manage');
+    	// return redirect('/'.$bandName.'/manage');
+    	return response ()->json($bandphoto);
     }
 
     public function show($name)
     {
     	$band = Band::where('band_name', $name)->first();
     	// dd($band);
-    	return view('band-profile', compact('band'));
+    	// return view('band-profile', compact('band'));
+    	return response ()->json($band);
     }
 
     public function addPathBandPic($bandpicture, $bandID, $bandName){
@@ -192,7 +171,8 @@ class BandController extends Controller
         {
             $bandpicture = "";
         }
-        return $bandpicture;
+        // return $bandpicture;
+        return response ()->json($bandpicture);
     }
 
 }

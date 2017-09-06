@@ -4,10 +4,10 @@
 {{$band->band_name}}
 @endsection
 
-@include('includes.navbar')
+@include('layouts.navbar')
 
 @section('content')
-
+<br><br><br>
 
 <div class="container-fluid">
 
@@ -21,11 +21,11 @@
            
               <div class="panel panel-default">
 
-                <div class="panel-thumbnail"><img src=" {{ asset('assets/img/band-pic.jpg') }}" class="img-responsive"></div>
+                <div class="panel-thumbnail"><img src="assets/{{$band->band_id}} - {{$band->band_name}}/{{$band->band_pic}}" class="img-responsive"></div>
 	                <div class="panel-body">
 		                <div class="row">
 			                <div class="col-md-8">
-			                  <p class="band-name-title">Linkin Park</p>
+			                  <p class="band-name-title">{{$band->band_name}}</p>
 			                  <h4>Alternative Rock / Alternative Metal</h4>
 								<!-- <ul class="social-icons-ul" style="padding-left: 0">
 									<li><span class="fa fa-facebook-square social-icons" style="color: #3C5B9A"></span></li>

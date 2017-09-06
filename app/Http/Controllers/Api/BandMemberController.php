@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Bandmember;
@@ -17,7 +17,8 @@ class BandMemberController extends Controller
 		$bandMember = Bandmember::where('user_id' ,$name)->first();
 		// dd(Session::get('userSocial'));
 		// dd($band);
-		return view('dashboard-band' , compact('bandMember'));
+		// return view('dashboard-band' , compact('bandMember'));
+		return response ()->json($bandMember);
 	}
 	public function addBandMember(Request $request)
 	{	
@@ -31,39 +32,11 @@ class BandMemberController extends Controller
 				// 'band_desc' => $desc,
 			]);
 
-		// $CurrentUserIsBandMember = Bandmember::Where('user_id',session('userSocial')['id'])->first();
-
-		// if ($CurrentUserIsBandMember) {
-		// 	$memberName = $request->input('add-band-member');
-		// 	$role = $request->input('add-band-member-role');
-			
-		// 	$bandmember = Bandmember::create([
-		// 		'band_id' => $create->band_id,
-		// 		'user_id' => $findMembertoAdd,
-		// 		'role' => $role
-		// 		// 'band_desc' => $desc,
-		// 	]);
-		// }
-		// else
-		// {
-
-		// 	$memberName = $request->input( {{session('userSocial')['id']}} );
-		// 	$role = $request->input('band_role_create');
-		// 	// $desc = $request->input('band_desc');
-
-		// 	$bandmember = Bandmember::create([
-		// 		'band_id' => $create->band_id,
-		// 		'user_id' => session('userSocial')['id'],
-		// 		'role' => $role
-		// 		// 'band_desc' => $desc,
-		// 	]);
-
-		// }
-
 		$bandName=$request->input('add-band-member-band-name');
 		
 
-		return redirect('/'.$bandName."/manage");
+		// return redirect('/'.$bandName."/manage");
+		return response ()->json($findMembertoAdd,$bandmember);
 	}
 
 	public function deleteBandMember(Request $request){
@@ -72,7 +45,8 @@ class BandMemberController extends Controller
 		// dd($delMember);
 		$bandName=$request->input('bandName');
 
-		return redirect('/'.$bandName."/manage");
+		// return redirect('/'.$bandName."/manage");
+		return response ()->json($delMember);
 
 	}
 

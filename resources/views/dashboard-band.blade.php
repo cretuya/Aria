@@ -21,123 +21,157 @@
   <div class="row" style="margin-left: 0px;">
     <span class="manage-band-heading">Manage Band</span>
     <span class="btn btn-default pull-right" onclick="saveBand();">Save changes</span>
-    <span class="btn btn-default pull-right" style="margin-right: 10px;">View Band Profile</span>
+    <a href="{{url('/'.$band->band_name)}}"><span class="btn btn-default pull-right" style="margin-right: 10px;">View Band Profile</span></a>
     <span class="btn btn-default pull-right" style="margin-right: 10px;" data-toggle="modal" data-target="#invite-modal">Invite</span>
   </div>
   <br>
 
-  <form method="post" id="save-band-form" action="{{url('/editband')}}">
-  {{csrf_field()}}
+  
   <input type="text" value="{{$band->band_id}}" name="bandId" hidden>
   <div class="row">
     <div class="col-md-3">
       <div class="container-profile-photo">
-      <center><img src="{{asset('assets/img/dummy-pic.jpg')}}" class="img-responsive"></center>
+      @if($band->band_pic == null)
+      <center><img src="../assets/img//dummy-pic.jpg" class="img-responsive"></center>
+      @endif
+      <center><img src="../assets/{{$band->band_id}} - {{$band->band_name}}/{{$band->band_pic}}" class="img-responsive"></center>
         <div class="overlay"></div>
         <div class="button">
-          <a href="#" onclick="openfile()"> Change Display Picture </a><input id="anchor-file" type="file" style="display: none;">
+          <a href="#" onclick="openfile()"> Change Display Picture </a>
+          <form id = "band-pic-form" method="post" action="{{url('/editbandPic')}}" enctype="multipart/form-data">
+          {{csrf_field()}}
+            <input type="text" value="{{$band->band_id}}" name="bandId"  hidden>
+            <input type="text" value="{{$band->band_name}}" name="bandName" hidden>
+            <input id="anchor-file" type="file" name="bandPic" style="display: none;">
+            <input type="Submit" id = "submitForm" hidden />
+          </form>
         </div>
       </div>
     </div>
+    <form method="post" id="save-band-form" action="{{url('/editband')}}">
+  {{csrf_field()}}
     <div class="col-md-3">
+      <input type="text" value="{{$band->band_id}}" name="bandId"  hidden>
       <input id="bandName" class="band-name-title-manage edit-field" name="bandName" value="{{$band->band_name}}">
       <textarea class="band-description-txtarea" name="bandDesc" style="width: 100%; min-height: 221px; resize: none; margin-top: 5px;" placeholder="About the band">{{$BandDetails->band_desc}}</textarea>
     </div>
 
-  </form>
+    <?php
+    $checker = 0;
+    ?>
 
-    <div class="col-md-6" style="height: 263px;max-height: 263px; overflow-y: scroll;">
-      <h4>Band Members</h4>
-
-      <form method="post" action="{{url('/addmember')}}">
-          {{csrf_field()}}
-      <div class="row" id="band-member-section">
-        <div class="col-sm-5">
-          <label for="add-band-member-name">Add Member</label>
-          <input type="text" class="form-control" id="add-band-member-name" name="add-band-member-name" placeholder="Enter a name">
-          <input type="text" id="add-band-member-id" name="add-band-member-id" hidden>
-          <input type="text" id="add-band-member-band-id" name="add-band-member-band-id" value="{{$band->band_id}}" hidden>
-          <input type="text" id="add-band-member-band-name" name="add-band-member-band-name" value="{{$band->band_name}}" hidden>
-          <div id="dummyContainer"></div>
-        </div>
-        <input type="text" name="member-user-id" hidden>
-        <div class="col-sm-4">      
-          <label for="add-band-member">Role</label>
-          <select id="add-band-member-role" class="form-control" name="add-band-member-role">
-            <option hidden>Select Role</option>
-            <option value="Vocalist">Vocalist</option>
-            <option value="Lead Guitar">Lead Guitar</option>
-            <option value="Rythm Guitar">Rythm Guitar</option>
-            <option value="Keyboardist">Keyboardist</option>
-            <option value="Drummer">Drummer</option>
-            <option value="Bassist">Bassist</option>
-          </select>
-        </div>
-
-        <div class="col-sm-3">
-          <label>&nbsp;</label>
-          
-          <button class="btn btn-default add-member-btn">Add Member</button>
-        </div>
-      </div>
-      </form>
-
-      <table class="table table-hover" style="margin-top: 5px;">
-      
-      @foreach($bandmembers as $members)
-      
-      <form id="bandmemberform" method="post" action="{{url('/deletemember')}}">
-      {{csrf_field()}}
-        <tr>
-          <td class="hidden"><input type="text" name="band-member-id" class="member-id" value="{{$members->user->user_id}}"></td>        
-          <td><input type="text" name="band-member-name" class="member-name" style="border: none; background: transparent;" value="{{$members->user->fullname}}" readonly></td>
-          <td><input type="text" name="band-member-role" class="member-role" style="border: none; background: transparent;" value="{{$members->bandrole}}" readonly></td>
-          <!-- <td><a href="#"><span class="fa fa-pencil"></span></a></td> -->
-          <td><button type="submit" style="background: transparent; border: none;" class="fa fa-close"></span></td>
-        </tr>
-      </form>
-      @endforeach
-
-        <!-- 
-        <tr>
-          <td><span class="member-name">Chester Bennington</span></td>
-          <td><span class="member-role">Vocalist</span></td>
-          <td><a href="#"><span class="fa fa-pencil"></span></a></td>
-          <td><a href="#"><span class="fa fa-close"></span></a></td>
-        </tr>
-        <tr>
-          <td><span class="member-name">Chester Bennington</span></td>
-          <td><span class="member-role">Vocalist</span></td>
-          <td><a href="#"><span class="fa fa-pencil"></span></a></td>
-          <td><a href="#"><span class="fa fa-close"></span></a></td>
-        </tr>
-        <tr>
-          <td><span class="member-name">Chester Bennington</span></td>
-          <td><span class="member-role">Vocalist</span></td>
-          <td><a href="#"><span class="fa fa-pencil"></span></a></td>
-          <td><a href="#"><span class="fa fa-close"></span></a></td>
-        </tr> -->
-
-        
-      </table>
-
-    </div>    
-  </div>
-  <br>
-  <div class="row">
-    <div class="col-md-12" style="max-height: 270px; overflow-y: scroll;">
+    <div class="col-md-6" style="max-height: 270px; overflow-y: scroll;">
           <h4>Choose 2 main genres</h4>
             <div class="row">
                <div class="col-md-4">
                 @foreach($genres as $genre)
-                 <div class="checkbox">
-                   <label class="checkbox-form-control"><input type="checkbox" value="{{$genre->genre_id}}">{{$genre->genre_name}}</label>
-                 </div>
+                  @foreach($bandGenreSelected as $genreSelected)
+                    @if($genre->genre_id == $genreSelected->genre_id)
+                      <div class="checkbox">
+                        <label class="checkbox-form-control">
+                        <input type="checkbox" name="genres[]" class="checkboxGenre" value="{{$genre->genre_id}}" checked>{{$genre->genre_name}}</label>
+                      </div>
+                      <?php $checker = 1; ?>
+                    @endif
+
+                  @endforeach
+
+                     @if($checker == 0 )
+                     <div class="checkbox">
+                       <label class="checkbox-form-control">
+                       <input type="checkbox" name="genres[]" class="checkboxGenre" value="{{$genre->genre_id}}">{{$genre->genre_name}}</label>
+                     </div>
+                     @endif
+                      <?php $checker = 0; ?>
                  @endforeach
             </div>
           </div>
-      </div>
+    </div>
+        
+  </form>
+  </div>
+  <br>
+    
+<div class="row">
+ <div class="col-md-12" style="height: 263px;max-height: 263px; overflow-y: scroll;">
+   <h4>Band Members</h4>
+
+   <form method="post" action="{{url('/addmember')}}">
+       {{csrf_field()}}
+   <div class="row" id="band-member-section">
+     <div class="col-sm-5">
+       <label for="add-band-member-name">Add Member</label>
+       <input type="text" class="form-control" id="add-band-member-name" name="add-band-member-name" placeholder="Enter a name">
+       <input type="text" id="add-band-member-id" name="add-band-member-id" hidden>
+       <input type="text" id="add-band-member-band-id" name="add-band-member-band-id" value="{{$band->band_id}}" hidden>
+       <input type="text" id="add-band-member-band-name" name="add-band-member-band-name" value="{{$band->band_name}}" hidden>
+       <div id="dummyContainer"></div>
+     </div>
+     <input type="text" name="member-user-id" hidden>
+     <div class="col-sm-4">      
+       <label for="add-band-member">Role</label>
+       <select id="add-band-member-role" class="form-control" name="add-band-member-role">
+         <option hidden>Select Role</option>
+         <option value="Vocalist">Vocalist</option>
+         <option value="Lead Guitar">Lead Guitar</option>
+         <option value="Rythm Guitar">Rythm Guitar</option>
+         <option value="Keyboardist">Keyboardist</option>
+         <option value="Drummer">Drummer</option>
+         <option value="Bassist">Bassist</option>
+       </select>
+     </div>
+
+     <div class="col-sm-3">
+       <label>&nbsp;</label>
+       
+       <button class="btn btn-default add-member-btn">Add Member</button>
+     </div>
+   </div>
+   </form>
+
+   <table class="table table-hover" style="margin-top: 5px;">
+   
+   @foreach($bandmembers as $members)
+   
+   <form id="bandmemberform" method="post" action="{{url('/deletemember')}}">
+   {{csrf_field()}}
+     <tr>
+       <td class="hidden"><input type="text" name="band-member-id" class="member-id" value="{{$members->user->user_id}}"></td>        
+       <td><input type="text" name="band-member-name" class="member-name" style="border: none; background: transparent;" value="{{$members->user->fullname}}" readonly></td>
+       <td><input type="text" name="band-member-role" class="member-role" style="border: none; background: transparent;" value="{{$members->bandrole}}" readonly></td>
+       <input type="text" value="{{$band->band_name}}" name="bandName" hidden>
+       <!-- <td><a href="#"><span class="fa fa-pencil"></span></a></td> -->
+       <td><button type="submit" style="background: transparent; border: none;" class="fa fa-close"></button></td>
+     </tr>
+   </form>
+   @endforeach
+
+     <!-- 
+     <tr>
+       <td><span class="member-name">Chester Bennington</span></td>
+       <td><span class="member-role">Vocalist</span></td>
+       <td><a href="#"><span class="fa fa-pencil"></span></a></td>
+       <td><a href="#"><span class="fa fa-close"></span></a></td>
+     </tr>
+     <tr>
+       <td><span class="member-name">Chester Bennington</span></td>
+       <td><span class="member-role">Vocalist</span></td>
+       <td><a href="#"><span class="fa fa-pencil"></span></a></td>
+       <td><a href="#"><span class="fa fa-close"></span></a></td>
+     </tr>
+     <tr>
+       <td><span class="member-name">Chester Bennington</span></td>
+       <td><span class="member-role">Vocalist</span></td>
+       <td><a href="#"><span class="fa fa-pencil"></span></a></td>
+       <td><a href="#"><span class="fa fa-close"></span></a></td>
+     </tr> -->
+
+     
+   </table>
+
  </div>
+ </div>
+
   <br>
 
   
@@ -552,6 +586,19 @@ $( function() {
 
 });
 
+function openfile(){
+  $('#anchor-file').click();
+}
+$("#anchor-file").on("change",function()
+{
+  console.log("niagi-here");
+  $("#submitForm").click();
+});
+
+// function changeBandPic(){
+//   $('#band-pic-form').submit();
+// }
+
 function saveBand(){
   document.getElementById('save-band-form').submit();
 }
@@ -690,6 +737,12 @@ $(document).ready(function()
         });
 
   }
+
+  $('input[type=checkbox]').on('change', function (e) {
+    if ($('input[type=checkbox]:checked').length > 2) {
+        $(this).prop('checked', false);
+    }
+  });
 
 
   $('#showSongs').on('click', '.edit', function()

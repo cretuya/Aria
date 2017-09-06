@@ -23,16 +23,20 @@ Route::middleware(['auth'])->group(function(){
 	    return view('index');
 	});
 
-	Route::get('user/profile', function () {
-	    return view('user-profile');
-	});
+	// Route::get('user/profile', function () {
+	//     return view('user-profile');
+	// });
+
+	Route::get('user/profile', 'UserController@show');
 
 	Route::post('edit/profile', 'UserController@updateUser');
 
 	Route::post('createband', 'BandController@createBand');
 	Route::get('{band_name}/manage', 'BandController@index');
+	Route::get('{band_name}', 'BandController@show');
 
 	Route::post('editband', 'BandController@editBand');
+	Route::post('editbandPic', 'BandController@editBandPic');
 	Route::get('{band_name}/manage/search', 'BandController@search');
 	Route::post('addmember', 'BandMemberController@addBandMember');
 	Route::post('deletemember', 'BandMemberController@deleteBandMember');

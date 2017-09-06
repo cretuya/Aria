@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\User;
@@ -15,7 +15,7 @@ class UserController extends Controller
             // User::('users')->where('user_id', session('userSocial')['id'])->update(["contact" => "input['users-contact']"]);
             // User::('users')->where('user_id', session('userSocial')['id'])->update(["email" => "input['users-email"]);
 
-            User::where('user_id', session('userSocial')['id'])
+            $updateUserInfo = User::where('user_id', session('userSocial')['id'])
                     ->update([
                         "address" => $request->userscity,
                         "contact" => $request->userscontact,
@@ -33,7 +33,9 @@ class UserController extends Controller
             session(['userSocial_Contact' => $usersContact->contact]);
             session(['userSocial_Bio' => $usersBio->bio]);
 
-            return redirect('/user/profile');
+            // return redirect('/user/profile');
+			return response ()->json($updateUserInfo);
+
         }
 
     public function show(){
@@ -42,7 +44,9 @@ class UserController extends Controller
         $userHasBand = Bandmember::where('user_id',session('userSocial')['id'])->get();
         $userBandRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->get();
         // dd($userBandRole);
-            return view('user-profile', compact('userHasBand','userBandRole'));
+            // return view('user-profile', compact('userHasBand','userBandRole'));
+		return response ()->json($userHasBand,$userBandRole);
+
     }
 
 }

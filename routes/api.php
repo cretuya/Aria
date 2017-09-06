@@ -17,6 +17,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('updateUserInfo', 'Api\UserController@updateUser');
+
+Route::get('createband', 'Api\BandController@createBand');
+
+Route::get('editband', 'Api\BandController@editBand');
+Route::get('editbandPic', 'Api\BandController@editBandPic');
+Route::get('searchForBandMember', 'Api\BandController@search');
+Route::get('addmember', 'Api\BandMemberController@addBandMember');
+Route::get('deletemember', 'Api\BandMemberController@deleteBandMember');
 
 Route::get('videos', 'Api\VideoController@videos');
 Route::get('addVideo', 'Api\VideoController@addVideo');
