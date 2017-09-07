@@ -26,14 +26,21 @@
 		                <div class="row">
 			                <div class="col-md-8">
 			                  <p class="band-name-title">{{$band->band_name}}</p>
-			                  <h4>Alternative Rock / Alternative Metal</h4>
+			                  <h4>
+			                  @if($genres == null)
+			                  @else
+			                  @foreach ($genres as $genre)
+			                  {{$genre->genre->genre_name}} |
+			                  @endforeach
+			                  @endif
+			                  </h4>
 								<!-- <ul class="social-icons-ul" style="padding-left: 0">
 									<li><span class="fa fa-facebook-square social-icons" style="color: #3C5B9A"></span></li>
 									<li><span class="fa fa-twitter-square social-icons" style="color: #0FB5EE"></span></li>
 									<li><span class="fa fa-youtube-square social-icons" style="color: #CD201F"></span></li>
 								</ul> -->
-			                  <p>Established on 1996</p>
-			                  <p>45 Followers</p>
+			                  <!-- <p>Established on 1996</p> -->
+			                  <p>{{$band->num_followers}} Followers</p>
 			                </div>
 			                <div class="col-md-4">
 			                	<div class="row" style="padding-right: 15px">
@@ -44,29 +51,34 @@
                 	</div>
               	</div>
 
-           
+
               <div class="panel panel-default">
                 <div class="panel-heading"><h4>About the Band</h4></div>
                   <div class="panel-body" style="padding: 30px">
-                    <p style="text-indent: 20px; text-align: justify;">Linkin Park is an American rock band from Agoura Hills, California. Formed in 1996, the band rose to international fame with their debut album Hybrid Theory (2000), which was certified Diamond by the RIAA in 2005 and multi-Platinum in several other countries. Their following studio album Meteora continued the band's success, topping the Billboard 200 album chart in 2003, and was followed by extensive touring and charity work.</p>
+                    <p style="text-indent: 20px; text-align: justify;">{{$band->band_desc}}
                   </div>
               </div>
            
-              <div class="panel panel-default">
+<!--               <div class="panel panel-default">
                  <div class="panel-heading"><h4>Heading Text Here</h4></div>
                   <div class="panel-body">
                     
                   </div>
-              </div>
-           
-              <div class="panel panel-default">
-                <div class="panel-heading"><h4>Heading Text Here</h4></div>
-               	<div class="panel-body">
-                
-                </div>
-              </div>
+              </div> -->
+            @if ($articles == null)
+           	@else
+           			@foreach ($articles as $article)
+			              <div class="panel panel-default">
+			                <div class="panel-heading"><h4>{{$article->article->art_title}}</h4></div>
+			               	<div class="panel-body">
+			                {{$article->article->content}}
+			                </div>
+			              </div>           			
+           			@endforeach
+           	@endif
+
               <div id="addArticle">
-              <button type="button" class='add' value="{{$band->band_name.'/articles'}}">View Article</button>
+              <button type="button" class='add' value="{{$band->band_name.'/articles'}}">View More Articles</button>
               </div>
            		
            
@@ -116,7 +128,7 @@
                   </div>
                </div>
 
-               <div class="panel panel-default">
+<!--                <div class="panel panel-default">
                  <div class="panel-heading"><h4>Heading Text Here</h4></div>
                   <div class="panel-body">
                     
@@ -128,7 +140,7 @@
                   <div class="panel-body">
                     
                   </div>
-               </div>
+               </div> -->
             
           </div>
        </div><!--/row-->

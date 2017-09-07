@@ -17,7 +17,7 @@ class Video extends Model
 
     public function bandvideos()
     {
-    	return $this->hasMany('App\BandVideo');
+    	return $this->hasMany('App\BandVideo', 'video_id');
     }
 
 }

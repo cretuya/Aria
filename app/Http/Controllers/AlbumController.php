@@ -9,14 +9,21 @@ use App\Song;
 use App\Album_Contents;
 class AlbumController extends Controller
 {
-    public function index($name)
+    // public function index($name)
+    // {
+    //     $band = Band::where('band_name', $name)->first();
+    //     $albums = Album::where('band_id', $band->band_id)->get();
+
+    //     return view('band-albums', compact('band', 'albums'));
+    // }
+    public function albums($bname)
     {
-        $band = Band::where('band_name', $name)->first();
-        $albums = Album::where('band_id', $band->band_id)->get();
+        $band = Band::where('band_name', $bname)->first();
+        $albums = Album::where('band_id',$band->band_id)->get();
+        
 
-        return view('band-albums', compact('band', 'albums'));
+        return view('view-band-album', compact('band', 'albums'));
     }
-
     public function addAlbum(Request $request, $bname)
     {
         $name = $request->input('album_name');

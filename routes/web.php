@@ -61,13 +61,15 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('{band_name}/deleteVideo/{video_id}' , 'VideoController@deleteVideo');
 
 
-	Route::get('{band_name}/articles', 'ArticleController@index');
 	Route::post('{band_name}/addArticle', 'ArticleController@addArticle');
 	Route::get('{band_name}/viewArticle/{article_id}', 'ArticleController@viewArticle');
 	Route::get('/deleteArticle/{article_id}' , 'ArticleController@deleteArticle');
 	Route::get('{band_name}/editArticle/{article_id}', 'ArticleController@editArticle');
 	Route::post('{band_name}/updateArticle', 'ArticleController@updateArticle');
 
-
+	Route::get('{band_name}/videos', 'VideoController@videos');
+	Route::get('{band_name}/albums', 'AlbumController@albums');
+	Route::get('{band_name}/articles', 'ArticleController@articles');
+	Route::post('getArticle', 'ArticleController@getArticle');	
 
 });

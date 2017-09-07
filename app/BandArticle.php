@@ -15,10 +15,10 @@ class BandArticle extends Model
 
     public function article()
     {
-    	return $this->belongsTo('App\Article' ,'art_id');
+    	return $this->belongsTo('App\Article' ,'art_id', 'art_id');
     }
     public function band()
     {
-    	return $this->belongsTo('App\Band', 'band_id');
+    	return $this->belongsTo('App\Band', 'band_id', 'band_id');
     }
 }

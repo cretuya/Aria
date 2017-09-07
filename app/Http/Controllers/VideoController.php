@@ -9,6 +9,14 @@ use App\Video;
 
 class VideoController extends Controller
 {	
+
+    public function videos($bname)
+    {
+        $band = Band::where('band_name', $bname)->first();
+        $videos = $band->bandvids;
+        // dd($videos);
+        return view('videos', compact('band', 'videos'));
+    }
     public function addVideo(Request $request, $bname)
     {
     	$band = Band::where('band_name' , $bname)->first();

@@ -171,8 +171,11 @@ class BandController extends Controller
     public function show($name)
     {
     	$band = Band::where('band_name', $name)->first();
-    	// dd($band);
-    	return view('band-profile', compact('band'));
+        $genres = $band->bandgenres;
+        $articles = $band->bandarticles;
+
+
+    	return view('band-profile', compact('band', 'genres', 'articles'));
     }
 
     public function addPathBandPic($bandpicture, $bandID, $bandName){

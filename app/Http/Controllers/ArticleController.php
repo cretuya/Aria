@@ -9,6 +9,14 @@ use App\Article;
 
 class ArticleController extends Controller
 {
+
+    public function articles($bname)
+    {
+        $band = Band::where('band_name', $bname)->first();
+        $articles = $band->bandarticles;
+
+        return view('view-band-article', compact('band', 'articles'));
+    }
     public function addArticle(Request $request , $bname)
     {
     	$band = Band::where('band_name', $bname)->first();
@@ -65,4 +73,9 @@ class ArticleController extends Controller
         ]);
         return redirect('/'.$bname.'/manage');
     }    
+    public function getArticle(Request $request)
+    {
+        $article = Article::where('art_id', $request->input('id'))->first();
+        return response ()->json($article);
+    }
 }

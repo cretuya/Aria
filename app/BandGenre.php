@@ -15,11 +15,11 @@ class BandGenre extends Model
 
     public function band()
     {
-    	return $this->belongsTo('App/Band');
+    	return $this->belongsTo('App\Band', 'band_id', 'band_id');
     }
     public function genre()
     {
-    	return $this->belongsTo('App/Genre');
+    	return $this->belongsTo('App\Genre', 'genre_id', 'genre_id');
     }
 
 

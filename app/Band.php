@@ -25,15 +25,15 @@ class Band extends Model
 	}
 	public function bandvids()
 	{
-		return $this->hasMany('App\BandVideo');
+		return $this->hasMany('App\BandVideo', 'band_id', 'band_id');
 	}
 	public function bandarticles()
 	{
-		return $this->hasMany('App\Bandarticles');
+		return $this->hasMany('App\Bandarticle', 'band_id', 'band_id');
 	}
 	public function bandgenres()
 	{
-		return $this->hasMany('App\BandGenre');
+		return $this->hasMany('App\BandGenre', 'band_id', 'band_id');
 	}
 	public function bandsongs()
 	{

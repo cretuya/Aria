@@ -12,6 +12,6 @@ class Genre extends Model
 
     public function bandgenre()
     {
-    	return $this->belongsTo('App\BandGenre');
+    	return $this->hasMany('App\BandGenre', 'genre_id');
     }
 }
