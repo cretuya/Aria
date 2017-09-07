@@ -7,6 +7,7 @@
 @include('layouts.navbar')
 
 @section('content')
+<meta name ="csrf-token" content = "{{csrf_token() }}"/>
 <br><br><br>
 
 <div class="container-fluid">
@@ -40,10 +41,15 @@
 									<li><span class="fa fa-youtube-square social-icons" style="color: #CD201F"></span></li>
 								</ul> -->
 			                  <!-- <p>Established on 1996</p> -->
+			                  @if ($band->num_followers == null)
+			                  <p>0 Followers</p>
+			                  @else
 			                  <p>{{$band->num_followers}} Followers</p>
+			                  @endif
 			                </div>
 			                <div class="col-md-4">
 			                	<div class="row" style="padding-right: 15px">
+			                		<input type="text" value="{{$band->band_id}}" id="bid" hidden>
 			                		<button class="btn-follow followButton pull-right" rel="6">Follow</button>
 		                		</div>
 			                </div>
@@ -167,11 +173,34 @@
 	    } else {
 	        
 	        // $.ajax(); Do Follow
+	        var id = $('#bid').val();
+	        followBand(id);
 	        
 	        $button.addClass('following');
 	        $button.text('Following');
 	    }
 	});
+
+	function followBand(id)
+	{
+		var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+
+ 		$.ajax({
+          method : "post",
+          url : "./followBand",
+          data : { '_token' : CSRF_TOKEN,
+            'id' : id
+          },
+          success: function(json){
+        	console.log(json);
+          },
+          error: function(a,b,c)
+          {
+            alert('Error');
+
+          }
+        });		
+	}
 
 	$('button.followButton').hover(function(){
 	     $button = $(this);

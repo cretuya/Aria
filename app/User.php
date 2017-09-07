@@ -25,6 +25,10 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\BandMember','user_id','user_id');
     }
+    public function preferences()
+    {
+        return $this->hasMany('App\Preference', 'user_id');
+    }
     
 
     /**

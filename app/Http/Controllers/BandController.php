@@ -15,6 +15,7 @@ use App\BandVideo;
 use App\Genre;
 use App\Song;
 use App\User;
+use App\Preference;
 use \Session;
 use Auth;	
 use Laravel\Socialite\Facades\Socialite;
@@ -69,9 +70,24 @@ class BandController extends Controller
 		return redirect('/'.$create->band_name.'/manage');
 	}
 
-	public function followBand($bname)
+	public function followBand(Request $request)
 	{
-		$band = Band::where('band_name', $bname)->first();
+		$band = Band::where('band_id', $request->input('id'))->first();
+        $followers = $band->num_followers;
+        $newfollowers = $followers + 1;
+
+        if (count($band) > 0)
+        {
+            $update = Band::where('band_id', $band->band_id)->update([
+                'num_followers' => $newfollowers
+             ]);
+
+            $create = Preference::create([
+                'user_id' => Auth::user()->user_id,
+                'band_id' => $band->band_id,
+            ]);
+        }
+        return response ()->json(['band' => $band, 'preference' => $create]);
 
 	}
 
