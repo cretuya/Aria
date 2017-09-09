@@ -42,15 +42,20 @@
 								</ul> -->
 			                  <!-- <p>Established on 1996</p> -->
 			                  @if ($band->num_followers == null)
-			                  <p>0 Followers</p>
+			                  <p class="followers">0 Followers</p>
 			                  @else
-			                  <p>{{$band->num_followers}} Followers</p>
+			                  <p class="followers">{{$band->num_followers}} Followers</p>
 			                  @endif
 			                </div>
 			                <div class="col-md-4">
 			                	<div class="row" style="padding-right: 15px">
 			                		<input type="text" value="{{$band->band_id}}" id="bid" hidden>
+			                		@if ($follower == null)
 			                		<button class="btn-follow followButton pull-right" rel="6">Follow</button>
+			                		@else
+			                		<button class="btn-follow followButton pull-right following" rel="6">UnFollow</button>
+			                		<input type="text" value="{{$follower->user_id}}" id="uid" hidden>
+			                		@endif
 		                		</div>
 			                </div>
 		                </div>
@@ -165,19 +170,16 @@
 	    $button = $(this);
 	    if($button.hasClass('following')){
 	        
-	        //$.ajax(); Do Unfollow
+	        // $.ajax(); Do UnFollow
+	        var bid = $('#bid').val();
+	        unfollowBand(bid);
 	        
-	        $button.removeClass('following');
-	        $button.removeClass('unfollow');
-	        $button.text('Follow');
 	    } else {
 	        
 	        // $.ajax(); Do Follow
 	        var id = $('#bid').val();
 	        followBand(id);
 	        
-	        $button.addClass('following');
-	        $button.text('Following');
 	    }
 	});
 
@@ -193,6 +195,10 @@
           },
           success: function(json){
         	console.log(json);
+			$button.addClass('following');
+	        $button.text('Following');
+	        $('.following').append('<input type="text" value="'+json.preference.user_id+'" id="uid" hidden>');
+	        $('.followers').text(json.band.num_followers+' Followers');
           },
           error: function(a,b,c)
           {
@@ -202,18 +208,46 @@
         });		
 	}
 
-	$('button.followButton').hover(function(){
-	     $button = $(this);
-	    if($button.hasClass('following')){
-	        $button.addClass('unfollow');
-	        $button.text('Unfollow');
-	    }
-	}, function(){
-	    if($button.hasClass('following')){
-	        $button.removeClass('unfollow');
-	        $button.text('Following');
-	    }
-	});
+	function unfollowBand(bid)
+	{
+		var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+	    var uid = $('#uid').val();
+
+
+ 		$.ajax({
+          method : "post",
+          url : "./unfollowBand",
+          data : { '_token' : CSRF_TOKEN,
+            'bid' : bid,
+            'uid' : uid
+          },
+          success: function(json){
+        	console.log(json);
+	        $button.removeClass('following');
+	        // $button.removeClass('unfollow');
+	        $button.text('Follow');
+	        $('.followers').text(json.band.num_followers+' Followers');
+          },
+          error: function(a,b,c)
+          {
+            console.log('Error');
+
+          }
+        });			
+	}
+
+	// $('button.followButton').hover(function(){
+	//      $button = $(this);
+	//     if($button.hasClass('following')){
+	//         $button.addClass('unfollow');
+	//         $button.text('Unfollow');
+	//     }
+	// }, function(){
+	//     if($button.hasClass('following')){
+	//         $button.removeClass('unfollow');
+	//         $button.text('Following');
+	//     }
+	// });
 $(document).ready(function()
 {
 	$('#addArticle').on('click', '.add', function()

@@ -44,7 +44,7 @@ class BandController extends Controller
 
         $bandGenreSelected = BandGenre::where('band_id', $band->band_id)->get();
         // dd($bandGenreSelected);
-		
+
 
 		return view('dashboard-band' , compact('band','videos', 'albums', 'articles', 'genres', 'songs', 'bandmembers','BandDetails','bandGenreSelected'));
 	}
@@ -86,10 +86,39 @@ class BandController extends Controller
                 'user_id' => Auth::user()->user_id,
                 'band_id' => $band->band_id,
             ]);
+            $newband = $create->band;
         }
-        return response ()->json(['band' => $band, 'preference' => $create]);
+        return response ()->json(['band' => $newband, 'preference' => $create]);
 
 	}
+    public function unfollowBand(Request $request)
+    {
+        // $user = User::where('user_id' , $request->input('uid'))->first();
+
+
+        $follower = Preference::where([
+            ['user_id' , $request->input('uid')],
+            ['band_id', $request->input('bid')],
+            ])->first();
+
+        if (count($follower) > 0)
+        {   
+            $band = Band::where('band_id' , $request->input('bid'))->first();            
+            $numfollow = $band->num_followers;
+            $newfollowers = $numfollow - 1;
+            $update =  Band::where('band_id', $request->input('bid'))->update([
+            'num_followers' => $newfollowers
+            ]);
+
+            $delete = Preference::where([
+            ['user_id' , $request->input('uid')],
+            ['band_id', $request->input('bid')],
+            ])->delete();
+            $newband = $follower->band;
+        }
+
+        return response ()->json(['band' => $newband, 'preference' => $follower]);
+    }
 
 	public function search(Request $request){
 		// dd($request);
@@ -190,8 +219,19 @@ class BandController extends Controller
         $genres = $band->bandgenres;
         $articles = $band->bandarticles;
 
+        $follower = Preference::where([
+            ['user_id' , Auth::user()->user_id],
+            ['band_id', $band->band_id],
+            ])->first();
+        // if ($follower > 0)
+        // {
+            // return view('band-profile', compact('band', 'genres', 'articles', 'follower'));
+        // }
+        // else
+        // {
+            return view('band-profile', compact('band', 'genres', 'articles', 'follower'));
+        // }
 
-    	return view('band-profile', compact('band', 'genres', 'articles'));
     }
 
     public function addPathBandPic($bandpicture, $bandID, $bandName){

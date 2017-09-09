@@ -72,4 +72,5 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('{band_name}/articles', 'ArticleController@articles');
 	Route::post('getArticle', 'ArticleController@getArticle');	
 	Route::post('followBand', 'BandController@followBand');
+	Route::post('unfollowBand', 'BandController@unfollowBand');
 });
