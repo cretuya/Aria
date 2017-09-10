@@ -10,10 +10,10 @@
 <meta name ="csrf-token" content = "{{csrf_token() }}"/>
 <br><br><br>
 
-<div class="container-fluid">
+<div class="container" style="padding-left: 0px; padding-right: 0px;">
 
 	<br>
-    <div class="col-md-12">
+    <div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">
         <!-- content -->                      
       	<div class="row">
           
@@ -110,7 +110,7 @@
                </div>
 
                <div class="panel panel-default">
-                 <div class="panel-heading"><a href="{{$band->band_name.'/albums'}}" class="pull-right">See all Tracks</a><h4>Featured Songs</h4></div>
+                 <div class="panel-heading"><a href="{{$band->band_name.'/albums'}}" class="pull-right">See all Albums</a><h4>Latest Released Albums</h4></div>
                   <div class="panel-body" style="padding: 0;">
                     <div class="container-fluid" style="padding: 0;">
 					    <div class="column center">

@@ -16,7 +16,7 @@ class CreateBandsTable extends Migration
         Schema::create('bands', function (Blueprint $table) {
             $table->increments('band_id');
             $table->string('band_name', 50)->unique();
-            $table->string('band_desc', 100)->nullable();
+            $table->string('band_desc')->nullable();
             $table->integer('num_followers')->nullable();
             $table->string('band_pic')->nullable();
             $table->timestamps();

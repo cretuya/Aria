@@ -136,7 +136,8 @@
    <form id="bandmemberform" method="post" action="{{url('/deletemember')}}">
    {{csrf_field()}}
      <tr>
-       <td class="hidden"><input type="text" name="band-member-id" class="member-id" value="{{$members->user->user_id}}"></td>        
+       <td class="hidden"><input type="text" name="band-member-id" class="member-id" value="{{$members->user->user_id}}"></td>
+       <td class="hidden"><input type="text" name="band-id" value="{{$band->band_id}}"></td>
        <td><input type="text" name="band-member-name" class="member-name" style="border: none; background: transparent;" value="{{$members->user->fullname}}" readonly></td>
        <td><input type="text" name="band-member-role" class="member-role" style="border: none; background: transparent;" value="{{$members->bandrole}}" readonly></td>
        <input type="text" value="{{$band->band_name}}" name="bandName" hidden>

@@ -5,23 +5,49 @@
 @endsection
 
 @include('layouts.navbar')
+@include('layouts.band-materials-navigation')
 
 @section('content')
+<div class="container">
+<br><br>
+<center><h3>Articles</h3></center>
+
 <meta name ="csrf-token" content = "{{csrf_token() }}"/>
 <br><br><br><br>
+
 <input type="text" value="{{$band->band_name}}" id="bandName" hidden>
+
 @if($articles == null)
+@else
+	@foreach($articles as $article)
+	<div class='articles'>
+		<div class="panel panel-default" style="box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);">
+			<div class="panel-body">
+				<h4>{{$article->article->art_title}}</h4>
+				<p>{{$article->article->content}}</p>
+				<a href="#" class="showContent" data-id='{{$article->article->art_id}}'>Read full article</a>
+			</div>
+		</div>
+	</div>
+	@endforeach
+@endif
+
+
+
+<!-- {{--@if($articles == null)
 @else
 	@foreach($articles as $article)
 	<div class='articles'>
 	<button type="button" class="showContent" data-id='{{$article->article->art_id}}'>{{$article->article->art_title}}</button>
 	</div>
 	@endforeach
-@endif
+@endif--}} -->
 <br>
 <div class="displayArticle">
 		<div class="display">
 		</div>
+</div>
+
 </div>
 
 

@@ -68,7 +68,11 @@ class BandMemberController extends Controller
 
 	public function deleteBandMember(Request $request){
 		$memberID=$request->input('band-member-id');
-		$delMember = Bandmember::where('user_id',$memberID)->delete();
+		$delMember = Bandmember::where([
+			['user_id', $memberID],
+			['band_id', $request->input('band-id')],
+		])->delete();
+
 		// dd($delMember);
 		$bandName=$request->input('bandName');
 
