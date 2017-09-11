@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Band;
 use App\BandVideo;
 use App\Video;
-
+use Validator;
 class VideoController extends Controller
 {	
 
@@ -24,22 +24,31 @@ class VideoController extends Controller
         $desc = $request->input('video_desc');
         $videos = $request->file('video_content');
         
-        foreach ($videos as $video)
+        $rules = new Video;
+        $validator = Validator::make($request->all(), $rules->rules);
+        if ($validator->fails())
         {
-            $videoPath = $this->addPathforVideos($video);
-
-            $create = Video::create([
-               'video_desc' => $desc,
-                'video_content' => $videoPath,
-            ]);
-
-            $bandvideo = BandVideo::create([
-            	'band_id' => $band->band_id,
-            	'video_id' => $create->video_id,
-            ]);
+            return redirect('/'.$band->band_name.'/manage')->withErrors($validator)->withInput();
         }
-        
-        return redirect('/'.$band->band_name.'/manage');
+        else
+        {
+            foreach ($videos as $video)
+            {
+                $videoPath = $this->addPathforVideos($video);
+
+                $create = Video::create([
+                   'video_desc' => $desc,
+                    'video_content' => $videoPath,
+                ]);
+
+                $bandvideo = BandVideo::create([
+                	'band_id' => $band->band_id,
+                	'video_id' => $create->video_id,
+                ]);
+            }
+            
+            return redirect('/'.$band->band_name.'/manage');
+        }
     }
     public function addPathforVideos($video)
     {
@@ -74,11 +83,20 @@ class VideoController extends Controller
         $band = Band::where('band_name' , $bname)->first();
         $desc = $request->input('video_desc');
 
-        $update = Video::where('video_id' , $id)->update([
-            'video_desc' => $desc,
-            ]);
+        $rules = new Video;
+        $validator = Validator::make($request->all(), $rules->updaterules);
+        if ($validator->fails())
+        {
+            return redirect('/'.$band->band_name.'/manage')->withErrors($validator)->withInput();
+        }
+        else
+        {        
+            $update = Video::where('video_id' , $id)->update([
+                'video_desc' => $desc,
+                ]);
 
-        return redirect('/'.$bname.'/manage');
+            return redirect('/'.$bname.'/manage');
+        }
     }
     public function deleteVideo($bname, $vid)
     {

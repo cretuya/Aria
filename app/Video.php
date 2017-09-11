@@ -14,6 +14,14 @@ class Video extends Model
     	'video_desc' , 
     	'video_content' ,
     ];
+    public $rules = [
+    'video_desc' => 'required|max:255',
+    'video_content' => 'required',
+    ];
+    public $updaterules = [
+    'video_desc' => 'required|max:255',
+    'video_content' => 'required',
+    ];
 
     public function bandvideos()
     {
