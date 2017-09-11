@@ -16,6 +16,16 @@ class Album extends Model
 		'band_id' , 
 	];
 
+	public $rules = [
+	'album_name' => 'required|max:50',
+	'album_desc' => 'required|max:255',
+	];
+
+	public $updaterules = [
+	'album_name' => 'required|max:50',
+	'album_desc' => 'required|max:255',
+	];
+
 	public function band()
 	{
 		return $this->belongsTo('App\Band', 'band_id', 'band_id');

@@ -9,6 +9,7 @@ use App\Album;
 use App\Album_Contents;
 use App\Band;
 use App\BandSong;
+use Validator;
 
 class SongController extends Controller
 {
@@ -29,19 +30,29 @@ class SongController extends Controller
         $genre = $request->input('genre_id');
         $aid = Album::where('album_id', $id)->first();
         $band = Band::where('band_name', $bname)->first();
-        foreach ($audios as $audio)
-        {
-            $audioPath = $this->addPathforSongs($audio);
 
-            $createSong = Song::create([
-                'song_desc' => $title,
-                'song_audio' => $audioPath,
-                'genre_id' => $genre,
-                'album_id' => $id,
-            ]);
-            
+        $rules = new Song;
+        $validator = Validator::make($request->all(), $rules->rules);
+        if ($validator->fails())
+        {
+            return redirect('/'.$bname.'/manage')->withErrors($validator)->withInput();
         }
-		return redirect('/'.$bname.'/manage');
+        else
+        {
+            foreach ($audios as $audio)
+            {
+                $audioPath = $this->addPathforSongs($audio);
+
+                $createSong = Song::create([
+                    'song_desc' => $title,
+                    'song_audio' => $audioPath,
+                    'genre_id' => $genre,
+                    'album_id' => $id,
+                ]);
+                
+            }
+    		return redirect('/'.$bname.'/manage');
+        }
 	}
     public function addPathforSongs($audio)
     {
@@ -99,16 +110,22 @@ class SongController extends Controller
     	$band = Band::where('band_id', $album->band_id)->first();
     	$desc = $request->input('song_desc');
     	$genre = $request->input('genre_id');
+        $rules = new Song;
+        $validator = Validator::make($request->all(), $rules->updaterules);
+        if ($validator->fails())
+        {
+            return redirect('/'.$band->band_name.'/manage')->withErrors($validator)->withInput();
+        }
+        else
+        {
+        	$update = $id->update([
+        		'song_desc' => $desc,
+        		'genre_id' => $genre,
+                'album_id' => $album->album_id,
+        	]);
 
-    	$update = $id->update([
-    		'song_desc' => $desc,
-    		'genre_id' => $genre,
-            'album_id' => $album->album_id,
-    	]);
-
-
-
-    	return redirect('/'.$band->band_name.'/manage');
+        	return redirect('/'.$band->band_name.'/manage');
+        }
     }
     public function deleteSong($sid)
     {

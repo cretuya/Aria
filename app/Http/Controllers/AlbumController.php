@@ -7,6 +7,7 @@ use App\Band;
 use App\Album;
 use App\Song;
 use App\Album_Contents;
+use Validator;
 class AlbumController extends Controller
 {
     // public function index($name)
@@ -28,22 +29,31 @@ class AlbumController extends Controller
     {
         $name = $request->input('album_name');
         $desc = $request->input('album_desc');
-
         $band = Band::where('band_name', $bname)->first();
-        if (count($band)>0)
+        $rules = new Album;
+        $validator = Validator::make($request->all(), $rules->rules);
+
+        if ($validator->fails())
         {
-            $create = Album::create([
-                'album_name' => $name,
-                'album_desc' => $desc,
-                'band_id' =>$band->band_id,
-            ]);
+            return redirect('/'.$band->band_name.'/manage')->withErrors($validator)->withInput();
         }
         else
         {
-            return redirect('/'); 
+            if (count($band)>0)
+            {
+                $create = Album::create([
+                    'album_name' => $name,
+                    'album_desc' => $desc,
+                    'band_id' =>$band->band_id,
+                ]);
+            }
+            else
+            {
+                return redirect('/'); 
+            }
+            
+            return redirect('/'.$band->band_name.'/manage');
         }
-        
-        return redirect('/'.$band->band_name.'/manage');
     }
 
     public function viewAlbum($bname, $aid)
@@ -67,21 +77,29 @@ class AlbumController extends Controller
         $name = $request->input('album_name');
         $desc = $request->input('album_desc');
         $aid = $request->input('album_id');
-
+        $rules = new Album;
+        $validator = Validator::make($request->all(), $rules->updaterules);        
         $band = Band::where('band_name', $bname)->first();
-        if (count($band)>0)
+        if ($validator->fails())
         {
-            $create = Album::where('album_id' , $aid)->update([
-                'album_name' => $name,
-                'album_desc' => $desc,
-                'band_id' =>$band->band_id,
-            ]);
+            return redirect('/'.$bname.'/manage')->withErrors($validator)->withInput();
         }
         else
         {
-            
+            if (count($band)>0)
+            {
+                $create = Album::where('album_id' , $aid)->update([
+                    'album_name' => $name,
+                    'album_desc' => $desc,
+                    'band_id' =>$band->band_id,
+                ]);
+            }
+            else
+            {
+                
+            }
+            return redirect('/'.$bname.'/manage');
         }
-         return redirect('/'.$bname.'/manage');
     }
     public function deleteAlbum($aid)
     {

@@ -13,6 +13,15 @@
 <meta name ="csrf-token" content = "{{csrf_token() }}"/>
 <br><br><br>
 
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 <div class="container-fluid" style="padding-left: 30px; padding-right: 30px">
   
 <br>

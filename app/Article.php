@@ -14,6 +14,14 @@ class Article extends Model
     	'art_title' , 
     	'content' , 
     ];
+    public $rules = [
+    'art_title' => 'required|max:50',
+    'content' => 'required',
+    ];
+    public $updaterules = [
+    'art_title' => 'required|max:50',
+    'content' => 'required',
+    ];
 
     public function bandarticles()
     {
