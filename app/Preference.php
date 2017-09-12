@@ -12,6 +12,7 @@ class Preference extends Model
     	'user_id',
         'band_id' ,
         'genre_id' ,
+        'album_id' ,
     ];
 
     public function user()
@@ -21,5 +22,9 @@ class Preference extends Model
     public function band()
     {
         return $this->belongsTo('App\Band', 'band_id', 'band_id');
-    }    
+    } 
+    public function album()
+    {
+        return $this->belongsTo('App\Album', 'album_id', 'album_id');
+    }     
 }

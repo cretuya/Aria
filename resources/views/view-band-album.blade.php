@@ -22,17 +22,21 @@
     @if($albums == null)
     @else
       @foreach($albums as $album)
-      <div class='albums'>
-
-      <a href="#" class="showSongs" data-id='{{$album->album_id}}' style="text-decoration: none;">
-        <div class="panel panel-default" style="margin-top: -20px;">
-          <div class="panel-body">
-            {{$album->album_name}}
-          </div>
+      <div class="row">
+        <div class="col-md-9">
+          <div class='albums'>
+          <a href="#" class="showSongs" data-id='{{$album->album_id}}' style="text-decoration: none;">
+            <div class="panel panel-default" style="margin-top: -20px;">
+              <div class="panel-body">
+                {{$album->album_name}}
+              </div>
+            </div>
+          </a>
         </div>
-      </a>
-
-      
+        </div>
+        <div class="col-md-2 likeAlbum">
+        <button type="button" class="likeButton" data-id='{{$album->album_id}}'>Like</button>
+        </div>
       </div>
       @endforeach
     @endif
@@ -113,6 +117,92 @@ $(document).ready(function(){
           }
         });			
 	}
+  $('button.likeButton').on('click', function(e)
+  {
+      e.preventDefault();
+      $button = $(this);
+      if($button.hasClass('liked')){
+          
+          // $.ajax(); Do Unlike
+          var id = $(this).data('id');
+          alert('unlike');
+          unlikeAlbum(id); 
+          
+      } else {
+          
+          // $.ajax(); Do Like
+          var id = $(this).data('id');
+          alert('like');
+          likeAlbum(id);   
+      }
+  });
+
+  function likeAlbum(id)
+  {
+        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+        // var bname = $('#bandName').val();
+        $.ajax({
+          method : "post",
+          url : "../likeAlbum",
+          data : { '_token' : CSRF_TOKEN,
+            'id' : id
+          },
+          success: function(json){
+            console.log(json);
+            $button.addClass('liked');
+            $button.text('Unlike');
+            // $('.songs h4').text(json.album.album_name);
+            // $('.list').empty();
+            //   $.each(json.songs, function(key, value)
+            //   {
+            //     var song = value.song_audio;
+            //     var source = "{{url('/assets/music/')}}";
+            //     var audio = source +'/'+ song;
+
+            //    $('.list').append('<label>'+value.song_audio+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio>'); 
+
+            //   });
+          },
+          error: function(a,b,c)
+          {
+            console.log(b);
+
+          }
+        });         
+  }
+  function unlikeAlbum(id)
+  {
+        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+        // var bname = $('#bandName').val();
+        $.ajax({
+          method : "post",
+          url : "../unlikeAlbum",
+          data : { '_token' : CSRF_TOKEN,
+            'id' : id
+          },
+          success: function(json){
+            console.log(json);
+            $button.removeClass('liked');
+            $button.text('Like');
+            // $('.songs h4').text(json.album.album_name);
+            // $('.list').empty();
+            //   $.each(json.songs, function(key, value)
+            //   {
+            //     var song = value.song_audio;
+            //     var source = "{{url('/assets/music/')}}";
+            //     var audio = source +'/'+ song;
+
+            //    $('.list').append('<label>'+value.song_audio+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio>'); 
+
+            //   });
+          },
+          error: function(a,b,c)
+          {
+            console.log(b);
+
+          }
+        });         
+  }
 });
 </script>
 @endsection

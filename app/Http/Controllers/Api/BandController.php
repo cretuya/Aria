@@ -175,4 +175,5 @@ class BandController extends Controller
         return response ()->json($bandpicture);
     }
 
+
 }

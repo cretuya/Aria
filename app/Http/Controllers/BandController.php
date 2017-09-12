@@ -254,4 +254,5 @@ class BandController extends Controller
         return $bandpicture;
     }
 
+
 }

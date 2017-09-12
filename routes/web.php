@@ -73,4 +73,6 @@ Route::middleware(['auth'])->group(function(){
 	Route::post('getArticle', 'ArticleController@getArticle');	
 	Route::post('followBand', 'BandController@followBand');
 	Route::post('unfollowBand', 'BandController@unfollowBand');
+	Route::post('likeAlbum', 'AlbumController@likeAlbum');
+	Route::post('unlikeAlbum', 'AlbumController@unlikeAlbum');
 });

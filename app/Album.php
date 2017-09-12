@@ -34,4 +34,8 @@ class Album extends Model
 	{
 		return $this->hasMany('App\Songs','album_id');
 	}
+	public function preferences()
+	{
+		return $this->hasMany('App\Preference', 'band_id', 'band_id');
+	}
 }

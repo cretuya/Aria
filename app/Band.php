@@ -17,7 +17,7 @@ class Band extends Model
 
     public function albums()
     {
-    	return $this->hasMany('App\Album', 'album_id');
+    	return $this->hasMany('App\Album', 'album_id', 'album_id');
     }
 	public function members()
 	{
@@ -41,6 +41,6 @@ class Band extends Model
 	}
 	public function preferences()
 	{
-		return $this->hasMany('App\Bandarticle', 'band_id', 'band_id');
+		return $this->hasMany('App\Preference', 'band_id', 'band_id');
 	}
 }
