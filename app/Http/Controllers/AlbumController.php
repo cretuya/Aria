@@ -31,7 +31,15 @@ class AlbumController extends Controller
             ['user_id' , Auth::user()->user_id],
             ['album_id', $album->album_id],
             ])->first();     
-        array_push($likers, $liker);
+
+            if ($liker == null)
+            {
+
+            }
+            else
+            {
+                array_push($likers, $liker->album_id);
+            }
         }
         // dd($likers);
         return view('view-band-album', compact('band', 'albums', 'likers'));

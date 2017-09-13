@@ -35,7 +35,11 @@
         </div>
         </div>
         <div class="col-md-2 likeAlbum">
+        @if (in_array($album->album_id, $likers))
+        <button type="button" class="likeButton liked" data-id='{{$album->album_id}}'>Unlike</button>
+        @else
         <button type="button" class="likeButton" data-id='{{$album->album_id}}'>Like</button>
+        @endif
         </div>
       </div>
       @endforeach
