@@ -8,6 +8,7 @@ use App\Band;
 use App\Album;
 use App\Song;
 use App\Album_Contents;
+use App\Genre;
 class AlbumController extends Controller
 {
     public function albums(Request $request)
@@ -76,5 +77,10 @@ class AlbumController extends Controller
 
         return response ()->json($delete);
     }
+    public function genres()
+    {
+        $genres = Genre::all();
 
+        return response ()->json($genres);
+    }
 }

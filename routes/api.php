@@ -54,3 +54,5 @@ Route::get('deleteArticle' , 'Api\ArticleController@deleteArticle');
 Route::get('editArticle', 'Api\ArticleController@editArticle');
 Route::get('updateArticle', 'Api\ArticleController@updateArticle');
 
+Route::get('genres', 'Api\AlbumController@genres');
+
