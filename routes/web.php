@@ -28,8 +28,9 @@ Route::middleware(['auth'])->group(function(){
 	// });
 
 	Route::get('user/profile', 'UserController@show');
-
 	Route::post('edit/profile', 'UserController@updateUser');
+	Route::get('discover', 'DiscoverPageController@showAllGenres');
+	Route::get('discover/{genre_name}', 'DiscoverPageController@showAccordingtoGenre');
 
 	Route::post('createband', 'BandController@createBand');
 	Route::get('{band_name}/manage', 'BandController@index');
