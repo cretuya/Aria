@@ -52,11 +52,11 @@ class BandController extends Controller
 	{
 		$name = $request->input('band_name');
 		$role = $request->input('band_role_create');
-
+        // $role = $request->input('band_pic');
 
 		$create = Band::create([
 			'band_name' => $name,
-			'band_pic' => 'dummy-pic.jpg'
+			'band_pic' => 'dummy-pic.jpg',
 		]);
 
 
@@ -254,5 +254,16 @@ class BandController extends Controller
         return $bandpicture;
     }
 
+    public function visitCount(Request $request)
+    {
+        $band = Band::where('band_id', $request->input('id'))->first();
+        $visitcount = $band->visit_counts;
+        $newcount = $visitcount + 1;
 
+        $update = Band::where('band_id', $band->band_id)->update([
+            'visit_counts' => $newcount
+        ]);
+
+        return response ()->json($band);
+    }
 }

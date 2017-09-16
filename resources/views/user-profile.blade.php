@@ -577,6 +577,7 @@
             <option value="Bassist">Bassist</option>
           </select>
           <!-- <input type="text" class="form-control" name="band_role_create" style="text-transform: capitalize;""><br> -->
+<!--           <input type="text" name="band_pic" hidden> -->
           <br>
         
       </div>

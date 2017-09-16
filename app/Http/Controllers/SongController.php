@@ -133,4 +133,18 @@ class SongController extends Controller
     	$delete = Song::where('song_id', $sid)->delete();
     	return response ()->json($id); 
     }
+
+    public function addSongPlayed(Request $request)
+    {
+        $song = Song::where('song_id', $request->input('id'))->first();
+        $plays = $song->num_plays;
+        $newplays = $plays + 1;
+
+        $update = Song::where('song_id', $song->song_id)->update([
+            'num_plays' => $newplays
+
+        ]);
+
+        return response ()->json($update);
+    }
 }

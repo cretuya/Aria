@@ -6,23 +6,59 @@
 @section('content')
 <br><br><br><br><br>
 <div class="container">
+<meta name ="csrf-token" content = "{{csrf_token() }}"/>
 
 	<center><h2>{{$genreChoice->genre_name}}</h2></center>
-	<section id="photos">
-		
+	<section id="bands">
+	@if ($bands == null)
+	@else
+		@foreach ($bands as $band)
+		<div class="bandphoto">
+		@if ($band->band->band_pic == null)
+		<div class="col-sm-2">
+			<a href="#" data-id="{{$band->band->band_id}}" data-title="{{$band->band->band_name}}" data-desc="{{$band->band->band_desc}}" data-follower="{{$band->band->num_followers}}" data-pic="{{$band->band->band_pic}}" class="viewBand">
+			<div style="background: #222">
+				<img src="{{asset('assets/img/dummy-pic.jpg')}}" class="img-responsive genre-thumbnail ">
+				<div class="carousel-caption">
+					<h4>{{$band->band->band_name}}</h4>
+				</div>
+				<div>
+					<h1> </h1>
+				</div>
+			</div>
+			</a>
+		</div>
+		@else
+		<div class="col-sm-2">
+			<a href="#" data-id="{{$band->band->band_id}}" data-title="{{$band->band->band_name}}" data-desc="{{$band->band->band_desc}}" data-follower="{{$band->band->num_followers}}" data-pic="{{$band->band->band_pic}}" class="viewBand">
+			<div style="background: #222">
+				<img src="{{asset('assets/img/'.$band->band->band_pic)}}" class="img-responsive genre-thumbnail ">
+				<div class="carousel-caption">
+					<h4>{{$band->band->band_name}} naa shay pic</h4>
+				</div>
+				<div>
+					<h1> </h1>
+				</div>
+			</div>
+			</a>
+		</div>
+		@endif
+		</div>
+		@endforeach
+	@endif		
 	</section>
 
 	<div id="bandModal" class="modal fade" role="dialog">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-body">
-	       <img src="https://www.theshowlastnight.com/wp-content/uploads/2014/08/IMG_0244.jpg" class="img-responsive">
-	       <h3>Our Last Night</h3>
-	       <p>Genre: Post-hardcore, Alternative metal, Metalcore</p>
-	       <p>Followers: 12,312,656</p>
+	       <img src="https://www.theshowlastnight.com/wp-content/uploads/2014/08/IMG_0244.jpg" class="img-responsive thispic">
+	       <h3></h3>
+	       <p class="desc"></p>
+	       <p class="followers"></p>
 	      </div>
 	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default">Visit Our Last Night's Page</button>
+	        <button type="button" class="btn btn-default visitpage">Visit Page</button>
 	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 	      </div>
 	    </div>
@@ -33,20 +69,80 @@
 </div>
 
 <script>
+$(document).ready(function()
+{
+	$('.bandphoto').on('click', '.viewBand', function()
+	{
+		var id = $(this).data('id');
+		var name = $(this).data('title');
+		var desc = $(this).data('desc');
+		var follower = $(this).data('follower');
+        var source = "{{url('/assets/img/')}}";
+        var getimage = $(this).data('pic');
+        var image = source +'/'+ getimage;
+        var dummypic = source +'/dummy-pic.jpg';
 
-	function getRandomSize(min, max) {
-	  return Math.round(Math.random() * (max - min) + min);
-	}
+      $('.modal-body h3').text(name);
+      $('.modal-body .desc').text(desc);
+      $('.modal-footer .visitpage').val(id);
+      if (follower == "")
+      {
+      $('.modal-body .followers').text("No followers yet.");      	
+      }
+      else
+      {
+      $('.modal-body .followers').text(follower+" followers");       	
+      }
 
-	var allImages = "";
 
-	for (var i = 0; i < 25; i++) {
-	  var width = getRandomSize(200, 400);
-	  var height =  getRandomSize(200, 300);
-	  allImages += '<a href="#" data-toggle="modal" data-target="#bandModal"><img src="https://placekitten.com/'+width+'/'+height+'"></a><h4> </h4>';
-	}
+      if(getimage == "")
+      {
+      	$('.thispic').attr('src', dummypic);
+      }
+      else
+      {
+      	$('.thispic').attr('src', image);
+      }
 
-	$('#photos').append(allImages);
+
+      $('#bandModal').modal('show');
+	});
+	$('#bandModal').on('click', '.visitpage', function()
+	{
+		var id = $('.visitpage').val();
+		var name = $('.modal-body h3').text();
+		console.log(name);
+        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+        $.ajax({
+          method : "post",
+          url : "../visitCount",
+          data : { '_token' : CSRF_TOKEN,
+            'id' : id
+          },
+          success: function(json){
+          	window.location.href = "../"+name;
+          },
+          error: function(a,b,c)
+          {
+            alert('Error');
+
+          }
+        });
+	});
+});
+	// function getRandomSize(min, max) {
+	//   return Math.round(Math.random() * (max - min) + min);
+	// }
+
+	// var allImages = "";
+
+	// for (var i = 0; i < 25; i++) {
+	//   var width = getRandomSize(200, 400);
+	//   var height =  getRandomSize(200, 300);
+	//   allImages += '<a href="#" data-toggle="modal" data-target="#bandModal"><img src="https://placekitten.com/'+width+'/'+height+'"></a><h4> </h4>';
+	// }
+
+	// $('#photos').append(allImages);
 
 </script>
 

@@ -11,7 +11,7 @@
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li><a href="#">Discover</a></li>
+        <li><a href="{{ url('discover')}}">Discover</a></li>
         <li><a href="#">Top Charts</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">

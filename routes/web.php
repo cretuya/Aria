@@ -76,4 +76,6 @@ Route::middleware(['auth'])->group(function(){
 	Route::post('unfollowBand', 'BandController@unfollowBand');
 	Route::post('likeAlbum', 'AlbumController@likeAlbum');
 	Route::post('unlikeAlbum', 'AlbumController@unlikeAlbum');
+	Route::post('addSongPlayed', 'SongController@addSongPlayed');
+	Route::post('visitCount', 'BandController@visitCount');
 });

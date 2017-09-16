@@ -76,7 +76,7 @@
 
 <div class="songs">
 <br>
-	<div class="list">
+	<div class="list" align="center">
 		
 	</div>
 </div>
@@ -110,7 +110,7 @@ $(document).ready(function(){
                 var source = "{{url('/assets/music/')}}";
                 var audio = source +'/'+ song;
 
-               $('.list').append('<label>'+value.song_audio+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio>'); 
+               $('.list').append('<label>'+value.song_audio+'</label><br><audio onplay="playSong('+value.song_id+')" id="audio" controls><source src="'+audio+'" type="audio/mpeg"></audio><br><br>'); 
 
               });
           },
@@ -121,6 +121,7 @@ $(document).ready(function(){
           }
         });			
 	}
+
   $('button.likeButton').on('click', function(e)
   {
       e.preventDefault();
@@ -208,5 +209,31 @@ $(document).ready(function(){
         });         
   }
 });
+
+function playSong(id)
+{
+  songid = id;
+  var audio = document.getElementsByClassName('audio');
+  setTimeout(function() { addSongPlayed(songid)}, 5000);
+}
+function addSongPlayed(id)
+{
+        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+        $.ajax({
+          method : "post",
+          url : "../addSongPlayed",
+          data : { '_token' : CSRF_TOKEN,
+            'id' : id
+          },
+          success: function(json){
+            console.log(json);
+          },
+          error: function(a,b,c)
+          {
+            console.log(b);
+
+          }
+        });   
+}
 </script>
 @endsection
