@@ -110,7 +110,7 @@ $(document).ready(function(){
                 var source = "{{url('/assets/music/')}}";
                 var audio = source +'/'+ song;
 
-               $('.list').append('<label>'+value.song_audio+'</label><br><audio onplay="playSong('+value.song_id+')" id="audio" controls><source src="'+audio+'" type="audio/mpeg"></audio><br><br>'); 
+               $('.list').append('<label>'+value.song_audio+'</label><br><audio onplay="playSong('+value.song_id+')" class="audio" controls><source src="'+audio+'" type="audio/mpeg"></audio><br><br>'); 
 
               });
           },
@@ -156,17 +156,6 @@ $(document).ready(function(){
             console.log(json);
             $button.addClass('liked');
             $button.text('Unlike');
-            // $('.songs h4').text(json.album.album_name);
-            // $('.list').empty();
-            //   $.each(json.songs, function(key, value)
-            //   {
-            //     var song = value.song_audio;
-            //     var source = "{{url('/assets/music/')}}";
-            //     var audio = source +'/'+ song;
-
-            //    $('.list').append('<label>'+value.song_audio+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio>'); 
-
-            //   });
           },
           error: function(a,b,c)
           {
@@ -189,17 +178,6 @@ $(document).ready(function(){
             console.log(json);
             $button.removeClass('liked');
             $button.text('Like');
-            // $('.songs h4').text(json.album.album_name);
-            // $('.list').empty();
-            //   $.each(json.songs, function(key, value)
-            //   {
-            //     var song = value.song_audio;
-            //     var source = "{{url('/assets/music/')}}";
-            //     var audio = source +'/'+ song;
-
-            //    $('.list').append('<label>'+value.song_audio+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio>'); 
-
-            //   });
           },
           error: function(a,b,c)
           {
