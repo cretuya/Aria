@@ -66,7 +66,6 @@ class LoginController extends Controller
                     ])->user();
 
             Session::put('userSocial',$userSocial->user);
-            Session::put('userSocial_UserPic',$userSocial->avatar_original);
             Session::put('userSocial_City', '');
             Session::put('userSocial_Contact', '');
             Session::put('userSocial_Bio', '');
@@ -115,6 +114,7 @@ class LoginController extends Controller
                 $user->gender = $userSocial->user['gender'];
                 $user->address = '';
                 $user->contact = '';
+                $user->profile_pic = $userSocial->avatar_original;
                 $user->save();
 
                 // dd($userSocial);

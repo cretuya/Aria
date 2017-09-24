@@ -27,6 +27,8 @@ Route::middleware(['auth'])->group(function(){
 	//     return view('user-profile');
 	// });
 
+	Route::get('search','SearchController@search');
+
 	Route::get('user/profile', 'UserController@show');
 	Route::post('edit/profile', 'UserController@updateUser');
 	Route::get('discover', 'DiscoverPageController@showAllGenres');
