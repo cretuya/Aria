@@ -16,7 +16,7 @@
       <div class="panel panel-default">
           <div class="panel-thumbnail">
               <div class="container-profile-photo">
-              <img src="{{ session('userSocial_UserPic') }}" class="img-responsive">
+              <img src="{{ $user->profile_pic }}" class="img-responsive">
                 <div class="overlay"></div>
                 <div class="button">
                   <a href="#" data-toggle="modal" data-target="#edit-profile-modal">Edit Profile</a>
@@ -28,7 +28,7 @@
               <p class="band-name-title" style="text-align: center;"><a href="#">{{ session('userSocial')['first_name'] }} {{ session('userSocial')['last_name'] }}</a></p>
               
               @if(count($userHasBand) > 0)
-                <p class="band-role-name">{{$userBandRole[0]->bandrole}}</p>
+                <p class="band-role-name">{{$userBandRole[0]->bandrole}} at {{$usersBand->band_name}}</p>
               @else
 
               @endif

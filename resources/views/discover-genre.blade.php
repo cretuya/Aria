@@ -32,14 +32,12 @@
 		<div class="col-sm-2">
 			<a href="#" data-id="{{$band->band->band_id}}" data-title="{{$band->band->band_name}}" data-desc="{{$band->band->band_desc}}" data-follower="{{$band->band->num_followers}}" data-pic="{{$band->band->band_pic}}" class="viewBand">
 			<div style="background: #222">
-				<img src="{{asset('assets/img/'.$band->band->band_pic)}}" class="img-responsive genre-thumbnail ">
-				<div class="carousel-caption">
-					<h4>{{$band->band->band_name}} naa shay pic</h4>
-				</div>
+				<img src="{{asset('assets/'.$band->band->band_id.' - '.$band->band->band_name.'/'.$band->band->band_pic)}}" class="img-responsive genre-thumbnail">				
 				<div>
 					<h1> </h1>
 				</div>
 			</div>
+			<center><h4>{{$band->band->band_name}}</h4></center>
 			</a>
 		</div>
 		@endif

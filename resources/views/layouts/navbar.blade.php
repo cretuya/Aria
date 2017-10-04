@@ -7,13 +7,23 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span> 
       </button>
-      <a class="navbar-brand" href="#">Aria Logo</a>
+      <a class="navbar-brand" href="{{ url('user/profile')}}">Aria Logo</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
         <li><a href="{{ url('discover')}}">Discover</a></li>
         <li><a href="#">Top Charts</a></li>
       </ul>
+      <div class="col-sm-3 col-md-3">
+          <form class="navbar-form" action="{{ url('search') }}" method="get" role="search">
+          <div class="input-group">
+              <input type="text" class="form-control" placeholder="Search" name="search_result">
+              <div class="input-group-btn">
+                  <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+              </div>
+          </div>
+          </form>
+      </div>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{ session('userSocial')['first_name'] }}
