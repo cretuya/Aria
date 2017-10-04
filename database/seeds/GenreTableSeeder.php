@@ -11,9 +11,9 @@ class GenreTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('genres')->delete();
+        DB::table('students')->delete();
 
-        $genres = array([
+        $students = array([
         	'genre_id' => null,
         	'genre_name' => 'Alternative',
         	'genre_desc' => 'alternative',
