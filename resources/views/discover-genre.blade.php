@@ -18,7 +18,7 @@
 		<div class="col-sm-2">
 			<a href="#" data-id="{{$band->band->band_id}}" data-title="{{$band->band->band_name}}" data-desc="{{$band->band->band_desc}}" data-follower="{{$band->band->num_followers}}" data-pic="{{$band->band->band_pic}}" class="viewBand">
 			<div style="background: #222">
-				<img src="{{asset('assets/img/dummy-pic.jpg')}}" class="img-responsive genre-thumbnail ">
+				<img src="http://res.cloudinary.com/demo/image/upload/v1499589454/sample.jpg" class="img-responsive genre-thumbnail ">
 				<div class="carousel-caption">
 					<h4>{{$band->band->band_name}}</h4>
 				</div>
@@ -77,7 +77,7 @@ $(document).ready(function()
 		var follower = $(this).data('follower');
         var source = "{{url('/assets/img/')}}";
         var getimage = $(this).data('pic');
-        var image = source +'/'+ getimage;
+        // var image = source +'/'+ getimage;
         var dummypic = source +'/dummy-pic.jpg';
 
       $('.modal-body h3').text(name);
@@ -99,7 +99,7 @@ $(document).ready(function()
       }
       else
       {
-      	$('.thispic').attr('src', image);
+      	$('.thispic').attr('src', getimage);
       }
 
 

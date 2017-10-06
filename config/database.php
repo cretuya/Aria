@@ -1,6 +1,17 @@
 <?php
 
+
+$url = parse_url("mysql://bc92084fb7e169:e7c750b8@us-cdbr-iron-east-05.cleardb.net/heroku_3f5b3c0bca4b004?reconnect=true");
+
+$host = $url["host"];
+$username = $url["user"];
+$password = $url["pass"];
+$database = substr($url["path"],1);
+
 return [
+
+
+    
 
     /*
     |--------------------------------------------------------------------------
@@ -39,7 +50,7 @@ return [
             'prefix' => '',
         ],
 
-        'mysql' => [
+        /*'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
@@ -52,7 +63,22 @@ return [
             'prefix' => '',
             'strict' => true,
             'engine' => null,
+        ],*/
+
+          'mysql' => [
+            'driver' => 'mysql',
+            'host' => $host,
+            'port' => env('DB_PORT', '3306'),
+            'database' => $database,
+            'username' => $username,
+            'password' => $password,
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+          
         ],
+
 
         'pgsql' => [
             'driver' => 'pgsql',
