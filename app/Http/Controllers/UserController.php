@@ -37,7 +37,20 @@ class UserController extends Controller
             return redirect('/user/profile');
         }
 
-    public function show(){
+    public function feedshow(){
+           // $userRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->first();
+           //  return view('user-profile', compact('userRole'));
+
+        $user = User::where('user_id',session('userSocial')['id'])->first();
+
+        $usersBand = Band::join('bandmembers', 'bands.band_id', '=', 'bandmembers.band_id')->select('band_name')->where('user_id', session('userSocial')['id'])->first();
+        $userHasBand = Bandmember::where('user_id',session('userSocial')['id'])->get();
+        $userBandRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->get();
+        // dd($usersBand);
+            return view('feed', compact('userHasBand','userBandRole','usersBand','user'));
+    }
+
+    public function profileshow(){
            // $userRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->first();
            //  return view('user-profile', compact('userRole'));
 

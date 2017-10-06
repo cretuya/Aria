@@ -19,7 +19,7 @@ class CreateUsersLTable extends Migration
             $table->string('lname', 50);
             $table->string('fullname', 100);
             $table->string('email', 50);
-            $table->integer('age');
+            $table->integer('age')->nullable();
             $table->string('gender', 10);
             $table->string('address', 50)->nullable();
             $table->string('contact', 50)->nullable();

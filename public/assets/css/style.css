@@ -1,16 +1,22 @@
 
 html, body{
-	font-family: 'Montserrat';
-	letter-spacing: 0.03em;
+  font-family: Roboto;
+  letter-spacing: 0.03em;
+    background: #fafafa;
+}
+
+a{
+    color:#212121;
+    text-decoration: none !important;
 }
 
 .fa-bell{
-	font-size: 14px;
+  font-size: 14px;
 }
 
 .header-toggle{
-	font-size: 13px;
-	text-transform: uppercase;
+  font-size: 13px;
+  text-transform: uppercase;
 }
 
 .noti-modal-title{
@@ -21,49 +27,56 @@ html, body{
 }
 
 @media (min-width: 415px){
-	.header-toggle-noti{
-		display: none;
-	}
+  .header-toggle-noti{
+    display: none;
+  }
 }
 
 @media (max-width: 415px){
-	.fa-bell{
-		display: none;
-	}
+  .fa-bell{
+    display: none;
+  }
 }
 
 .navbar-default{
-	background: #fff;
-	border: 0px;
-	border-bottom: 1px solid #dcdcdc; 
-	border-radius: 0px;
+  background: #fff;
+  border: 0px;
+  border-bottom: 1px solid #dcdcdc; 
+  border-radius: 0px;
+    height: 20px;
 }
 
 .nav-links{
-	border-left: 1px solid #dcdcdc;
+  border-left: 1px solid #dcdcdc;
+}
+
+@media (min-width : 737px){
+  .navbar-right{
+    margin-top: 0px;
+  }
 }
 
 @media (min-width: 769px){
-	.sidebar {
+  .sidebar {
     display: table-cell;
     vertical-align: top;
     width: 260px;
-	}
+  }
 }
 
 .notification-row{
-	text-align: center;
-	padding: 20px 15px 20px 15px;
-	border-bottom: 1px solid #dcdcdc;
+  text-align: center;
+  padding: 20px 15px 20px 15px;
+  border-bottom: 1px solid #dcdcdc;
 }
 
 .content-wrapper{
-	background-color: #f4f4f4 !important;
-	margin-top: -20px;
+  background-color: #f4f4f4 !important;
+  margin-top: -20px;
 }
 
 /* sidebar */
-	
+  
 /* Side Navigation */
 
 @media(min-width:768px) {
@@ -97,26 +110,26 @@ html, body{
 }
 
 .side-nav{
-	background: #293A42;
-	margin-top: -3px;
+  background: #293A42;
+  margin-top: -3px;
 }
 
 .side-nav li a{
-	color: #d9d9d9 !important;
+  color: #d9d9d9 !important;
 }
 
 .side-nav li a span{
-	color: #d9d9d9 !important;
-	text-align: center;
-	margin-left: 20px;
-	font-size: 11px;
+  color: #d9d9d9 !important;
+  text-align: center;
+  margin-left: 20px;
+  font-size: 11px;
 }
 
 .side-nav>ul>ul>li>a{
-	color: #d9d9d9 !important;
-	text-align: center;
-	margin-left: 20px;
-	font-size: 11px !important;
+  color: #d9d9d9 !important;
+  text-align: center;
+  margin-left: 20px;
+  font-size: 11px !important;
 }
 
 .side-nav>li>ul {
@@ -155,15 +168,14 @@ html, body{
   top: 10px;
 }
 
-.navbar-brand {
-    font-size: 28px;
-    color: #fff !important;
-    background: #202930 !important;
-    font-family: 'Milkshake';
+.navbar-brand span{
+    font-size: 16px;
+    font-family: Montserrat;
     text-align: center;
-    padding-left: 82px;
-    padding-right: 83px;
 }
+
+.navbar-brand img{
+    margin-top: -5px;}
 
 
 /* end sidebar*/
@@ -172,51 +184,154 @@ html, body{
 /*Notification Modal Right*/
 
 .modal-backdrop, .modal-backdrop.fade.in{
-	opacity: 0;
+  opacity: 0;
 }
 
 .modal.right .modal-dialog {
-	position: fixed;
-	margin: auto;
-	width: 320px;
-	height: 100%;
-	-webkit-transform: translate3d(0%, 0, 0);
-	    -ms-transform: translate3d(0%, 0, 0);
-	     -o-transform: translate3d(0%, 0, 0);
-	        transform: translate3d(0%, 0, 0);
+  position: fixed;
+  margin: auto;
+  width: 320px;
+  height: 100%;
+  -webkit-transform: translate3d(0%, 0, 0);
+      -ms-transform: translate3d(0%, 0, 0);
+       -o-transform: translate3d(0%, 0, 0);
+          transform: translate3d(0%, 0, 0);
 }
 
 .modal.right .modal-content {
-	height: 100%;
-	overflow-y: auto;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .modal.right .modal-body {
-	padding: 15px 15px 80px;
+  padding: 15px 15px 80px;
 }
 
 .modal.right.fade .modal-dialog {
-	right: -320px;
-	-webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
-	   -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
-	     -o-transition: opacity 0.3s linear, right 0.3s ease-out;
-	        transition: opacity 0.3s linear, right 0.3s ease-out;
+  right: -320px;
+  -webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+     -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+       -o-transition: opacity 0.3s linear, right 0.3s ease-out;
+          transition: opacity 0.3s linear, right 0.3s ease-out;
 }
 
 .modal.right.fade.in .modal-dialog {
-	right: 0;
+  right: 0;
 }
 
 /* ----- MODAL STYLE ----- */
 .modal-content {
-	border-radius: 0;
-	border: none;
+  border-radius: 0;
+  border: none;
 }
 
 .modal-header-notification {
-	border-bottom-color: #EEEEEE;
-	background-color: #FAFAFA;
-	padding: 13px;
+  border-bottom-color: #EEEEEE;
+  background-color: #FAFAFA;
+  padding: 13px;
 }
 
 /* ----- End Notification Modal ----- */
+
+
+.dropdown .dropdown-menu {
+    -webkit-transition: max-height 0.7s, opacity 0.2s 0.1s, visibility 0s 0.7s;
+    -moz-transition: max-height 0.7s, opacity 0.2s 0.1s, visibility 0s 0.7s;
+    -ms-transition: max-height 0.7s, opacity 0.2s 0.1s, visibility 0s 0.7s;
+    -o-transition: max-height 0.7s, opacity 0.2s 0.1s, visibility 0s 0.7s;
+    transition: max-height 0.7s, opacity 0.2s 0.1s, visibility 0s 0.7s;
+
+    max-height: 0;
+    display: block;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.dropdown.open .dropdown-menu {
+    -webkit-transition: max-height 0.7s, opacity 0.2s, visibility 0s;
+    -moz-transition: max-height 0.7s, opacity 0.2s, visibility 0s;
+    -ms-transition: max-height 0.7s, opacity 0.2s, visibility 0s;
+    -o-transition: max-height 0.7s, opacity 0.2s, visibility 0s;
+    transition: max-height 0.7s, opacity 0.2s, visibility 0s;
+
+    max-height: 190px;
+    opacity: 1;
+    visibility: visible;
+}
+
+::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  border-radius: 10px;
+  background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar
+{
+  width: 12px;
+  background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb
+{
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  background-color: #4c4c4c;
+}
+
+#feed-section::-webkit-scrollbar
+{
+    display: none;
+}
+
+.feed-band-pic{
+    height: 35px;
+    width: 35px;
+}
+
+.panel-default{
+    border-radius: 0px;
+}
+
+.pnlhead-feed{
+    background: transparent !important;
+}
+
+.feed-timestamp-time{
+    font-size: 11px;
+    margin-top: 10px;
+}
+
+.feed-timestamp-date{
+    font-size: 11px;
+    margin-top: 10px;
+    margin-right: 8px;
+}
+
+.feed-band-name{
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+.feed-content{
+    padding: 25px;
+}
+
+#feed-section{
+    overflow-y: scroll;
+    max-height: 850px;
+}
+
+.friends-in-aria-pic{
+    width: 40px;
+    height: 40px;
+}
+
+.panel-default>.panel-heading{
+    border-color: #f79012;
+}
+
+.panel-heading{
+    border-bottom: 3px solid transparent;
+}

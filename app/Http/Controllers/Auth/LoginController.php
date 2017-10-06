@@ -32,7 +32,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/user/profile';
+    protected $redirectTo = '/feed';
 
     /**
      * Create a new controller instance.
@@ -69,6 +69,7 @@ class LoginController extends Controller
             Session::put('userSocial_City', '');
             Session::put('userSocial_Contact', '');
             Session::put('userSocial_Bio', '');
+            Session::put('userSocial_avatar', $userSocial->avatar_original);
             // dd($userSocial);
 
             // $bandsOfFbUser = DB::table('bands')->join('bandmembers', 'band.id', '=', 'bandmembers.band')->selectRaw('bands.band_name')->get();
@@ -88,9 +89,9 @@ class LoginController extends Controller
 
 
 
-            $date = new DateTime($userSocial->user['birthday']);
-            $now = new DateTime();
-            $interval = $now->diff($date);
+            // $date = new DateTime($userSocial->user['birthday']);
+            // $now = new DateTime();
+            // $interval = $now->diff($date);
 
             // dd($interval->y); // age
 
@@ -98,7 +99,7 @@ class LoginController extends Controller
 
             if ($findUser) {
                 Auth::login($findUser);
-                return redirect('/user/profile');
+                return redirect('/feed');
             }
             else
             {
@@ -110,7 +111,8 @@ class LoginController extends Controller
                 $user->lname = $userSocial->user['last_name'];
                 $user->fullname = $userSocial->user['first_name']." ".$userSocial->user['last_name'];
                 $user->email = $userSocial->user['email'];
-                $user->age = $interval->y;
+                $user->age = null;
+                // $user->age = $interval->y;
                 $user->gender = $userSocial->user['gender'];
                 $user->address = '';
                 $user->contact = '';
@@ -123,7 +125,7 @@ class LoginController extends Controller
 
                 // return 'done';
                 $_SESSION= '';
-                return redirect('/user/profile');
+                return redirect('/feed');
             }
 
         }

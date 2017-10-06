@@ -23,13 +23,11 @@ Route::middleware(['auth'])->group(function(){
 	    return view('index');
 	});
 
-	// Route::get('user/profile', function () {
-	//     return view('user-profile');
-	// });
+	Route::get('feed', 'UserController@feedshow');
 
 	Route::get('search','SearchController@search');
 
-	Route::get('user/profile', 'UserController@show');
+	Route::get('user/profile', 'UserController@profileshow');
 	Route::post('edit/profile', 'UserController@updateUser');
 	Route::get('discover', 'DiscoverPageController@showAllGenres');
 	Route::get('discover/{genre_name}', 'DiscoverPageController@showAccordingtoGenre');
