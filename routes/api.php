@@ -20,8 +20,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('updateUserInfo', 'Api\UserController@updateUser');
 
 Route::get('createband', 'Api\BandController@createBand');
-
-Route::get('editband', 'Api\BandController@editBand');
+Route::get('getBand', 'Api\BandController@getBand');
+// Route::get('updateBand', 'Api\BandController@updateBand');
 Route::get('editbandPic', 'Api\BandController@editBandPic');
 Route::get('searchForBandMember', 'Api\BandController@search');
 Route::get('addmember', 'Api\BandMemberController@addBandMember');
@@ -56,3 +56,10 @@ Route::get('updateArticle', 'Api\ArticleController@updateArticle');
 
 Route::get('genres', 'Api\AlbumController@genres');
 
+Route::get('getArticle', 'Api\ArticleController@getArticle');
+Route::get('followBand', 'Api\BandController@followBand');
+Route::get('unfollowBand', 'Api\BandController@unfollowBand');
+Route::get('likeAlbum', 'Api\AlbumController@likeAlbum');
+Route::get('unlikeAlbum', 'Api\AlbumController@unlikeAlbum');
+Route::get('addSongPlayed', 'Api\SongController@addSongPlayed');
+Route::get('visitCount', 'Api\BandController@visitCount');

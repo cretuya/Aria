@@ -79,5 +79,10 @@ class ArticleController extends Controller
             'content' => $content,
         ]);
         return response ()->json ($update);
+    }
+    public function getArticle(Request $request)
+    {
+        $article = Article::where('art_id', $request->input('art_id'))->first();
+        return response ()->json($article);
     }    
 }
