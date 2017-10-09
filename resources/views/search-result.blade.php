@@ -20,17 +20,20 @@
 	  <div id="people" class="tab-pane fade in active">
 		  @if(count($searchResultUser) > 0)
 	        <br>
-	        @foreach($searchResultUser as $srUser)
-	          <div class="media">
-	            <div class="media-left">
-	              <img src="{{$searchResultUser[0]->profile_pic}}" class="media-object" style="width:60px">
-	            </div>
-	            <div class="media-body">
-	              <h4 class="media-heading">{{ $srUser->fname }} {{ $srUser->lname}}</h4>
-	              <p>Lorem ipsum...</p>
-	            </div>
+	        <?php for ($x=0; $x < count($searchResultUser) ; $x++) { ?>
+	        <div class="panel panel-default">
+	        	<div class="panel-body">
+		          <div class="media" style="border-top: 0px; border-right: 0px;">
+		            <div class="media-left">
+		              <a href="{{url('/feed/'.$searchResultUser[$x]->user_id)}}"><img src="{{$searchResultUser[$x]->profile_pic}}" class="media-object" style="width: 100%; min-width: 100px; height:100px;"></a>
+		            </div>
+		            <div class="media-body" style="padding-top: 10px">
+		              <a href="{{url('/feed/'.$searchResultUser[$x]->user_id)}}"><h4 class="media-heading">{{ $searchResultUser[$x]->fname }} {{ $searchResultUser[$x]->lname}}</h4></a>
+		            </div>
+		          </div>
+	          	</div>
 	          </div>
-	        @endforeach
+	         <?php } ?>
 	      @else
 	      	<br>
 	      	<p>No person named '{{$termSearched}}' found.</p>
@@ -40,21 +43,30 @@
 	  <div id="band" class="tab-pane fade">
 		  @if(count($searchResultBand) > 0)
 	        <br>
-	        @foreach($searchResultBand as $srBand)
+	        <?php 
+	        $i = 0;
+	        $j = $i;
+	        for ($i=0; $i < count($searchResultBand); $i++) {
+	        ?>
 	          <div class="panel panel-default">
 	          	<div class="panel-body">
-		          <div class="media">
+		          <div class="media" style="border-top: 0px; border-right: 0px;">
 		            <div class="media-left">
-		              <a href="{{ url('/'.$band->band_name) }}"><img src="{{ url('/assets/'.$band->band_id.' - '.$band->band_name.'/'.$band->band_pic) }}" class="media-object" style="width:60px"></a>
+		              <a href="{{ url('/'.$searchResultBand[$i]->band_name) }}"><img src="{{ url('/assets/'.$searchResultBand[$i]->band_id.' - '.$searchResultBand[$i]->band_name.'/'.$searchResultBand[$i]->band_pic) }}" class="media-object" style="width: 100%; min-width: 100px; height: 100px"></a>
 		            </div>
-		            <div class="media-body">
-		              <a href="{{ url('/'.$band->band_name) }}"><h4 class="media-heading">{{$band->band_name}}</h4></a>
-		              <p>{{ $bandGenre[0]->genre_name }} | {{ $bandGenre[1]->genre_name }} • {{$band->num_followers}} Followers</p>
+		            <div class="media-body" style="padding-top: 10px">
+		              <a href="{{ url('/'.$searchResultBand[$i]->band_name) }}"><h4 class="media-heading">{{$searchResultBand[$i]->band_name}}</h4></a>
+		              <p>{{ $bandGenre[$j]->genre_name }} | {{ $bandGenre[$j+1]->genre_name }} • 
+		              @if($searchResultBand[$i]->num_followers == null)
+		              0 Followers</p>
+		              @else
+		              {{$searchResultBand[$i]->num_followers}} Followers</p>
+		              @endif
 		            </div>
 		          </div>
 		        </div>
 		       </div>
-	        @endforeach
+		    <?php $j+=2;} ?>
 	      @else
 	      	<br>
 	      	<p>No bands named '{{$termSearched}}' found.</p>

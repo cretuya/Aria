@@ -42,11 +42,14 @@ class UserController extends Controller
     public function show(){
            // $userRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->first();
            //  return view('user-profile', compact('userRole'));
+        $user = User::where('user_id',session('userSocial')['id'])->first();
+
+        $usersBand = Band::join('bandmembers', 'bands.band_id', '=', 'bandmembers.band_id')->select('band_name')->where('user_id', session('userSocial')['id'])->first();
         $userHasBand = Bandmember::where('user_id',session('userSocial')['id'])->get();
         $userBandRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->get();
         // dd($userBandRole);
             // return view('user-profile', compact('userHasBand','userBandRole'));
-		return response ()->json($userHasBand,$userBandRole);
+		return response ()->json($userHasBand,$userBandRole,$usersBand,$user);
 
     }
 
