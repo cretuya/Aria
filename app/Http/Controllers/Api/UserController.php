@@ -48,5 +48,36 @@ class UserController extends Controller
 		return response ()->json($userHasBand,$userBandRole);
 
     }
+    
+    public function saveUser(Request $request)
+    {
+        $user = $request->input('user_id');
+        $fname = $request->input('fname');
+        $lname = $request->input('lname');
+        $fullname = $fname." ".$lname;
+        $email = $request->input('email');
+        $age = $request->input('age');
+        $gender = $request->input('gender');
+        $address = $request->input('address');
+        $contact = $request->input('contact');
+        $bio = $request->input('bio');
+        $pic = $request->input('pic');
+
+        $create = User::create([
+            'user_id' => $user,
+            'fname' => $fname,
+            'lname' => $lname,
+            'fullname' => $fullname,
+            'email' => $email,
+            'age' => $age,
+            'gender' => $gender,
+            'address' => $address,
+            'contact' => $contact,
+            'bio' => $bio,
+            'profile_pic' => $pic,
+        ]);
+
+        return response()->json($create);
+    }
 
 }
