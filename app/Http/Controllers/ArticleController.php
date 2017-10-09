@@ -15,7 +15,7 @@ class ArticleController extends Controller
         $band = Band::where('band_name', $bname)->first();
         $articles = $band->bandarticles;
 
-        return view('view-band-article', compact('band', 'articles'));
+        return view('article', compact('band', 'articles'));
     }
     public function addArticle(Request $request , $bname)
     {

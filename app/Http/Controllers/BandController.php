@@ -201,13 +201,14 @@ class BandController extends Controller
     {
 
     	$bandName = $request->bandName;
-    	$bandpic = $request->bandPic;
-    	$bandID = $request->bandId;
+    	$bandpic = $request->file('bandPic');
+    	$bandID = $request->input('bandId');
+        \Cloudder::upload($bandpic);
+        $cloudder=\Cloudder::getResult();
+        // $bandPicPath = $this->addPathBandPic($bandpic,$bandID,$bandName);
 
-        $bandPicPath = $this->addPathBandPic($bandpic,$bandID,$bandName);
-
-    	Band::where('band_id', $request->bandId)->update([
-    		"band_pic" => $bandPicPath
+    	Band::where('band_id', $bandID)->update([
+    		"band_pic" => $cloudder['url'],
     		]);
 
     	return redirect('/'.$bandName.'/manage');

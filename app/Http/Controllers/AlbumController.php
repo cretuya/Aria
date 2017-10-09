@@ -11,7 +11,6 @@ use App\Album_Contents;
 use App\Preference;
 use Auth;   
 use Validator;
-use App\Cloudder;
 class AlbumController extends Controller
 {
     // public function index($name)
@@ -52,7 +51,7 @@ class AlbumController extends Controller
         $band = Band::where('band_name', $bname)->first();
         $rules = new Album;
         $validator = Validator::make($request->all(), $rules->rules);
-
+        $albumpic = $request->file('album_pic');
         if ($validator->fails())
         {
             return redirect('/'.$band->band_name.'/manage')->withErrors($validator)->withInput();
@@ -61,8 +60,8 @@ class AlbumController extends Controller
         {
             if (count($band)>0)
             {
-                Cloudder::upload($albumpic);
-                $cloudder=Cloudder::getResult();
+                \Cloudder::upload($albumpic);
+                $cloudder=\Cloudder::getResult();
                 $create = Album::create([
                     'album_name' => $name,
                     'album_desc' => $desc,
@@ -129,7 +128,9 @@ class AlbumController extends Controller
         $al = Album::where('album_id', $aid)->first();
         $bid = $al->band_id;
         $band = Band::where('band_id', $bid)->first();
+         // \Cloudder::delete($band->band_pic, array $options);
         $delete = Album::where('album_id', $aid)->delete();
+
 
 
         return redirect('/'.$band->band_name.'/manage');

@@ -43,7 +43,7 @@
       @if($band->band_pic == null)
       <center><img src="../assets/img//dummy-pic.jpg" class="img-responsive"></center>
       @endif
-      <center><img src="../assets/{{$band->band_id}} - {{$band->band_name}}/{{$band->band_pic}}" class="img-responsive"></center>
+      <center><img src="{{$band->band_pic}}" class="img-responsive"></center>
         <div class="overlay"></div>
         <div class="button">
           <a href="#" onclick="openfile()"> Change Display Picture </a>
