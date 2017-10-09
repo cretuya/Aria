@@ -16,10 +16,11 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-
+Route::post('saveUser', 'Api\UserController@saveUser');
 Route::post('updateUserInfo', 'Api\UserController@updateUser');
 
-Route::post('createband', 'Api\BandController@createBand');
+
+Route::post('createBand', 'Api\BandController@createBand');
 Route::get('getBand', 'Api\BandController@getBand');
 // Route::get('updateBand', 'Api\BandController@updateBand');
 Route::get('editbandPic', 'Api\BandController@editBandPic');

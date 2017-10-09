@@ -32,11 +32,11 @@ class BandMemberController extends Controller
 				// 'band_desc' => $desc,
 			]);
 
-		$bandName=$request->input('add-band-member-band-name');
+		// $bandName=$request->input('add-band-member-band-name');
 		
 
 		// return redirect('/'.$bandName."/manage");
-		return response ()->json($findMembertoAdd,$bandmember);
+		return response ()->json(['user' => $findMembertoAdd, 'member' => $bandmember]);
 	}
 
 	public function deleteBandMember(Request $request){

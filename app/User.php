@@ -18,7 +18,7 @@ class User extends Authenticatable
     public $incrementing = false;
     
     protected $fillable = [
-        'user_id', 'fname', 'lname', 'email', 'age', 'gender' , 'profile_pic', 'address',
+        'user_id', 'fname', 'lname', 'email', 'age', 'gender' , 'profile_pic', 'address', 'fullname',
     ];
 
     public function bandmember()

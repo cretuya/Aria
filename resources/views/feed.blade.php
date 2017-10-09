@@ -124,22 +124,15 @@
 
       <div class="row">
       <ul class="list-group" style="margin-bottom: 0px;">
-        <li class="list-group-item" style="border: 0">
-          <a href="#"><img class="friends-in-aria-pic img-circle" src="img/gr.jpg"></a>
-          <a href=""><span class="feed-band-name">Kobe Kyle Relativo</span></a>
-        </li>
-        <li class="list-group-item" style="border: 0">
-          <a href="#"><img class="friends-in-aria-pic img-circle" src="img/gr.jpg"></a>
-          <a href=""><span class="feed-band-name">Cherry Anne Retuya</span></a>
-        </li>
-        <li class="list-group-item" style="border: 0">
-          <a href="#"><img class="friends-in-aria-pic img-circle" src="img/gr.jpg"></a>
-          <a href=""><span class="feed-band-name">Kristian Francisco</span></a>
-        </li>
-        <li class="list-group-item" style="border: 0">
-          <a href="#"><img class="friends-in-aria-pic img-circle" src="img/gr.jpg"></a>
-          <a href=""><span class="feed-band-name">Anton Ven Wycoco</span></a>
-        </li>
+        @if($friends == null)
+        @else
+          @foreach($friends as $friend)
+            <li class="list-group-item" style="border: 0">
+              <a href="#"><img class="friends-in-aria-pic img-circle" src="{{$friend->profile_pic}}"></a>
+              <a href=""><span class="feed-band-name">{{$friend->fullname}}</span></a>
+            </li>
+          @endforeach
+        @endif
       </ul>
       </div>
 
