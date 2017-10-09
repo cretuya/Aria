@@ -83,5 +83,11 @@ class UserController extends Controller
 
         return response()->json($create);
     }
+    public function users()
+    {
+        $users = User::all();
+
+        return response()->json($users);
+    }
 
 }

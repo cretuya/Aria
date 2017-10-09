@@ -17,19 +17,16 @@
 
 <input type="text" value="{{$band->band_name}}" id="bandName" hidden>
 
-@if($articles == null)
+@if($article == null)
 @else
-	@foreach($articles as $article)
 	<div class='articles'>
 		<div class="panel panel-default" style="box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);">
 			<div class="panel-body">
-				<h4>{{$article->article->art_title}}</h4>
-				<p>{{$article->article->content}}</p>
-				<a href="#" class="showContent" data-id='{{$article->article->art_id}}'>Read full article</a>
+				<h4>{{$article->art_title}}</h4>
+				<p>{{$article->content}}</p>
 			</div>
 		</div>
 	</div>
-	@endforeach
 @endif
 
 
@@ -66,12 +63,12 @@ $(document).ready(function(){
         var bname = $('#bandName').val();
         $.ajax({
           method : "post",
-          url : "../getArticle",
+          url : './getArticle',
           data : { '_token' : CSRF_TOKEN,
             'id' : id
           },
           success: function(content){
-            $('.display').append('Title of Article: '+content.art_title+'<br><br>Content: '+content.content+'<br>');
+            $('.displayArticle').append('Title of Article: '+content.art_title+'<br><br>Content: '+content.content+'<br>');
           },
           error: function(a,b,c)
           {

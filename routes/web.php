@@ -68,6 +68,7 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('/deleteArticle/{article_id}' , 'ArticleController@deleteArticle');
 	Route::get('{band_name}/editArticle/{article_id}', 'ArticleController@editArticle');
 	Route::post('{band_name}/updateArticle', 'ArticleController@updateArticle');
+	Route::get('{bname}/getArticle', 'ArticleController@getArticle');
 
 	Route::get('{band_name}/videos', 'VideoController@videos');
 	Route::get('{band_name}/albums', 'AlbumController@albums');

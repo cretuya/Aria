@@ -19,7 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('saveUser', 'Api\UserController@saveUser');
 Route::post('updateUserInfo', 'Api\UserController@updateUser');
 
-Route::get('getusersband', 'Api\UserController@feedshow');
+
 Route::post('createBand', 'Api\BandController@createBand');
 Route::get('getBand', 'Api\BandController@getBand');
 // Route::get('updateBand', 'Api\BandController@updateBand');
