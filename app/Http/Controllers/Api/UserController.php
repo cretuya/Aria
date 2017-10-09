@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\User;
 use App\Bandmember;
 
@@ -48,7 +49,7 @@ class UserController extends Controller
 		return response ()->json($userHasBand,$userBandRole);
 
     }
-    
+
     public function saveUser(Request $request)
     {
         $user = $request->input('user_id');

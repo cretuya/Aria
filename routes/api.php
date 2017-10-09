@@ -16,9 +16,9 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::post('updateUserInfo', 'Api\UserController@updateUser');
 Route::post('saveUser', 'Api\UserController@saveUser');
+Route::post('updateUserInfo', 'Api\UserController@updateUser');
+
 
 Route::post('createBand', 'Api\BandController@createBand');
 Route::get('getBand', 'Api\BandController@getBand');
