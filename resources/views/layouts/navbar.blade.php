@@ -80,3 +80,41 @@
       </div>
     </div>
   </nav>
+
+
+  <div id="create-band-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <form method="post" action="{{url('/createband')}}">
+            {{csrf_field()}}
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Create a Band</h4>
+        </div>
+        <div class="modal-body">
+          
+            Band Name: <br>
+            <input type="text" class="form-control" name="band_name" style="text-transform: capitalize;"><br>
+            What's your role? <br>
+            <select class="form-control" name="band_role_create">
+              <option value="Vocalist">Vocalist</option>
+              <option value="Lead Guitar">Lead Guitar</option>
+              <option value="Rythm Guitar">Rythm Guitar</option>
+              <option value="Keyboardist">Keyboardist</option>
+              <option value="Drummer">Drummer</option>
+              <option value="Bassist">Bassist</option>
+            </select>
+            <!-- <input type="text" class="form-control" name="band_role_create" style="text-transform: capitalize;""><br> -->
+  <!--           <input type="text" name="band_pic" hidden> -->
+            <br>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-default">Submit</button>
+        </div>
+        </div>
+        </form>
+      </div>
+    </div>
