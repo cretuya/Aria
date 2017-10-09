@@ -73,4 +73,13 @@ class UserController extends Controller
             return view('user-profile', compact('userHasBand','userBandRole','usersBand','user'));
     }
 
+    public function friendprofile($uid)
+    {
+        $user = User::where('user_id', $uid)->first();
+        $usersBand = Band::join('bandmembers', 'bands.band_id', '=', 'bandmembers.band_id')->select('band_name')->where('user_id', session('userSocial')['id'])->first();
+        $userHasBand = Bandmember::where('user_id',session('userSocial')['id'])->get();
+        $userBandRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->get();
+        return view('friend-profile', compact('user', 'userHasBand','userBandRole','usersBand'));
+    }
+
 }

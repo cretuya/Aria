@@ -129,7 +129,7 @@
           @foreach($friends as $friend)
             <li class="list-group-item" style="border: 0">
               <a href="#"><img class="friends-in-aria-pic img-circle" src="{{$friend->profile_pic}}"></a>
-              <a href=""><span class="feed-band-name">{{$friend->fullname}}</span></a>
+              <a href="{{url('feed/'.$friend->user_id)}}"><span class="feed-band-name">{{$friend->fullname}}</span></a>
             </li>
           @endforeach
         @endif

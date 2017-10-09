@@ -24,6 +24,7 @@ Route::middleware(['auth'])->group(function(){
 	});
 
 	Route::get('feed', 'UserController@feedshow');
+	Route::get('feed/{user_id}', 'UserController@friendprofile');
 
 	Route::get('search','SearchController@search');
 
