@@ -119,8 +119,7 @@ class LoginController extends Controller
                 $user->profile_pic = $userSocial->avatar_original;
                 $user->save();
 
-                // dd($userSocial);
-
+                
                 Auth::login($user);
 
                 // return 'done';
