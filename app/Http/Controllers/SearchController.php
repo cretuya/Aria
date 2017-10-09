@@ -29,6 +29,7 @@ class SearchController extends Controller
         // dd($searchResultBand);
     	$bandGenre = BandGenre::select('genre_name')->join('genres', 'bandgenres.genre_id', '=', 'genres.genre_id')->join('bands', 'bandgenres.band_id', '=', 'bands.band_id')->get();
     	// dd($bandGenre);
+        //
     	// $bandGenreid = BandGenre::where('band_id',$searchResultBand[0]->band_id)->get();
     	// $bandGenre1 = Genre::select('genre_name')->where('genre_id',$bandGenreid[0]->genre_id)->first();
     	// $bandGenre2 = Genre::select('genre_name')->where('genre_id',$bandGenreid[1]->genre_id)->first();

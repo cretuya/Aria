@@ -29,6 +29,7 @@
 		            </div>
 		            <div class="media-body" style="padding-top: 10px">
 		              <a href="{{url('/feed/'.$searchResultUser[$x]->user_id)}}"><h4 class="media-heading">{{ $searchResultUser[$x]->fname }} {{ $searchResultUser[$x]->lname}}</h4></a>
+		              <!-- sasdasd -->
 		            </div>
 		          </div>
 	          	</div>
