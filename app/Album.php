@@ -14,16 +14,19 @@ class Album extends Model
 		'album_name' , 
 		'album_desc' , 
 		'band_id' , 
+		'album_pic',
 	];
 
 	public $rules = [
 	'album_name' => 'required|max:50',
 	'album_desc' => 'required|max:255',
+	'album_pic' => 'required|max:255',
 	];
 
 	public $updaterules = [
 	'album_name' => 'required|max:50',
 	'album_desc' => 'required|max:255',
+	'album_pic' => 'required|max:255',
 	];
 
 	public function band()

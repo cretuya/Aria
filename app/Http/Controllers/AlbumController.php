@@ -11,6 +11,7 @@ use App\Album_Contents;
 use App\Preference;
 use Auth;   
 use Validator;
+use App\Cloudder;
 class AlbumController extends Controller
 {
     // public function index($name)
@@ -60,10 +61,13 @@ class AlbumController extends Controller
         {
             if (count($band)>0)
             {
+                Cloudder::upload($albumpic);
+                $cloudder=Cloudder::getResult();
                 $create = Album::create([
                     'album_name' => $name,
                     'album_desc' => $desc,
                     'band_id' =>$band->band_id,
+                    'album_pic' => $cloudder['url'],
                 ]);
             }
             else

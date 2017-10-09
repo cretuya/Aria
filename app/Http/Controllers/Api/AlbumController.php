@@ -9,6 +9,7 @@ use App\Album;
 use App\Song;
 use App\Album_Contents;
 use App\Genre;
+// use App\Cloudder;
 class AlbumController extends Controller
 {
     public function albums(Request $request)
@@ -23,14 +24,18 @@ class AlbumController extends Controller
     {
         $name = $request->input('album_name');
         $desc = $request->input('album_desc');
+        $albumpic = $request->file('album_pic');
 
         $band = Band::where('band_id', $request->input('band_id'))->first();
         if (count($band)>0)
         {
+            \Cloudder::upload($albumpic);
+            $cloudder=\Cloudder::getResult();
             $create = Album::create([
                 'album_name' => $name,
                 'album_desc' => $desc,
                 'band_id' =>$band->band_id,
+                'album_pic' => $cloudder['url'],
             ]);
         }
         else

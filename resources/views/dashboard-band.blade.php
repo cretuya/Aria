@@ -373,7 +373,10 @@
             <input type='text' name='album_name' required><br>
             Description:<br>
             <input type='text' name='album_desc' required><br>
+            Add Album Picture:<br>
+            <input type='file' name='album_pic' accept="image/*" required><br><br>            
             <br>
+
 
       
       </div>
