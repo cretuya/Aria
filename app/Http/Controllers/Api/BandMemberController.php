@@ -50,6 +50,13 @@ class BandMemberController extends Controller
 
 	}
 
+	public function getmembers()
+	{
+		$members = BandMember::all();
+
+		return response()->json($members);
+	}
+
 
 
 
