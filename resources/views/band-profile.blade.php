@@ -76,17 +76,18 @@
                     
                   </div>
               </div> -->
+            <div class="panel panel-default">
+		        <div class="panel-heading"><h4>Articles</h4></div>
+	               	<div class="panel-body">
             @if ($articles == null)
            	@else
            			@foreach ($articles as $article)
-			              <div class="panel panel-default">
-			                <div class="panel-heading"><h4>{{$article->article->art_title}}</h4></div>
-			               	<div class="panel-body">
-			                {{$article->article->content}}
-			                </div>
-			              </div>           			
+			            <a href="{{url('/'.$band->band_name.'/viewArticle/'.$article->article->art_id)}}"><div class="well">{{$article->article->art_title}}</div></a>           
+			                         			
            			@endforeach
            	@endif
+           			</div>
+           	</div>
 
               <div id="addArticle">
               <button type="button" class='add' value="{{$band->band_name.'/articles'}}">View More Articles</button>
@@ -113,7 +114,7 @@
                  <div class="panel-heading"><a href="{{$band->band_name.'/albums'}}" class="pull-right">See all Albums</a><h4>Latest Released Albums</h4></div>
                   <div class="panel-body" style="padding: 0;">
                     <div class="container-fluid" style="padding: 0;">
-					    <div class="column center">
+					    <!-- <div class="column center">
 					    </div>
 					    <div class="column add-bottom">
 					        <div id="mainwrap">
@@ -134,7 +135,8 @@
 					                <ul style="padding-left: 0px;" id="plList"></ul>
 					            </div>
 					        </div>
-					    </div>
+					    </div> -->
+
 					</div>
                   </div>
                </div>

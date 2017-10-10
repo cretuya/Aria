@@ -73,6 +73,7 @@ class BandController extends Controller
 	public function followBand(Request $request)
 	{
 		$band = Band::where('band_id', $request->input('id'))->first();
+        $genre = BandGenre::where('band_id',$band->band_id)->get();
         $followers = $band->num_followers;
         $newfollowers = $followers + 1;
 
@@ -85,7 +86,15 @@ class BandController extends Controller
             $create = Preference::create([
                 'user_id' => Auth::user()->user_id,
                 'band_id' => $band->band_id,
+                'genre_id' => $genre[0]->genre_id,
             ]);
+
+            $create = Preference::create([
+                'user_id' => Auth::user()->user_id,
+                'band_id' => $band->band_id,
+                'genre_id' => $genre[1]->genre_id,
+            ]);
+
             $newband = $create->band;
         }
         return response ()->json(['band' => $newband, 'preference' => $create]);
@@ -166,7 +175,7 @@ class BandController extends Controller
 
     	$bandhasGenre = BandGenre::where('band_id', $request->bandId)->get();
 
-    	if(count($bandhasGenre) == 2){
+    	if(count($bandhasGenre) >= 2){
     		BandGenre::where('band_id', $request->bandId)->delete();
         }else{
     		BandGenre::create([
