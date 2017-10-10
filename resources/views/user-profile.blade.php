@@ -25,7 +25,11 @@
       <a href="#" data-toggle="modal" data-target="#edit-profile-modal" class="editprof-btn pull-right"><span class="fa fa-pencil"></span></a>
       <div class="row prfcntnt">
         <h1 class="profile-name">{{$user->fullname}}</h1>
-        <h3>Lead Guitarist at Liveloud</h3>
+        @if(count($userHasBand) > 0)
+        <h3>{{$userBandRole[0]->bandrole}} at {{$usersBand->band_name}}</h3>
+        @else
+        <h4>{{$user->fname}} has no band role yet</h4>
+        @endif
         <br>
         <ul class="list-group">
         @if($user->address == '')
