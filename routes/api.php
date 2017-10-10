@@ -27,6 +27,7 @@ Route::get('editbandPic', 'Api\BandController@editBandPic');
 Route::get('searchForBandMember', 'Api\BandController@search');
 Route::post('addmember', 'Api\BandMemberController@addBandMember');
 Route::get('deletemember', 'Api\BandMemberController@deleteBandMember');
+Route::get('getmembers', 'Api\BandMemberController@getmembers');
 
 Route::get('videos', 'Api\VideoController@videos');
 Route::post('addVideo', 'Api\VideoController@addVideo');
