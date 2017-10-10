@@ -68,7 +68,7 @@
 
       <div class="row">
       @if(count($bandsfollowed) == 0)
-      <p>{{$user->fname}} </p>
+      <p style="text-align:center; color: #a4a4a4; font-size: 16px;">{{$user->fname}} has not followed any bands yet</p>
       @else
         <?php
         $i = 0;

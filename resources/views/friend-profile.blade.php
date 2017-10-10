@@ -66,140 +66,40 @@
       
   <div class="container" style="padding: 0;">
 
-      <div class="row">
+    <div class="container" style="padding: 0;">
 
-        <div class="col-xs-4">
-          <div class="media">
-            <div class="media-left">
-              <img src="img/oln.jpg" class="media-object" style="width:130px">
-            </div>
-            <div class="media-body" style="padding-top: 25px;">
-              <h4 class="media-heading">Our Last Night</h4>
-              <p>Post Hardcore | Alternative Rock</p>
-              <p>123,456,789 Followers</p>
+        <div class="row">
+        @if(count($bandsfollowed) == 0)
+        <p style="text-align:center; color: #a4a4a4; font-size: 16px;">{{$user->fname}} has not followed any bands yet </p>
+        @else
+          <?php
+          $i = 0;
+          $j = $i;
+          for ($i=0; $i < count($bandsfollowed); $i++) { 
+            if ($i % 3 == 0) {
+              echo "</div><br>";
+              echo "<div class='row'>";
+            }
+          ?>
+          <div class="col-xs-4">
+            <div class="media">
+              <div class="media-left">
+                <img src="{{$bandsfollowed[$i]->band_pic}}" class="media-object" style="min-width:130px; height: 100%; max-height: 200px;">
+              </div>
+              <div class="media-body" style="padding-top: 25px;">
+                <h4 class="media-heading">{{$bandsfollowed[$i]->band_name}}</h4>
+                <p>{{$bandGenre[$j]->genre_name}} | {{$bandGenre[$j+1]->genre_name}}</p>
+                <p>{{$bandsfollowed[$i]->num_followers}} Followers</p>
+              </div>
             </div>
           </div>
+          <?php $j+=2;}?>
+        @endif
+
         </div>
 
-        <div class="col-xs-4">
-          <div class="media">
-            <div class="media-left">
-              <img src="img/oln.jpg" class="media-object" style="width:130px">
-            </div>
-            <div class="media-body" style="padding-top: 25px;">
-              <h4 class="media-heading">Our Last Night</h4>
-              <p>Post Hardcore | Alternative Rock</p>
-              <p>123,456,789 Followers</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xs-4">
-          <div class="media">
-            <div class="media-left">
-              <img src="img/oln.jpg" class="media-object" style="width:130px">
-            </div>
-            <div class="media-body" style="padding-top: 25px;">
-              <h4 class="media-heading">Our Last Night</h4>
-              <p>Post Hardcore | Alternative Rock</p>
-              <p>123,456,789 Followers</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <br>
-
-      <div class="row">
-
-        <div class="col-xs-4">
-          <div class="media">
-            <div class="media-left">
-              <img src="img/oln.jpg" class="media-object" style="width:130px">
-            </div>
-            <div class="media-body" style="padding-top: 25px;">
-              <h4 class="media-heading">Our Last Night</h4>
-              <p>Post Hardcore | Alternative Rock</p>
-              <p>123,456,789 Followers</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xs-4">
-          <div class="media">
-            <div class="media-left">
-              <img src="img/oln.jpg" class="media-object" style="width:130px">
-            </div>
-            <div class="media-body" style="padding-top: 25px;">
-              <h4 class="media-heading">Our Last Night</h4>
-              <p>Post Hardcore | Alternative Rock</p>
-              <p>123,456,789 Followers</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xs-4">
-          <div class="media">
-            <div class="media-left">
-              <img src="img/oln.jpg" class="media-object" style="width:130px">
-            </div>
-            <div class="media-body" style="padding-top: 25px;">
-              <h4 class="media-heading">Our Last Night</h4>
-              <p>Post Hardcore | Alternative Rock</p>
-              <p>123,456,789 Followers</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <br>
-
-      <div class="row">
-
-        <div class="col-xs-4">
-          <div class="media">
-            <div class="media-left">
-              <img src="img/oln.jpg" class="media-object" style="width:130px">
-            </div>
-            <div class="media-body" style="padding-top: 25px;">
-              <h4 class="media-heading">Our Last Night</h4>
-              <p>Post Hardcore | Alternative Rock</p>
-              <p>123,456,789 Followers</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xs-4">
-          <div class="media">
-            <div class="media-left">
-              <img src="img/oln.jpg" class="media-object" style="width:130px">
-            </div>
-            <div class="media-body" style="padding-top: 25px;">
-              <h4 class="media-heading">Our Last Night</h4>
-              <p>Post Hardcore | Alternative Rock</p>
-              <p>123,456,789 Followers</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xs-4">
-          <div class="media">
-            <div class="media-left">
-              <img src="img/oln.jpg" class="media-object" style="width:130px">
-            </div>
-            <div class="media-body" style="padding-top: 25px;">
-              <h4 class="media-heading">Our Last Night</h4>
-              <p>Post Hardcore | Alternative Rock</p>
-              <p>123,456,789 Followers</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <br>
+        <br>
+    </div>
 
   </div>
 </div>
