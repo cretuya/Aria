@@ -63,7 +63,7 @@
             <li><a href="#" data-toggle="modal" data-target="#create-band-modal">+ Form a band</a></li>
             @if(Auth::user()->bandmember)
               @foreach(Auth::user()->bandmember as $band)
-            <li><a href="{{ url($band->band->band_name.'/manage')}}"><img src="{{ url('assets/'.$band->band->band_id.' - '.$band->band->band_name.'/'.$band->band->band_pic)}}" style="width: 25px; height: 25px;">&nbsp;{{ $band->band->band_name }}</a></li>
+            <li><a href="{{ url($band->band->band_name.'/manage')}}"><img src="{{$band->band->band_pic}}" style="width: 25px; height: 25px;">&nbsp;{{ $band->band->band_name }}</a></li>
               @endforeach
             @endif
             <li><a href="#">My Account</a></li>
