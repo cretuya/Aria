@@ -41,7 +41,7 @@ class AlbumController extends Controller
         }
         else
         {
-            return redirect('/'); 
+            return response()->json(['message' => 'Cannot create album.']); 
         }
         
         return response ()->json($create);

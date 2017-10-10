@@ -170,18 +170,20 @@ class BandController extends Controller
     public function editBandPic(Request $request)
     {
 
-    	$bandName = $request->bandName;
-    	$bandpic = $request->bandPic;
-    	$bandID = $request->bandId;
+        $bandName = $request->bandName;
+        $bandpic = $request->file('bandPic');
+        $bandID = $request->input('bandId');
+        \Cloudder::upload($bandpic);
+        $cloudder=\Cloudder::getResult();
+        // $bandPicPath = $this->addPathBandPic($bandpic,$bandID,$bandName);
 
-        $bandPicPath = $this->addPathBandPic($bandpic,$bandID,$bandName);
+        $update = Band::where('band_id', $bandID)->update([
+            "band_pic" => $cloudder['url'],
+            ]);
 
-    	$bandphoto = Band::where('band_id', $request->bandId)->update([
-    		"band_pic" => $bandPicPath
-    		]);
 
     	// return redirect('/'.$bandName.'/manage');
-    	return response ()->json($bandphoto);
+    	return response ()->json($update);
     }
 
     public function show($name)

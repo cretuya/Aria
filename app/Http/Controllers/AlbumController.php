@@ -44,38 +44,30 @@ class AlbumController extends Controller
         // dd($likers);
         return view('view-band-album', compact('band', 'albums', 'likers'));
     }
-    public function addAlbum(Request $request, $bname)
+    public function addAlbum(Request $request)
     {
         $name = $request->input('album_name');
         $desc = $request->input('album_desc');
-        $band = Band::where('band_name', $bname)->first();
-        $rules = new Album;
-        $validator = Validator::make($request->all(), $rules->rules);
         $albumpic = $request->file('album_pic');
-        if ($validator->fails())
+
+        $band = Band::where('band_id', $request->input('band_id'))->first();
+        if (count($band)>0)
         {
-            return redirect('/'.$band->band_name.'/manage')->withErrors($validator)->withInput();
+            \Cloudder::upload($albumpic);
+            $cloudder=\Cloudder::getResult();
+            $create = Album::create([
+                'album_name' => $name,
+                'album_desc' => $desc,
+                'band_id' =>$band->band_id,
+                'album_pic' => $cloudder['url'],
+            ]);
         }
         else
         {
-            if (count($band)>0)
-            {
-                \Cloudder::upload($albumpic);
-                $cloudder=\Cloudder::getResult();
-                $create = Album::create([
-                    'album_name' => $name,
-                    'album_desc' => $desc,
-                    'band_id' =>$band->band_id,
-                    'album_pic' => $cloudder['url'],
-                ]);
-            }
-            else
-            {
-                return redirect('/'); 
-            }
-            
-            return redirect('/'.$band->band_name.'/manage');
+            return redirect('/'); 
         }
+        
+        return response ()->json($create);
     }
 
     public function viewAlbum($bname, $aid)
