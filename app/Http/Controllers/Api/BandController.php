@@ -274,7 +274,7 @@ class BandController extends Controller
 
         return response ()->json($band);
     }
-    public function getBands()
+    public function bands()
     {
         $bands = Band::all();
 

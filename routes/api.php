@@ -21,47 +21,71 @@ Route::post('updateUserInfo', 'Api\UserController@updateUser');
 
 
 Route::post('createBand', 'Api\BandController@createBand');
-Route::get('getBand', 'Api\BandController@getBand');
+
+
 // Route::get('updateBand', 'Api\BandController@updateBand');
 Route::get('editbandPic', 'Api\BandController@editBandPic');
 Route::get('searchForBandMember', 'Api\BandController@search');
 Route::post('addmember', 'Api\BandMemberController@addBandMember');
 Route::get('deletemember', 'Api\BandMemberController@deleteBandMember');
-Route::get('getmembers', 'Api\BandMemberController@getmembers');
 
-Route::get('videos', 'Api\VideoController@videos');
+
 Route::post('addVideo', 'Api\VideoController@addVideo');
 Route::get('deleteVideo','Api\VideoController@deleteVideo');
 Route::get('editVideo', 'Api\VideoController@editVideo');
 Route::post('updateVideo', 'Api\VideoController@updateVideo');
 
 
-Route::get('albums', 'Api\AlbumController@albums');
 Route::post('addAlbum', 'Api\AlbumController@addAlbum');
 Route::get('deleteAlbum','Api\AlbumController@deleteAlbum');
 Route::get('editAlbum', 'Api\AlbumController@editAlbum');
 Route::post('updateAlbum', 'Api\AlbumController@updateAlbum');
 
 
-Route::get('songs', 'Api\SongController@songs');
 Route::post('addSongs' , 'Api\SongController@addSongs');
 Route::get('editSong', 'Api\SongController@editSong');
 Route::post('updateSong', 'Api\SongController@updateSong');
 Route::get('deleteSong', 'Api\SongController@deleteSong');
 
-Route::get('articles', 'Api\ArticleController@articles');
+
 Route::post('addArticle', 'Api\ArticleController@addArticle');
 Route::get('viewArticle', 'Api\ArticleController@viewArticle');
 Route::get('deleteArticle' , 'Api\ArticleController@deleteArticle');
 Route::get('editArticle', 'Api\ArticleController@editArticle');
 Route::post('updateArticle', 'Api\ArticleController@updateArticle');
 
-Route::get('genres', 'Api\AlbumController@genres');
 
-Route::get('getArticle', 'Api\ArticleController@getArticle');
+
 Route::get('followBand', 'Api\BandController@followBand');
 Route::get('unfollowBand', 'Api\BandController@unfollowBand');
 Route::get('likeAlbum', 'Api\AlbumController@likeAlbum');
 Route::get('unlikeAlbum', 'Api\AlbumController@unlikeAlbum');
 Route::get('addSongPlayed', 'Api\SongController@addSongPlayed');
 Route::get('visitCount', 'Api\BandController@visitCount');
+
+Route::get('getusers', 'Api\UserController@getusers');
+
+Route::get('bands', 'Api\BandController@bands');
+Route::get('getBand', 'Api\BandController@getBand');
+
+Route::get('members', 'Api\BandMemberController@members');
+Route::get('bandmembers', 'Api\BandMemberController@bandmembers');
+
+Route::get('videos', 'Api\VideoController@videos');
+Route::get('bandvideos', 'Api\VideoController@bandvideos');
+
+
+Route::get('bandalbums', 'Api\AlbumController@bandalbums');
+
+Route::get('songs', 'Api\SongController@songs');
+Route::get('bandsongs', 'Api\SongController@bandsongs');
+
+Route::get('articles', 'Api\ArticleController@articles');
+Route::get('bandarticles', 'Api\ArticleController@bandarticles');
+Route::get('getArticle', 'Api\ArticleController@getArticle');
+
+Route::get('genres', 'Api\AlbumController@genres');
+Route::get('bandgenres', 'Api\AlbumController@bandgenres');
+
+Route::get('preferences', 'Api\UserController@preferences');
+Route::get('userhistory','Api\UserController@userhistory');

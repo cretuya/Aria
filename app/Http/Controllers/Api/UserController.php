@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Bandmember;
+use App\Preference;
+use App\UserHistory;
 
 class UserController extends Controller
 {
@@ -83,11 +85,38 @@ class UserController extends Controller
 
         return response()->json($create);
     }
-    public function users()
+    public function getusers()
     {
         $users = User::all();
 
         return response()->json($users);
     }
 
+    public function preferences(Request $request)
+    {
+        $preferences = Preference::where('user_id', $request->input('user_id'))->get();
+
+        if (count($preferences) > 0)
+        {
+           return response() ->json($preferences);            
+        }
+        else
+        {
+            return response() ->json(['message' => 'No preferences found in the table.']);   
+        }
+    }
+
+    public function userhistory(Request $request)
+    {
+        $userhistory = UserHistory::where('user_id', $request->input('user_id'))->get();
+
+        if (count($userhistory) > 0)
+        {
+           return response() ->json($userhistory);            
+        }
+        else
+        {
+            return response() ->json(['message' => 'No userhistory found in the table.']);   
+        }
+    }
 }

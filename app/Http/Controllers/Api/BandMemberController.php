@@ -51,13 +51,19 @@ class BandMemberController extends Controller
 
 	}
 
-	public function getmembers()
+	public function members()
 	{
 		$members = BandMember::all();
 
 		return response()->json($members);
 	}
 
+	public function bandmembers(Request $request)
+	{
+		$members = Bandmember::where('band_id', $request->input('band_id'))->get();
+
+		return response() ->json($members);
+	}
 
 
 

@@ -12,7 +12,7 @@ use App\Video;
 class VideoController extends Controller
 {
 
-    public function videos(Request $request)
+    public function bandvideos(Request $request)
     {
         $band = BandVideo::where('band_id', $request->input('band_id'))->get();
         $vids = Array();
@@ -118,6 +118,13 @@ class VideoController extends Controller
     {
         $delete = Video::where('video_id', $request->input('video_id'))->delete();
         return response ()->json($delete);
+    }
+
+    public function videos()
+    {
+        $videos = Video::all();
+
+        return response() ->json($videos);
     }
 
 }

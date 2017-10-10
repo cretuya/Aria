@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Band;
+use App\BandGenre;
 use App\Album;
 use App\Song;
 use App\Album_Contents;
@@ -12,7 +13,7 @@ use App\Genre;
 // use App\Cloudder;
 class AlbumController extends Controller
 {
-    public function albums(Request $request)
+    public function bandalbums(Request $request)
     {
         $band = Band::where('band_id', $request->input('band_id'))->first();
         $albums = Album::where('band_id', $band->band_id)->get();
@@ -87,5 +88,17 @@ class AlbumController extends Controller
         $genres = Genre::all();
 
         return response ()->json($genres);
+    }
+    public function bandgenres(Request $request)
+    {
+        $genres = BandGenre::where('band_id', $request->input('band_id'))->get();
+        if (count($genres) > 0)
+        {
+           return response() ->json($genres);            
+        }
+        else
+        {
+            return response() ->json(['message' => 'No genres found in the table.']);   
+        }
     }
 }

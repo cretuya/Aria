@@ -10,7 +10,7 @@ use App\Article;
 
 class ArticleController extends Controller
 {
-	public function articles(Request $request)
+	public function bandarticles(Request $request)
 	{
 		$band = BandArticle::where('band_id', $request->input('band_id'))->get();
 		$articles = Array();
@@ -85,4 +85,17 @@ class ArticleController extends Controller
         $article = Article::where('art_id', $request->input('art_id'))->first();
         return response ()->json($article);
     }    
+    public function articles()
+    {
+        $articles = Article::all();
+
+        if (count($articles) > 0)
+        {
+           return response() ->json($articles);            
+        }
+        else
+        {
+            return response() ->json(['message' => 'No articles in the table.']);   
+        }
+    }
 }

@@ -12,7 +12,7 @@ use App\BandSong;
 
 class SongController extends Controller
 {
-    public function songs(Request $request)
+    public function bandsongs(Request $request)
     {
         $testing = Array();
         $aname = Album::where('album_id', $request->input('album_id'))->first();
@@ -104,5 +104,21 @@ class SongController extends Controller
         $id = Song::where('song_id', $request->input('song_id'))->delete();
     	// $delete = Song::where('song_id', $sid)->delete();
     	return response ()->json($id); 
+    }
+
+    public function songs()
+    {
+        $songs = Song::all();
+
+        if (count($songs) > 0)
+        {
+           return response() ->json($songs);            
+        }
+        else
+        {
+            return response() ->json(['message' => 'No songs in the table.']);   
+        }
+
+
     }
 }
