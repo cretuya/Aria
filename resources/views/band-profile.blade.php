@@ -22,7 +22,7 @@
            
               <div class="panel panel-default">
 
-                <div class="panel-thumbnail"><img src="assets/{{$band->band_id}} - {{$band->band_name}}/{{$band->band_pic}}" class="img-responsive"></div>
+                <div class="panel-thumbnail"><img src="{{$band->band_pic}}" class="img-responsive" style="max-height: 406px; width: 100%;"></div>
 	                <div class="panel-body">
 		                <div class="row">
 			                <div class="col-md-8">

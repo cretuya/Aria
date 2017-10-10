@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Band;
 use App\Bandmember;
+use App\BandGenre;
 
 class UserController extends Controller
 {
@@ -69,17 +70,29 @@ class UserController extends Controller
         $usersBand = Band::join('bandmembers', 'bands.band_id', '=', 'bandmembers.band_id')->select('band_name')->where('user_id', session('userSocial')['id'])->first();
         $userHasBand = Bandmember::where('user_id',session('userSocial')['id'])->get();
         $userBandRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->get();
+
+        $bandsfollowed = Band::select('band_name','band_pic','num_followers')->join('preferences','bands.band_id','=','preferences.band_id')->where('user_id',session('userSocial')['id'])->get();
+        $bandGenre = BandGenre::select('genre_name')->join('genres', 'bandgenres.genre_id', '=', 'genres.genre_id')->join('bands', 'bandgenres.band_id', '=', 'bands.band_id')->get();
+
+        // dd($userBandRole);
         // dd($usersBand);
-            return view('user-profile', compact('userHasBand','userBandRole','usersBand','user'));
+            return view('user-profile', compact('userHasBand','userBandRole','usersBand','user','bandsfollowed','bandGenre'));
     }
 
     public function friendprofile($uid)
     {
         $user = User::where('user_id', $uid)->first();
-        $usersBand = Band::join('bandmembers', 'bands.band_id', '=', 'bandmembers.band_id')->select('band_name')->where('user_id', session('userSocial')['id'])->first();
-        $userHasBand = Bandmember::where('user_id',session('userSocial')['id'])->get();
-        $userBandRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->get();
-        return view('friend-profile', compact('user', 'userHasBand','userBandRole','usersBand'));
+        $usersBand = Band::join('bandmembers', 'bands.band_id', '=', 'bandmembers.band_id')->select('band_name')->where('user_id', $uid)->first();
+        $userHasBand = Bandmember::where('user_id',$uid)->get();
+        $userBandRole = Bandmember::select('bandrole')->where('user_id',$uid)->get();
+
+        // dd($uid);
+
+        $bandsfollowed = Band::select('band_name','band_pic','num_followers')->join('preferences','bands.band_id','=','preferences.band_id')->where('user_id',$uid)->get();
+        // dd($bandsfollowed);
+        $bandGenre = BandGenre::select('genre_name')->join('genres', 'bandgenres.genre_id', '=', 'genres.genre_id')->join('bands', 'bandgenres.band_id', '=', 'bands.band_id')->get();
+
+        return view('friend-profile', compact('user', 'userHasBand','userBandRole','usersBand','bandsfollowed','bandGenre'));
     }
 
 }

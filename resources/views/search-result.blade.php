@@ -53,7 +53,7 @@
 	          	<div class="panel-body">
 		          <div class="media" style="border-top: 0px; border-right: 0px;">
 		            <div class="media-left">
-		              <a href="{{ url('/'.$searchResultBand[$i]->band_name) }}"><img src="{{ url('/assets/'.$searchResultBand[$i]->band_id.' - '.$searchResultBand[$i]->band_name.'/'.$searchResultBand[$i]->band_pic) }}" class="media-object" style="width: 100%; min-width: 100px; height: 100px"></a>
+		              <a href="{{ url('/'.$searchResultBand[$i]->band_name) }}"><img src="{{$searchResultBand[$i]->band_pic}}" class="media-object" style="width: 100%; min-width: 100px; height: 100px"></a>
 		            </div>
 		            <div class="media-body" style="padding-top: 10px">
 		              <a href="{{ url('/'.$searchResultBand[$i]->band_name) }}"><h4 class="media-heading">{{$searchResultBand[$i]->band_name}}</h4></a>
