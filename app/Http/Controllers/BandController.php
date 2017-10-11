@@ -177,6 +177,17 @@ class BandController extends Controller
 
     	if(count($bandhasGenre) >= 2){
     		BandGenre::where('band_id', $request->bandId)->delete();
+
+            BandGenre::create([
+                'band_id' => $request->bandId,
+                'genre_id' => $genreArrayChecked[0]
+                ]);
+
+            BandGenre::create([
+                'band_id' => $request->bandId,
+                'genre_id' => $genreArrayChecked[1]
+                ]);
+            
         }else{
     		BandGenre::create([
     			'band_id' => $request->bandId,
