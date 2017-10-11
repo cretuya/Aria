@@ -44,13 +44,15 @@ class AlbumController extends Controller
         // dd($likers);
         return view('view-band-album', compact('band', 'albums', 'likers'));
     }
-    public function addAlbum(Request $request)
+    public function addAlbum(Request $request, $bname)
     {
+        $band = Band::where('band_name', $bname)->first();
         $name = $request->input('album_name');
         $desc = $request->input('album_desc');
         $albumpic = $request->file('album_pic');
 
-        $band = Band::where('band_id', $request->input('band_id'))->first();
+        // $band = Band::where('band_id', $request->input('band_id'))->first();
+
         if (count($band)>0)
         {
             \Cloudder::upload($albumpic);
@@ -61,13 +63,15 @@ class AlbumController extends Controller
                 'band_id' =>$band->band_id,
                 'album_pic' => $cloudder['url'],
             ]);
+            // dd($create);
+        return redirect($band->band_name.'/manage');
         }
         else
         {
             return redirect('/'); 
         }
         
-        return response ()->json($create);
+
     }
 
     public function viewAlbum($bname, $aid)
