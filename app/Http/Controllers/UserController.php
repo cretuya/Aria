@@ -75,7 +75,7 @@ class UserController extends Controller
 
         $usersBand = Band::join('bandmembers', 'bands.band_id', '=', 'bandmembers.band_id')->select('band_name')->where('user_id', session('userSocial')['id'])->first();
         $userHasBand = Bandmember::where('user_id',session('userSocial')['id'])->get();
-        $userBandRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->get();
+        $userBandRole = Bandmember::select('bandrole','band_name')->join('bands','bandmembers.band_id','=','bands.band_id')->where('user_id',session('userSocial')['id'])->get();
 
         $bandsfollowed = Band::select('band_name','band_pic','num_followers','genre_name')->join('preferences','bands.band_id','=','preferences.band_id')->join('genres', 'preferences.genre_id', '=', 'genres.genre_id')->where('user_id',session('userSocial')['id'])->get();
 
@@ -91,7 +91,7 @@ class UserController extends Controller
         $user = User::where('user_id', $uid)->first();
         $usersBand = Band::join('bandmembers', 'bands.band_id', '=', 'bandmembers.band_id')->select('band_name')->where('user_id', $uid)->first();
         $userHasBand = Bandmember::where('user_id',$uid)->get();
-        $userBandRole = Bandmember::select('bandrole')->where('user_id',$uid)->get();
+        $userBandRole = Bandmember::select('bandrole','band_name')->join('bands','bandmembers.band_id','=','bands.band_id')->where('user_id',$uid)->get();
 
         // dd($uid);
 

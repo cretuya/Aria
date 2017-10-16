@@ -27,7 +27,7 @@
       <div class="row prfcntnt">
         <h1 class="profile-name">{{$user->fullname}}</h1>
         @if(count($userHasBand) > 0)
-        <h3>{{$userBandRole[0]->bandrole}} at {{$usersBand->band_name}}</h3>
+        <h3>{{$userBandRole[0]->bandrole}} at {{$userBandRole[0]->band_name}}</h3>
         @else
         <h4>{{$user->fname}} has no band role yet</h4>
         @endif

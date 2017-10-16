@@ -58,34 +58,34 @@
 }
 
 .editprof-btn{
-  background: #f79012;
-  border-color: #f79012;
+  background: #F9A825;
+  border-color: #F9A825;
   padding: 7px 12px;
   border-radius: 3px;
   color: #fff;
 }
 
 .editprof-btn:hover{
-  background: #f77d12;
-  border-color: #f77d12;
+  background: #FF9800;
+  border-color: #FF9800;
   color: #fff;
 }
 
 .user-info{
-  border-color: #f79012;
+  border-color: #F9A825;
   background: transparent;
   text-align: left;
 }
 
 .user-info .fa{
-  color: #f79012;
+  color: #F9A825;
   font-size: 18px;
 }
 
 .media{
   border: 1px solid #e4e4e4;
   border-radius: 3px;
-  border-bottom: 3px solid #f79012;
+  border-bottom: 3px solid #F9A825;
 }
 
 .media-body{

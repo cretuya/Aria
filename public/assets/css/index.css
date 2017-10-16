@@ -2,9 +2,10 @@ html,body{
   height: 100%;
   width: 100%;
   margin: 0;
+  background: none;
 }
 body {
-  background: #000; 
+  background: #212121; 
 }
 .header {
 overflow: hidden;
@@ -36,8 +37,10 @@ height: 100%;
   line-height: 1.15em;
 }
 .aria{
-  font-size: 152px;
-  font-family: 'Milkshake';
+  font-size: 80px;
+  font-family: 'Montserrat';
+  text-transform: uppercase;
+  letter-spacing: 15px;
 }
 .fb-btn{
   border-radius: 25px;
@@ -60,7 +63,12 @@ video {
     background: url('../img/video-thumbnail.png') no-repeat;
     background-size: cover;
     transition: 1s opacity;
-    opacity: 0.3;
+    opacity: 0.2;
+}
+
+.arialogo{
+  width: 210px;
+  margin-bottom: 30px;
 }
 
 /* Portrait iPhone 5*/
@@ -81,7 +89,10 @@ video {
         font-size: 12px;
       }
       .aria{
-        font-size: 102px;
+        font-size: 50px;
+      }
+      .arialogo{
+        width: 135px;
       }
 }
 
@@ -129,7 +140,10 @@ video {
         font-size: 12px;
       }
       .aria{
-        font-size: 102px;
+        font-size: 60px;
+      }
+      .arialogo{
+        width: 135px;
       }
 }
 
@@ -151,7 +165,10 @@ video {
         font-size: 9px;
       }
       .aria{
-        font-size: 67px;
+        font-size: 40px;
+      }
+      .arialogo{
+        width: 115px;
       }
 }
 
@@ -173,7 +190,7 @@ video {
         font-size: 12px;
       }
       .aria{
-        font-size: 102px;
+        font-size: 65px;
       }
 }
 
@@ -193,6 +210,9 @@ video {
         font-size: 11px;
       }
       .aria{
-        font-size: 82px;
+        font-size: 50px;
+      }
+      .arialogo{
+        width: 135px;
       }
 }

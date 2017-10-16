@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 |
 */
 
+
 Route::get('login/facebook', 'Auth\LoginController@redirectToProvider');
 Route::get('login/facebook/callback', 'Auth\LoginController@handleProviderCallback');
 
@@ -25,6 +26,8 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::get('feed', 'UserController@feedshow');
 	Route::get('feed/{user_id}', 'UserController@friendprofile');
+
+	Route::get('charts', 'ChartsController@show');
 
 	Route::get('search','SearchController@search');
 

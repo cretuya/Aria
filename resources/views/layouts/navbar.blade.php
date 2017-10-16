@@ -12,14 +12,14 @@
       <div class="collapse navbar-collapse" id="myNavbar">        
         <ul class="nav navbar-nav">
           <li><a href="{{ url('discover')}}">Explore</a></li>
-          <li><a href="#">Top Charts</a></li>
+          <li><a href="{{ url('charts') }}">Top Charts</a></li>
         </ul>
         <div class="col-sm-3 col-md-3">
             <form class="navbar-form" action="{{ url('search') }}" method="get" role="search">
             <div class="input-group">
                 <input type="text" class="form-control" placeholder="Search" name="search_result">
                 <div class="input-group-btn">
-                    <button class="btn btn-default" type="submit" style="background: #f79012; border-color: #f79012"><i class="fa fa-search" style="color:#ffffff"></i></button>
+                    <button class="btn btn-default" type="submit" style="background: #F9A825; border-color: #F9A825"><i class="fa fa-search" style="color:#ffffff"></i></button>
                 </div>
             </div>
             </form>
@@ -27,7 +27,7 @@
         <ul class="nav navbar-nav navbar-right">
 
           <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="background: #f79012"><span class="fa fa-bell" style="color: #fff;"></span></a>
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="background: #F9A825"><span class="fa fa-bell" style="color: #fff;"></span></a>
           <ul class="dropdown-menu" style="width: 300px;">
             <li class="dropdown-header">Notifications</li>
             <li class="divider"></li>
@@ -58,7 +58,7 @@
           </li>          
 
           <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="background: transparent;"><span class="caret" style="color: #f79012"></span></a>
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="background: transparent;"><span class="caret" style="color: #F9A825"></span></a>
           <ul class="dropdown-menu">
             <li><a href="#" data-toggle="modal" data-target="#create-band-modal">+ Form a band</a></li>
             @if(Auth::user()->bandmember)
