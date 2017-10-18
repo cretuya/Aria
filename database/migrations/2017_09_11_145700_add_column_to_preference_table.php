@@ -14,7 +14,7 @@ class AddColumnToPreferenceTable extends Migration
     public function up()
     {
         Schema::table('preferences', function (Blueprint $table) {
-            $table->integer('album_id')->unsigned()->nullable()->after('genre_id'); 
+            $table->integer('album_id')->unsigned()->nullable(); 
             $table->foreign('album_id')->references('album_id')->on('bandalbums')->onDelete('cascade'); 
         });
     }

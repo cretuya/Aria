@@ -71,31 +71,55 @@
   <div class="container" style="padding: 0;">
 
       <div class="row">
-      @if(count($bandsfollowed) == 0)
+      @if(count($bandsfollowedNoGenre) == 0)
       <p style="text-align:center; color: #a4a4a4; font-size: 16px;">{{$user->fname}} has not followed any bands yet</p>
       @else
-        <?php
-        $i = 0;
-        $j = $i;
-        for ($i=0; $i < count($bandsfollowed)/2; $i++) {
-          if ($i % 3 == 0) {
-            echo "</div><br>";
-            echo "<div class='row'>";
-          }
-        ?>
-        <div class="col-xs-4">
-          <div class="media">
-            <div class="media-left">
-              <a href="{{url('/'.$bandsfollowed[$j]->band_name)}}"><img src="{{$bandsfollowed[$j]->band_pic}}" class="media-object" style="max-width:200px; height: 100%; max-height: 180px;"></a>
-            </div>
-            <div class="media-body" style="padding-top: 25px;">
-              <a href="{{url('/'.$bandsfollowed[$j]->band_name)}}"><h4 class="media-heading">{{$bandsfollowed[$j]->band_name}}</h4></a>
-              <p>{{$bandsfollowed[$j]->genre_name}} | {{$bandsfollowed[$j+1]->genre_name}}</p>
-              <p>{{$bandsfollowed[$i]->num_followers}} Followers</p>
+        @if(count($bandsfollowed) == 0)
+          <?php
+          $i = 0;          
+          $j = $i;
+          for ($i=0; $i < count($bandsfollowedNoGenre)/2; $i++) {
+            if ($i % 3 == 0) {
+              echo "</div><br>";
+              echo "<div class='row'>";
+            }
+          ?>
+          <div class="col-xs-4">
+            <div class="media">
+              <div class="media-left">
+                <a href="{{url('/'.$bandsfollowedNoGenre[$j]->band_name)}}"><img src="{{$bandsfollowedNoGenre[$j]->band_pic}}" class="media-object" style="max-width:200px; height: 100%; max-height: 180px;"></a>
+              </div>
+              <div class="media-body" style="padding-top: 25px;">
+                <a href="{{url('/'.$bandsfollowedNoGenre[$j]->band_name)}}"><h4 class="media-heading">{{$bandsfollowedNoGenre[$j]->band_name}}</h4></a>
+                <p>{{$bandsfollowedNoGenre[$i]->num_followers}} Followers</p>
+              </div>
             </div>
           </div>
-        </div>
-        <?php $j+=2;}?>
+          <?php $j+=2;}?>
+        @else
+          <?php
+          $i = 0;
+          $j = $i;
+          for ($i=0; $i < count($bandsfollowed)/2; $i++) {
+            if ($i % 3 == 0) {
+              echo "</div><br>";
+              echo "<div class='row'>";
+            }
+          ?>
+          <div class="col-xs-4">
+            <div class="media">
+              <div class="media-left">
+                <a href="{{url('/'.$bandsfollowed[$j]->band_name)}}"><img src="{{$bandsfollowed[$j]->band_pic}}" class="media-object" style="max-width:200px; height: 100%; max-height: 180px;"></a>
+              </div>
+              <div class="media-body" style="padding-top: 25px;">
+                <a href="{{url('/'.$bandsfollowed[$j]->band_name)}}"><h4 class="media-heading">{{$bandsfollowed[$j]->band_name}}</h4></a>
+                <p>{{$bandsfollowed[$j]->genre_name}} | {{$bandsfollowed[$j+1]->genre_name}}</p>
+                <p>{{$bandsfollowed[$i]->num_followers}} Followers</p>
+              </div>
+            </div>
+          </div>
+          <?php $j+=2;}?>
+        @endif        
       @endif
 
       </div>

@@ -8,6 +8,7 @@ use App\Band;
 use App\Bandmember;
 use App\BandGenre;
 use App\BandArticle;
+use App\Preference;
 
 class UserController extends Controller
 {
@@ -77,13 +78,15 @@ class UserController extends Controller
         $userHasBand = Bandmember::where('user_id',session('userSocial')['id'])->get();
         $userBandRole = Bandmember::select('bandrole','band_name')->join('bands','bandmembers.band_id','=','bands.band_id')->where('user_id',session('userSocial')['id'])->get();
 
-        $bandsfollowed = Band::select('band_name','band_pic','num_followers','genre_name')->join('preferences','bands.band_id','=','preferences.band_id')->join('genres', 'preferences.genre_id', '=', 'genres.genre_id')->where('user_id',session('userSocial')['id'])->get();
+        $bandsfollowed = Preference::select('band_name','band_pic','num_followers','genre_name')->join('bands','preferences.band_id','=','bands.band_id')->join('bandgenres','bands.band_id','=','bandgenres.band_id')->join('genres', 'bandgenres.genre_id', '=', 'genres.genre_id')->where('user_id',session('userSocial')['id'])->get();
+
+        $bandsfollowedNoGenre = Preference::select('band_name','band_pic','num_followers')->join('bands','preferences.band_id','=','bands.band_id')->where('user_id',session('userSocial')['id'])->get();
 
         // $bandGenre = BandGenre::select('genre_name')->join('genres', 'bandgenres.genre_id', '=', 'genres.genre_id')->join('bands', 'bandgenres.band_id', '=', 'bands.band_id')->get();
 
         // dd($bandsfollowed);
         // dd($usersBand);
-            return view('user-profile', compact('userHasBand','userBandRole','usersBand','user','bandsfollowed'));
+            return view('user-profile', compact('userHasBand','userBandRole','usersBand','user','bandsfollowed','bandsfollowedNoGenre'));
     }
 
     public function friendprofile($uid)
@@ -95,11 +98,13 @@ class UserController extends Controller
 
         // dd($uid);
 
-        $bandsfollowed = Band::select('band_name','band_pic','num_followers','genre_name')->join('preferences','bands.band_id','=','preferences.band_id')->join('genres', 'preferences.genre_id', '=', 'genres.genre_id')->where('user_id',$uid)->get();
+        $bandsfollowed = Preference::select('band_name','band_pic','num_followers','genre_name')->join('bands','preferences.band_id','=','bands.band_id')->join('bandgenres','bands.band_id','=','bandgenres.band_id')->join('genres', 'bandgenres.genre_id', '=', 'genres.genre_id')->where('user_id',$uid)->get();
+
+        $bandsfollowedNoGenre = Preference::select('band_name','band_pic','num_followers')->join('bands','preferences.band_id','=','bands.band_id')->where('user_id',session('userSocial')['id'])->get();
         // dd($bandsfollowed);
         // $bandGenre = BandGenre::select('genre_name')->join('genres', 'bandgenres.genre_id', '=', 'genres.genre_id')->join('bands', 'bandgenres.band_id', '=', 'bands.band_id')->get();
 
-        return view('friend-profile', compact('user', 'userHasBand','userBandRole','usersBand','bandsfollowed'));
+        return view('friend-profile', compact('user', 'userHasBand','userBandRole','usersBand','bandsfollowed','bandsfollowedNoGenre'));
     }
 
 }

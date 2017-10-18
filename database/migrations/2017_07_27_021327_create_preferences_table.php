@@ -17,9 +17,7 @@ class CreatePreferencesTable extends Migration
             $table->string('user_id');
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
             $table->integer('band_id')->unsigned()->nullable();
-            $table->foreign('band_id')->references('band_id')->on('bands');
-            $table->integer('genre_id')->unsigned()->nullable(); 
-            $table->foreign('genre_id')->references('genre_id')->on('genres')->onDelete('cascade');        
+            $table->foreign('band_id')->references('band_id')->on('bands');        
             $table->timestamps();
         });
     }

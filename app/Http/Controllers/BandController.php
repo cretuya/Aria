@@ -17,62 +17,62 @@ use App\Song;
 use App\User;
 use App\Preference;
 use \Session;
-use Auth;	
+use Auth;   
 use Laravel\Socialite\Facades\Socialite;
 
 class BandController extends Controller
 {
-	public function index($name)
-	{
+    public function index($name)
+    {
 
-		$bands = Auth::user()->bandmember;
+        $bands = Auth::user()->bandmember;
 
-		$band = Band::where('band_name' ,$name)->first();
-		$videos = BandVideo::where('band_id', $band->band_id)->get();
-		$albums = Album::where('band_id', $band->band_id)->get();
-		$articles = BandArticle::where('band_id' , $band->band_id)->get();
-		$genres = Genre::all();
+        $band = Band::where('band_name' ,$name)->first();
+        $videos = BandVideo::where('band_id', $band->band_id)->get();
+        $albums = Album::where('band_id', $band->band_id)->get();
+        $articles = BandArticle::where('band_id' , $band->band_id)->get();
+        $genres = Genre::all();
 
-		$songs = array();
-		foreach ($albums as $album)
-		{
-			array_push($songs, Song::where('album_id', $album->album_id)->get());
-		}
+        $songs = array();
+        foreach ($albums as $album)
+        {
+            array_push($songs, Song::where('album_id', $album->album_id)->get());
+        }
 
-		$bandmembers = Bandmember::where('band_id',$band->band_id)->get();
-		$BandDetails = Band::where('band_id', $band->band_id)->first();
+        $bandmembers = Bandmember::where('band_id',$band->band_id)->get();
+        $BandDetails = Band::where('band_id', $band->band_id)->first();
 
         $bandGenreSelected = BandGenre::where('band_id', $band->band_id)->get();
         // dd($bandGenreSelected);
 
 
-		return view('dashboard-band' , compact('band','videos', 'albums', 'articles', 'genres', 'songs', 'bandmembers','BandDetails','bandGenreSelected'));
-	}
-	public function createBand(Request $request)
-	{
-		$name = $request->input('band_name');
-		$role = $request->input('band_role_create');
+        return view('dashboard-band' , compact('band','videos', 'albums', 'articles', 'genres', 'songs', 'bandmembers','BandDetails','bandGenreSelected'));
+    }
+    public function createBand(Request $request)
+    {
+        $name = $request->input('band_name');
+        $role = $request->input('band_role_create');
         // $role = $request->input('band_pic');
 
-		$create = Band::create([
-			'band_name' => $name,
-			'band_pic' => 'dummy-pic.jpg',
-		]);
+        $create = Band::create([
+            'band_name' => $name,
+            'band_pic' => 'dummy-pic.jpg',
+        ]);
 
 
-		$bandmember = Bandmember::create([
-			'band_id' => $create->id,
-			'user_id' => session('userSocial')['id'],
-			'bandrole' => $role
-			// 'band_desc' => $desc,
-		]);
+        $bandmember = Bandmember::create([
+            'band_id' => $create->id,
+            'user_id' => session('userSocial')['id'],
+            'bandrole' => $role
+            // 'band_desc' => $desc,
+        ]);
 
-		return redirect('/'.$create->band_name.'/manage');
-	}
+        return redirect('/'.$create->band_name.'/manage');
+    }
 
-	public function followBand(Request $request)
-	{
-		$band = Band::where('band_id', $request->input('id'))->first();
+    public function followBand(Request $request)
+    {
+        $band = Band::where('band_id', $request->input('id'))->first();
         $genre = BandGenre::where('band_id',$band->band_id)->get();
         $followers = $band->num_followers;
         $newfollowers = $followers + 1;
@@ -86,20 +86,13 @@ class BandController extends Controller
             $create = Preference::create([
                 'user_id' => Auth::user()->user_id,
                 'band_id' => $band->band_id,
-                'genre_id' => $genre[0]->genre_id,
-            ]);
-
-            $create = Preference::create([
-                'user_id' => Auth::user()->user_id,
-                'band_id' => $band->band_id,
-                'genre_id' => $genre[1]->genre_id,
             ]);
 
             $newband = $create->band;
         }
         return response ()->json(['band' => $newband, 'preference' => $create]);
 
-	}
+    }
     public function unfollowBand(Request $request)
     {
         // $user = User::where('user_id' , $request->input('uid'))->first();
@@ -129,30 +122,30 @@ class BandController extends Controller
         return response ()->json(['band' => $newband, 'preference' => $follower]);
     }
 
-	public function search(Request $request){
-		// dd($request);
-		// dd($request->term);
-		$terms = $request->term;
-		// dd($terms);
-		$user = User::where('fullname', 'LIKE', '%'.$terms.'%')->get();
-		// dd($user);
-		if (count($user) == 0) {
-			$searchResult[] = 'No users found';
-		}
-		else{
-			foreach ($user as $users) {
-				$searchResult[] = ['value'=>$users->fullname, 'id'=>$users->user_id];
-			}
-		}
-		return response()->json($searchResult);
+    public function search(Request $request){
+        // dd($request);
+        // dd($request->term);
+        $terms = $request->term;
+        // dd($terms);
+        $user = User::where('fullname', 'LIKE', '%'.$terms.'%')->get();
+        // dd($user);
+        if (count($user) == 0) {
+            $searchResult[] = 'No users found';
+        }
+        else{
+            foreach ($user as $users) {
+                $searchResult[] = ['value'=>$users->fullname, 'id'=>$users->user_id];
+            }
+        }
+        return response()->json($searchResult);
     }
 
-	// public function listMembers()
-	// {
-	// 	$BandMembers = Bandmember::join('bands', 'bands.band_id', '=', 'bandmembers.band_id')->join('users', 'users.user_id', '=', 'bandmembers.user_id')->select('users.*', 'users.fullname', 'bandmembers.bandrole')->get();
+    // public function listMembers()
+    // {
+    //  $BandMembers = Bandmember::join('bands', 'bands.band_id', '=', 'bandmembers.band_id')->join('users', 'users.user_id', '=', 'bandmembers.user_id')->select('users.*', 'users.fullname', 'bandmembers.bandrole')->get();
 
     //  return view('dashboard-band', compact($BandMembers));
-	// }
+    // }
 
     // public function userBands(){
     //     $userbands = Bands::join('users', 'bands.user_id', '=', 'users.user_id')->select('users.*', 'bands.band_name')->get();
@@ -163,20 +156,20 @@ class BandController extends Controller
     public function editBand(Request $request)
     {
 
-    	// dd($request);
-    	Band::where('band_id', $request->bandId)->update([
+        // dd($request);
+        Band::where('band_id', $request->bandId)->update([
                 "band_name" => $request->bandName,
                 "band_desc" => $request->bandDesc
                 ]);
-    	$band_Name = $request->bandName;
+        $band_Name = $request->bandName;
 
-    	$genreArrayChecked = Input::get('genres');
-    	// dd($genreArrayChecked[0]);
+        $genreArrayChecked = Input::get('genres');
+        // dd($genreArrayChecked[0]);
 
-    	$bandhasGenre = BandGenre::where('band_id', $request->bandId)->get();
+        $bandhasGenre = BandGenre::where('band_id', $request->bandId)->get();
 
-    	if(count($bandhasGenre) >= 2){
-    		BandGenre::where('band_id', $request->bandId)->delete();
+        if(count($bandhasGenre) >= 2){
+            BandGenre::where('band_id', $request->bandId)->delete();
 
             BandGenre::create([
                 'band_id' => $request->bandId,
@@ -189,54 +182,54 @@ class BandController extends Controller
                 ]);
             
         }else{
-    		BandGenre::create([
-    			'band_id' => $request->bandId,
-    			'genre_id' => $genreArrayChecked[0]
-    			]);
+            BandGenre::create([
+                'band_id' => $request->bandId,
+                'genre_id' => $genreArrayChecked[0]
+                ]);
 
-    		BandGenre::create([
-    			'band_id' => $request->bandId,
-    			'genre_id' => $genreArrayChecked[1]
-    			]);
-    	}
+            BandGenre::create([
+                'band_id' => $request->bandId,
+                'genre_id' => $genreArrayChecked[1]
+                ]);
+        }
 
-    	
+        
 
-    	return redirect('/'.$band_Name.'/manage');
+        return redirect('/'.$band_Name.'/manage');
     }
 
     public function addMemberstoBand(Request $request)
     {
-    	$memberNameInput = $request->input('add-band-member-name');
-			$roleInput = $request->input('add-band-member-role');
-			
-			$bandmember = Bandmember::create([
-				'' => $memberNameInput,
-				'user_id' => $findMembertoAdd,
-				'role' => $role
-			]);
+        $memberNameInput = $request->input('add-band-member-name');
+            $roleInput = $request->input('add-band-member-role');
+            
+            $bandmember = Bandmember::create([
+                '' => $memberNameInput,
+                'user_id' => $findMembertoAdd,
+                'role' => $role
+            ]);
     }
 
     public function editBandPic(Request $request)
     {
 
-    	$bandName = $request->bandName;
-    	$bandpic = $request->file('bandPic');
-    	$bandID = $request->input('bandId');
+        $bandName = $request->bandName;
+        $bandpic = $request->file('bandPic');
+        $bandID = $request->input('bandId');
         \Cloudder::upload($bandpic);
         $cloudder=\Cloudder::getResult();
         // $bandPicPath = $this->addPathBandPic($bandpic,$bandID,$bandName);
 
-    	Band::where('band_id', $bandID)->update([
-    		"band_pic" => $cloudder['url'],
-    		]);
+        Band::where('band_id', $bandID)->update([
+            "band_pic" => $cloudder['url'],
+            ]);
 
-    	return redirect('/'.$bandName.'/manage');
+        return redirect('/'.$bandName.'/manage');
     }
 
     public function show($name)
     {
-    	$band = Band::where('band_name', $name)->first();
+        $band = Band::where('band_name', $name)->first();
         $genres = $band->bandgenres;
         $articles = $band->bandarticles;
 
@@ -256,7 +249,7 @@ class BandController extends Controller
     }
 
     public function addPathBandPic($bandpicture, $bandID, $bandName){
-    	if ($bandpicture != null)
+        if ($bandpicture != null)
         {           
                 $extension = $bandpicture->getClientOriginalExtension();
                 if($extension == "png" || $extension == "jpg" || $extension == "jpeg")
