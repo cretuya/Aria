@@ -220,7 +220,7 @@ class BandController extends Controller
     public function editBandPic(Request $request)
     {
 
-    	$bandName = $request->bandName;
+    	$bandName = $request->input('bandName');
     	$bandpic = $request->file('bandPic');
     	$bandID = $request->input('bandId');
         \Cloudder::upload($bandpic);
