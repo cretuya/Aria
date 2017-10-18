@@ -213,9 +213,15 @@ class BandController extends Controller
     public function editBandPic(Request $request)
     {
 
+<<<<<<< HEAD
         $bandName = $request->bandName;
         $bandpic = $request->file('bandPic');
         $bandID = $request->input('bandId');
+=======
+    	$bandName = $request->input('bandName');
+    	$bandpic = $request->file('bandPic');
+    	$bandID = $request->input('bandId');
+>>>>>>> 0c34c55cbe76fbce3973bdbdb5cb03be82b08b11
         \Cloudder::upload($bandpic);
         $cloudder=\Cloudder::getResult();
         // $bandPicPath = $this->addPathBandPic($bandpic,$bandID,$bandName);
