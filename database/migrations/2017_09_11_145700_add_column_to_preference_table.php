@@ -17,6 +17,7 @@ class AddColumnToPreferenceTable extends Migration
             $table->integer('album_id')->unsigned()->nullable(); 
             $table->foreign('album_id')->references('album_id')->on('bandalbums')->onDelete('cascade'); 
         });
+        //nag usab ko diri
     }
 
     /**

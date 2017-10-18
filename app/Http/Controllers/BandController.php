@@ -87,7 +87,7 @@ class BandController extends Controller
                 'user_id' => Auth::user()->user_id,
                 'band_id' => $band->band_id,
             ]);
-
+            //nag usab ko diri
             $newband = $create->band;
         }
         return response ()->json(['band' => $newband, 'preference' => $create]);

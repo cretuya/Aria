@@ -86,6 +86,7 @@ class UserController extends Controller
 
         // dd($bandsfollowed);
         // dd($usersBand);
+        //nag usab ko diri
             return view('user-profile', compact('userHasBand','userBandRole','usersBand','user','bandsfollowed','bandsfollowedNoGenre'));
     }
 
@@ -103,7 +104,7 @@ class UserController extends Controller
         $bandsfollowedNoGenre = Preference::select('band_name','band_pic','num_followers')->join('bands','preferences.band_id','=','bands.band_id')->where('user_id',session('userSocial')['id'])->get();
         // dd($bandsfollowed);
         // $bandGenre = BandGenre::select('genre_name')->join('genres', 'bandgenres.genre_id', '=', 'genres.genre_id')->join('bands', 'bandgenres.band_id', '=', 'bands.band_id')->get();
-
+        //nag usab ko diri
         return view('friend-profile', compact('user', 'userHasBand','userBandRole','usersBand','bandsfollowed','bandsfollowedNoGenre'));
     }
 

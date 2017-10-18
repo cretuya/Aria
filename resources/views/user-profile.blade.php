@@ -69,7 +69,7 @@
 
       
   <div class="container" style="padding: 0;">
-
+  <!-- nag usab ko diri -->
       <div class="row">
       @if(count($bandsfollowedNoGenre) == 0)
       <p style="text-align:center; color: #a4a4a4; font-size: 16px;">{{$user->fname}} has not followed any bands yet</p>

@@ -19,6 +19,7 @@ class CreatePreferencesTable extends Migration
             $table->integer('band_id')->unsigned()->nullable();
             $table->foreign('band_id')->references('band_id')->on('bands');        
             $table->timestamps();
+            //nag usab ko diri
         });
     }
 
