@@ -65,7 +65,34 @@
       </div>
     </div>
 
+    <center><h4>Bands you may want to follow</h4></center>
+    <br>
+
+    <div class="panel panel-default">
+      <div class="panel-body" style="padding-left: 35px; padding-right: 35px;">
+
+      <div class="row">
+      <ul class="list-group" style="margin-bottom: 0px;">
+        @if($recommend == null)
+        <br>
+        <p style="text-align:center; color: #a4a4a4; font-size: 16px;">No bands to show</p>
+        <br>
+        @else
+          @foreach($recommend as $rec)
+            <li class="list-group-item" style="border: 0">
+              <a href="#"><img class="friends-in-aria-pic img-circle" src="{{$rec->band_pic}}"></a>
+              <a href="{{url($rec->band_name)}}"><span class="feed-band-name">{{$rec->band_name}}</span></a>
+            </li>
+          @endforeach
+        @endif
+      </ul>
+      </div>
+
+      </div>
     </div>
+    </div>
+
+
 
   </div>
 

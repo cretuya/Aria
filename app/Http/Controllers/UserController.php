@@ -64,10 +64,30 @@ class UserController extends Controller
         $articlesfeed = BandArticle::join('preferences','bandarticles.band_id','=','preferences.band_id')->join('bands','preferences.band_id','=','bands.band_id')->join('articles','bandarticles.art_id','=','articles.art_id')->where('user_id',session('userSocial')['id'])->orderBy('created_at','desc')->distinct()->get(['preferences.band_id','art_title','content','band_name','band_pic','articles.created_at']);
 
         // dd($articlesfeed);
-
-        return view('feed', compact('userHasBand','userBandRole','usersBand','user', 'friends','articlesfeed'));
+        $recommend = $this->recommend();
+        // dd($recommend);
+        return view('feed', compact('userHasBand','userBandRole','usersBand','user', 'friends','articlesfeed', 'recommend'));
     }
 
+    public function recommend()
+    {
+        $bands = Band::all();
+        $show = Array();
+        foreach ($bands as $band)
+        {
+            $get = Preference::where('band_id', $band->band_id)->get();
+
+            if (count($get) > 0)
+            {
+                array_push($show, $band);
+            }
+            else
+            {
+                return '';
+            }
+        }
+        return $show;
+    }
     public function profileshow(){
            // $userRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->first();
            //  return view('user-profile', compact('userRole'));
