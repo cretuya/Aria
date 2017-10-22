@@ -117,9 +117,12 @@ class BandController extends Controller
             ['band_id', $request->input('bid')],
             ])->delete();
             $newband = $follower->band;
+
+            $preference = Preference::where('band_id', $band->band_id)->get();
+            $followers = count($preference);
         }
 
-        return response ()->json(['band' => $newband, 'preference' => $follower]);
+        return response ()->json(['band' => $newband, 'preference' => $follower, 'followers' => $followers]);
     }
 
     public function search(Request $request){
@@ -238,13 +241,15 @@ class BandController extends Controller
             ['user_id' , Auth::user()->user_id],
             ['band_id', $band->band_id],
             ])->first();
+        $preference = Preference::where('band_id', $band->band_id)->get();
+        $followers = count($preference);
         // if ($follower > 0)
         // {
             // return view('band-profile', compact('band', 'genres', 'articles', 'follower'));
         // }
         // else
         // {
-            return view('band-profile', compact('band', 'genres', 'articles', 'follower'));
+            return view('band-profile', compact('band', 'genres', 'articles', 'follower', 'followers'));
         // }
 
     }

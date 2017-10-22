@@ -44,7 +44,7 @@
 			                  @if ($band->num_followers == null)
 			                  <p class="followers">0 Followers</p>
 			                  @else
-			                  <p class="followers">{{$band->num_followers}} Followers</p>
+			                  <p class="followers">{{$followers}} Followers</p>
 			                  @endif
 			                </div>
 			                <div class="col-md-4">
@@ -200,7 +200,7 @@
 			$button.addClass('following');
 	        $button.text('Following');
 	        $('.following').append('<input type="text" value="'+json.preference.user_id+'" id="uid" hidden>');
-	        $('.followers').text(json.band.num_followers+' Followers');
+	        $('.followers').text(json.followers+' Followers');
           },
           error: function(a,b,c)
           {
