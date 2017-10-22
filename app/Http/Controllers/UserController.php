@@ -73,6 +73,7 @@ class UserController extends Controller
     {
         $bands = Band::all();
         $show = Array();
+        // $show = session($temp);
         foreach ($bands as $band)
         {
             $get = Preference::where('band_id', $band->band_id)->get();
@@ -81,10 +82,7 @@ class UserController extends Controller
             {
                 array_push($show, $band);
             }
-            else
-            {
-                return '';
-            }
+            
         }
         return $show;
     }
