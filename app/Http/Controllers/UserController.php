@@ -70,8 +70,8 @@ class UserController extends Controller
         return view('feed', compact('userHasBand','userBandRole','usersBand','user', 'friends','articlesfeed', 'recommend'));
     }
 
-    public function recommend()
-    {
+  public function recommend()
+  {
         $user = User::where('user_id',session('userSocial')['id'])->first();
         $preferences = Preference::where('user_id', $user->user_id)->get();
         $temp = Array();
@@ -98,25 +98,31 @@ class UserController extends Controller
             foreach($get as $g)
             {
               $genres = $g->bandgenres;
-              foreach ($preferences as $preference)
+              foreach ($genres as $genre)
               {
-                $pgenres = $preference->band->bandgenres;
-                foreach ($genres as $genre){
-                  // if (in_array($genre->genre_id,))
-                  // {
-                  //   array_push($genreArray, $genres);
-                  // }
-                }
+                foreach ($preferences as $preference)
+                {
+                  $pgenres = $preference->band->bandgenres;
+                    if ($pgenres->contains('genre_id', $genre->genre_id))
+                    {
+                      array_push($genreArray, $genre);
+                    } 
+                }                
               }
-              // $genre = collect($g->bandgenres);
-              // foreach ($preferences as $preference)
-              // {
-              //   $pgenre = collect($preference->band->bandgenres)->all();
-              //   $diff = array_diff($genre, $pgenre);
-                // $count = count($diff);
             }
-            return $pgenres->genre->genre_id;
 
+            if (count($genreArray) > 0)
+            {
+                foreach ($genreArray as $gArray)
+                {
+                  
+                }
+            }
+            else
+            {
+              return 'No bands matches your interests.';
+            }
+              // return $genreArray;
         }
         else
         {
