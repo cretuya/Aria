@@ -15,6 +15,15 @@ class Band extends Model
         'band_desc' , 
     ];
 
+	public $rules = [
+	'band_name' => 'required|unique:bands|max:50',
+	];
+
+	public $updaterules = [
+	'band_name' => 'required|unique:bands|max:50',
+	'band_desc' => 'max:255',
+	];    
+
     public function albums()
     {
     	return $this->hasMany('App\Album', 'album_id', 'album_id');

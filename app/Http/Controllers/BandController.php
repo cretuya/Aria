@@ -19,6 +19,7 @@ use App\Preference;
 use \Session;
 use Auth;   
 use Laravel\Socialite\Facades\Socialite;
+use Validator;
 
 class BandController extends Controller
 {
@@ -54,20 +55,31 @@ class BandController extends Controller
         $role = $request->input('band_role_create');
         // $role = $request->input('band_pic');
 
-        $create = Band::create([
-            'band_name' => $name,
-            'band_pic' => 'dummy-pic.jpg',
-        ]);
+
+        $rules = new Band;
+        $validator = Validator::make($request->all(), $rules->rules);
+        if ($validator->fails())
+        {
+            return redirect('/feed')->withErrors($validator)->withInput();
+        }
+        else
+        {
+            $create = Band::create([
+                'band_name' => $name,
+                'band_pic' => 'dummy-pic.jpg',
+            ]);
 
 
-        $bandmember = Bandmember::create([
-            'band_id' => $create->id,
-            'user_id' => session('userSocial')['id'],
-            'bandrole' => $role
-            // 'band_desc' => $desc,
-        ]);
+            $bandmember = Bandmember::create([
+                'band_id' => $create->id,
+                'user_id' => session('userSocial')['id'],
+                'bandrole' => $role
+                // 'band_desc' => $desc,
+            ]);
 
-        return redirect('/'.$create->band_name.'/manage');
+            return redirect('/'.$create->band_name.'/manage');
+        }
+
     }
 
     public function followBand(Request $request)
@@ -126,7 +138,7 @@ class BandController extends Controller
     }
 
     public function search(Request $request){
-        // dd($request);
+        // dd($request);s
         // dd($request->term);
         $terms = $request->term;
         // dd($terms);
