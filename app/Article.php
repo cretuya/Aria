@@ -15,11 +15,11 @@ class Article extends Model
     	'content' , 
     ];
     public $rules = [
-    'art_title' => 'required|max:50',
+    'art_title' => 'required|max:255',
     'content' => 'required',
     ];
     public $updaterules = [
-    'art_title' => 'required|max:50',
+    'art_title' => 'required|max:255',
     'content' => 'required',
     ];
 
