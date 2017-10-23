@@ -101,8 +101,11 @@ class BandController extends Controller
             ]);
             //nag usab ko diri
             $newband = $create->band;
+
+            $preference = Preference::where('band_id', $band->band_id)->get();
+            $followers = count($preference);            
         }
-        return response ()->json(['band' => $newband, 'preference' => $create]);
+        return response ()->json(['band' => $newband, 'preference' => $create, 'followers' => $followers]);
 
     }
     public function unfollowBand(Request $request)
