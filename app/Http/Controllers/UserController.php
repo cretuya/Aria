@@ -9,6 +9,7 @@ use App\Bandmember;
 use App\BandGenre;
 use App\BandArticle;
 use App\Preference;
+Use App\Song;
 
 class UserController extends Controller
 {
@@ -65,26 +66,65 @@ class UserController extends Controller
 
         // dd($articlesfeed);
         $recommend = $this->recommend();
-        // dd($recommend);
+        dd($recommend);
         return view('feed', compact('userHasBand','userBandRole','usersBand','user', 'friends','articlesfeed', 'recommend'));
     }
 
     public function recommend()
     {
+        $user = User::where('user_id',session('userSocial')['id'])->first();
+        $preferences = Preference::where('user_id', $user->user_id)->get();
+        $temp = Array();
+        $get = Array();
         $bands = Band::all();
-        $show = Array();
-        // $show = session($temp);
-        foreach ($bands as $band)
-        {
-            $get = Preference::where('band_id', $band->band_id)->get();
+        $genreArray= Array();
 
-            if (count($get) > 0)
+        if (count($preferences) > 0)
+        {
+            // get all preferences
+            foreach ($preferences as $preference)
             {
-                array_push($show, $band);
+              array_push($temp, $preference->band->band_id);
             }
-            
+            // add in array those bands not in his preference
+            foreach ($bands as $band)
+            {
+              if (!in_array($band->band_id, $temp))
+              {
+                array_push($get, $band);
+              }
+            }
+            // compare genres
+            foreach($get as $g)
+            {
+              $genres = $g->bandgenres;
+              foreach ($preferences as $preference)
+              {
+                $pgenres = $preference->band->bandgenres;
+                foreach ($genres as $genre){
+                  // if (in_array($genre->genre_id,))
+                  // {
+                  //   array_push($genreArray, $genres);
+                  // }
+                }
+              }
+              // $genre = collect($g->bandgenres);
+              // foreach ($preferences as $preference)
+              // {
+              //   $pgenre = collect($preference->band->bandgenres)->all();
+              //   $diff = array_diff($genre, $pgenre);
+                // $count = count($diff);
+            }
+            return $pgenres->genre->genre_id;
+
         }
-        return $show;
+        else
+        {
+          $randomBands = Band::inRandomOrder()->get();
+          $randomSongs = Song::inRandomOrder()->get();
+          return array($randomBands, $randomSongs);
+        }
+
     }
     public function profileshow(){
            // $userRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->first();

@@ -118,32 +118,22 @@
             <li><a href="#">By Week</a></li>
             <li><a href="#">By Month</a></li>
           </ol>
-
-          <?php 
-            $i = 0;
-            $j = $i;
-            for($i=0; $i < count($allbands)/2; $i++){
-          ?>
             <div class="media" style="border-bottom: 1px solid #e4e4e4; box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);">
               <div class="media-left charts-media-left-rank">
-                <h4>{{$i+1}}</h4>
+                <h4>1</h4>
               </div>
               <div class="media-left">
-                <a href="{{url('/'.$allbands[$j]->band_name)}}"><img src="{{ url($allbands[$j]->band_pic) }}" class="media-object" style="width:92px"></a>
+                <a href="#"><img src="" class="media-object" style="width:92px"></a>
               </div>
               <div class="media-body" style="padding-top: 8px; padding-left: 5px;">
-                <a href="{{url('/'.$allbands[$j]->band_name)}}"><h4 class="media-heading">{{$allbands[$j]->band_name}}</h4></a>
-                <p>{{ $allbands[$j]->genre_name }} | {{ $allbands[$j+1]->genre_name }}</p>
-                @if($allbands[$j]->num_followers == null)
-                <p>0 Followers</p>
-                @else
-                <p>{{ $allbands[$j]->num_followers }} Followers</p>
-                @endif
+                <a href="#"><h4 class="media-heading">Paramore</h4></a>
+                <p>Pop | Punk</p>
+                <p>5 Followers</p>
                 
               </div>
             </div>
 
-          <?php $j+=2;}?>
+    
         </div>
 
         <div id="tracks-tab" class="tab-pane fade">
