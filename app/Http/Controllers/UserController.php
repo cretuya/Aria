@@ -66,7 +66,7 @@ class UserController extends Controller
 
         // dd($articlesfeed);
         $recommend = $this->recommend();
-        dd($recommend);
+        // dd($recommend);
         return view('feed', compact('userHasBand','userBandRole','usersBand','user', 'friends','articlesfeed', 'recommend'));
     }
 
@@ -110,13 +110,39 @@ class UserController extends Controller
                 }                
               }
             }
-
+            $stores = Array();
             if (count($genreArray) > 0)
             {
-                foreach ($genreArray as $gArray)
+              foreach ($genreArray as $array)
+              { 
+                $tmp = $array->band;
+                foreach($genreArray as $ray)
                 {
-                  
+                  if ($tmp == $ray->band)
+                  {
+                    // $ = count($tmp == $ray->band);
+                  }
                 }
+                // $tmp = $array->band;
+                // $collect = collect($genreArray);
+                // if ($collect->contains('band_id', $tmp->band_id))
+                // {
+                //   // $count = count($collect->contains('band_id', $tmp->band_id));
+                //   // if ($count == 2)
+                //   // {
+                //   //   $test = 'true';
+                //   // }
+                //   // else
+                //   // {
+                //   //   $test = 'false';
+                //   // }
+                //   // array_push($stores, $test);
+                // }
+
+              }
+
+
+              return $stores;
             }
             else
             {
