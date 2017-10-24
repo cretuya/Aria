@@ -33,7 +33,7 @@
             <li class="divider"></li>
             
             <a href="#">
-            <li style="padding: 10px;">            
+            <li style="padding: 10px;">
               <div class="media">
                 <div class="media-left">
                   <img src="img/oln.jpg" class="media-object img-circle" style="width:40px">

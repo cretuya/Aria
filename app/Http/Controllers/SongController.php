@@ -145,6 +145,8 @@ class SongController extends Controller
 
         ]);
 
+        scoringfunc($band->band_id);
+
         return response ()->json($update);
     }
 }

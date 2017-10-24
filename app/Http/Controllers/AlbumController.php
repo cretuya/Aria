@@ -150,6 +150,9 @@ class AlbumController extends Controller
             $newalbum = $create->album;            
 
         }
+        
+        scoringfunc($band->band_id);
+
         return response ()->json(['album' => $newalbum, 'liker' => $create]);
 
     }

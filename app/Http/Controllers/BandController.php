@@ -15,6 +15,7 @@ use App\BandVideo;
 use App\Genre;
 use App\Song;
 use App\User;
+use App\UserNotification;
 use App\Preference;
 use \Session;
 use Auth;   
@@ -55,7 +56,10 @@ class BandController extends Controller
         $role = $request->input('band_role_create');
         // $role = $request->input('band_pic');
 
+        date_default_timezone_set("Asia/Manila");
+        $dateToday = date('Y-m-d');
 
+        // dd($dateToday);
         $rules = new Band;
         $validator = Validator::make($request->all(), $rules->rules);
         if ($validator->fails())
@@ -67,6 +71,7 @@ class BandController extends Controller
             $create = Band::create([
                 'band_name' => $name,
                 'band_pic' => 'dummy-pic.jpg',
+                'scored_updated_date' => $dateToday
             ]);
 
 
@@ -105,6 +110,8 @@ class BandController extends Controller
             $preference = Preference::where('band_id', $band->band_id)->get();
             $followers = count($preference);            
         }
+
+        scoringfunc($band->band_id);
         return response ()->json(['band' => $newband, 'preference' => $create, 'followers' => $followers]);
 
     }
@@ -137,6 +144,7 @@ class BandController extends Controller
             $followers = count($preference);
         }
 
+        scoringfunc($band->band_id);
         return response ()->json(['band' => $newband, 'preference' => $follower, 'followers' => $followers]);
     }
 
@@ -264,7 +272,19 @@ class BandController extends Controller
         // }
         // else
         // {
-            return view('band-profile', compact('band', 'genres', 'articles', 'follower', 'followers'));
+
+        $visitcount = $band->visit_counts;
+        $newcount = $visitcount + 1;
+
+        $update = Band::where('band_id', $band->band_id)->update([
+            'visit_counts' => $newcount
+        ]);
+
+        $this->scoringfunc($band->band_id);
+
+        $usernotification = UserNotification::where('user_id',session('userSocial')['id'])->get();
+
+            return view('band-profile', compact('band', 'genres', 'articles', 'follower', 'followers','usernotification'));
         // }
 
     }
@@ -289,16 +309,133 @@ class BandController extends Controller
         return $bandpicture;
     }
 
-    public function visitCount(Request $request)
-    {
-        $band = Band::where('band_id', $request->input('id'))->first();
-        $visitcount = $band->visit_counts;
-        $newcount = $visitcount + 1;
+    // public function visitCount(Request $request)
+    // {
+    //     $band = Band::where('band_id', $request->input('id'))->first();
+    //     $visitcount = $band->visit_counts;
+    //     $newcount = $visitcount + 1;
 
-        $update = Band::where('band_id', $band->band_id)->update([
-            'visit_counts' => $newcount
-        ]);
+    //     $update = Band::where('band_id', $band->band_id)->update([
+    //         'visit_counts' => $newcount
+    //     ]);
 
-        return response ()->json($band);
+    //     return response ()->json($band);
+    // }
+
+    public function scoringfunc($bandId){
+        $band = Band::where('band_id',$bandId)->first();
+        $maxfollowers = Band::all()->max('num_followers');
+        $maxvisits = Band::all()->max('visit_counts');
+        $maxalbumlike = 0;
+        $maxsongplayed = 0;
+        $dummyAlbumLike = 0;
+        $dummySongPlayed = 0;
+        $allbands = Band::all();
+        $allalbums = Album::all();
+        $allsongs = Song::all();
+
+        foreach ($allbands as $tananbanda) {
+            foreach ($allalbums as $tananalbum) {
+                if ($tananbanda->band_id == $tananalbum->band_id) {
+                    $dummyAlbumLike += $tananalbum->num_likes;
+                }
+                foreach ($allsongs as $tanankanta) {
+                    if ($tananalbum->album_id == $tanankanta->album_id) {
+                        $dummySongPlayed += $tanankanta->num_plays;
+                    }
+                }
+                if ($dummySongPlayed > $maxsongplayed) {
+                    $maxsongplayed = $dummySongPlayed;
+                    $dummySongPlayed = 0;
+                }
+            }
+            if ($dummyAlbumLike > $maxalbumlike) {
+                $maxalbumlike = $dummyAlbumLike;
+                $dummyAlbumLike = 0;
+            }
+        }
+
+        $albumLikes = Album::select('num_likes')->where('band_id',$bandId)->get();
+
+        $songsPlayed = Song::all();
+        $totalsongsplayed = 0;
+
+        foreach ($songsPlayed as $songsplyd) {
+            foreach ($albumLikes as $albumlks) {
+                if ($songsplyd->album_id == $albumlks->album_id) {
+                    echo 'asd';
+                }
+                else{
+                    $totalsongsplayed += $songsplyd->num_plays;
+                }
+            }
+        }
+
+        $totalsongsplayed = $totalsongsplayed / 2;
+
+        $totalLikes = 0;
+        for($i=0; $i < count($albumLikes); $i++){
+            $totalLikes+= $albumLikes[$i]->num_likes;
+        }
+
+        // dd($maxsongplayed);
+
+        if ($maxsongplayed == 0) {
+            $songsPlayedScore = 0;
+        }else{
+            $songsPlayedScore = $totalsongsplayed / $maxsongplayed * 30;
+        }
+        if ($maxalbumlike == 0) {
+            $albumLikesScore = 0;
+        }else{
+            $albumLikesScore = $totalLikes / $maxalbumlike * 20;
+        }
+        if ($maxfollowers == 0) {
+            $followersScore =0;
+        }else{
+            $followersScore = $band->num_followers / $maxfollowers * 40;
+        }
+
+        $pageVisitScore = $band->visit_counts / $maxvisits * 10;
+        
+        
+        
+
+        $weeklyscore = $pageVisitScore + $songsPlayedScore + $albumLikesScore + $followersScore;
+
+            $createweeklyscore = Band::where('band_id',$bandId)->update([
+                'weekly_score' => $weeklyscore
+            ]);
+
+        $bandscore = $band->band_score;    
+
+        if ($band->band_score != null) {
+            $bandscore += $weeklyscore;
+        }
+        else{
+            $bandscore = $weeklyscore;
+        }
+        // dd($dateToday);
+
+        date_default_timezone_set("Asia/Manila");
+        $dateToday = date('Y-m-d');
+        // $advDate = date('Y-m-d', strtotime($dateToday . '+ 7 day'));
+        // $checkifWeekNa = date('Y-m-d', strtotime($advDate . '- 7 day'));
+        $checkifWeekNa = date('Y-m-d', strtotime($dateToday . '- 7 day'));
+        // dd($advDate, $checkifWeekNa);
+
+        if ($checkifWeekNa == $band->scored_updated_date) {
+            $updatebandscore = Band::where('band_id',$bandId)->update([
+                'band_score' => $bandscore
+            ]);
+            $weeklyscore = 0;
+            $updateScoredUpdatedDate = Band::where('band_id',$bandId)->update([
+                // 'scored_updated_date' => $advDate
+                'scored_updated_date' => $dateToday
+            ]);
+        }
+        // dd($weeklyscore);
+        return view('print-data');
     }
+
 }

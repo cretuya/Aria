@@ -12,7 +12,8 @@ class Band extends Model
 
 	protected $fillable = [
         'band_name' ,
-        'band_desc' , 
+        'band_desc' ,
+        'scored_updated_date',
     ];
 
 	public $rules = [

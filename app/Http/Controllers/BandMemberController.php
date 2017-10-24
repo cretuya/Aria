@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Bandmember;
 use App\User;
+use App\UserNotification;
 use \Session;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -24,12 +25,40 @@ class BandMemberController extends Controller
 		// dd($request->input('add-band-member-band-id'));
 		$findMembertoAdd = User::Where('user_id',$request->input('add-band-member-id'))->first();
 		// dd($findMembertoAdd);
-		$bandmember = Bandmember::create([
-				'band_id' => $request->input('add-band-member-band-id'),
+
+		$usertobeaddednotification = UserNotification::where('user_id',$findMembertoAdd->user_id)->get();
+		// dd($usertobeaddednotification);
+
+		$invitor = session('userSocial')['first_name']." ".session('userSocial')['last_name'];
+		if ( count($usertobeaddednotification) == 0 ){
+			$sendRequest = UserNotification::create([
 				'user_id' => $findMembertoAdd->user_id,
-				'bandrole' => $request->input('add-band-member-role')
-				// 'band_desc' => $desc,
+				'band_id' => $request->input('add-band-member-band-id'),
+				'bandrole' => $request->input('add-band-member-role'),
+				'invitor' => $invitor
 			]);
+
+			$bandName=$request->input('add-band-member-band-name');
+			echo "<script type='text/javascript'>alert('An invite has been sent to ".$findMembertoAdd->fullname."');</script>";
+			echo "<script type='text/javascript'>window.location.href='".$bandName."/manage';</script>";
+		}
+		else{
+			$bandName=$request->input('add-band-member-band-name');
+			echo "<script type='text/javascript'>alert('An invite has already been sent to ".$findMembertoAdd->fullname."');</script>";
+			echo "<script type='text/javascript'>window.location.href='".$bandName."/manage';</script>";
+
+		}
+		
+
+
+//--------------------------------------------------------------------------
+		// $bandmember = Bandmember::create([
+		// 		'band_id' => $request->input('add-band-member-band-id'),
+		// 		'user_id' => $findMembertoAdd->user_id,
+		// 		'bandrole' => $request->input('add-band-member-role')
+		// 		// 'band_desc' => $desc,
+		// 	]);
+//--------------------------------------------------------------------------
 
 		// $CurrentUserIsBandMember = Bandmember::Where('user_id',session('userSocial')['id'])->first();
 
@@ -60,10 +89,7 @@ class BandMemberController extends Controller
 
 		// }
 
-		$bandName=$request->input('add-band-member-band-name');
-		
-
-		return redirect('/'.$bandName."/manage");
+		// return redirect('/'.$bandName."/manage");
 	}
 
 	public function deleteBandMember(Request $request){
