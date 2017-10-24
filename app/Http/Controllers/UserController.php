@@ -66,7 +66,7 @@ class UserController extends Controller
 
         // dd($articlesfeed);
         $recommend = $this->recommend();
-        // dd($recommend);
+        dd($recommend);
         return view('feed', compact('userHasBand','userBandRole','usersBand','user', 'friends','articlesfeed', 'recommend'));
     }
 
@@ -105,44 +105,37 @@ class UserController extends Controller
                   $pgenres = $preference->band->bandgenres;
                     if ($pgenres->contains('genre_id', $genre->genre_id))
                     {
-                      array_push($genreArray, $genre);
+                      array_push($genreArray, $genre->band->band_id);
                     } 
                 }                
               }
             }
-            $stores = Array();
+
+            $wholeGenre = Array();
+            $halfGenre = Array();
+            $display = Array();
+
             if (count($genreArray) > 0)
             {
-              foreach ($genreArray as $array)
-              { 
-                $tmp = $array->band;
-                foreach($genreArray as $ray)
+              $shows = array_count_values($genreArray);
+              foreach ($shows as $key => $value) {
+                if ($value > 1)
                 {
-                  if ($tmp == $ray->band)
-                  {
-                    // $ = count($tmp == $ray->band);
-                  }
+                  $gband = Band::where('band_id',$key)->first();
+                  array_push($wholeGenre, $gband);
+
+                  // calculation para 2 genres
                 }
-                // $tmp = $array->band;
-                // $collect = collect($genreArray);
-                // if ($collect->contains('band_id', $tmp->band_id))
-                // {
-                //   // $count = count($collect->contains('band_id', $tmp->band_id));
-                //   // if ($count == 2)
-                //   // {
-                //   //   $test = 'true';
-                //   // }
-                //   // else
-                //   // {
-                //   //   $test = 'false';
-                //   // }
-                //   // array_push($stores, $test);
-                // }
-
+                else
+                {
+                  $gband = Band::where('band_id',$key)->first();
+                  array_push($halfGenre, $gband);
+                  // calculation for 1 genre
+                }
               }
-
-
-              return $stores;
+              $data = array($wholeGenre, $halfGenre);
+              array_push($display, $data);
+              return $display;
             }
             else
             {
