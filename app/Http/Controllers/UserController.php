@@ -66,7 +66,7 @@ class UserController extends Controller
 
         // dd($articlesfeed);
         $recommend = $this->recommend();
-        dd($recommend);
+        // dd($recommend);
         return view('feed', compact('userHasBand','userBandRole','usersBand','user', 'friends','articlesfeed', 'recommend'));
     }
 
@@ -111,9 +111,9 @@ class UserController extends Controller
               }
             }
 
-            $wholeGenre = Array();
-            $halfGenre = Array();
-            $display = Array();
+            // $wholeGenre = Array();
+            // $halfGenre = Array();
+            $data = Array();
 
             if (count($genreArray) > 0)
             {
@@ -122,20 +122,20 @@ class UserController extends Controller
                 if ($value > 1)
                 {
                   $gband = Band::where('band_id',$key)->first();
-                  array_push($wholeGenre, $gband);
+                  array_push($data, $gband);
 
                   // calculation para 2 genres
                 }
                 else
                 {
                   $gband = Band::where('band_id',$key)->first();
-                  array_push($halfGenre, $gband);
+                  array_push($data, $gband);
                   // calculation for 1 genre
                 }
               }
-              $data = array($wholeGenre, $halfGenre);
-              array_push($display, $data);
-              return $display;
+              // $data = array($wholeGenre, $halfGenre);
+              // array_push($display, $data);
+              return $data;
             }
             else
             {
