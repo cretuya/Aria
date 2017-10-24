@@ -310,9 +310,9 @@
       <div class="modal-body">
         
             Video Description:<br>
-            <textarea name='video_desc' required></textarea> <br><br>            
+            <textarea name='video_desc' class='form-control' required></textarea> <br>            
             Add Video:<br>
-            <input type='file' name='video_content[]' accept="video/*" multiple required><br><br>
+            <input type='file' name='video_content[]' class="btn btn-default" accept="video/*" multiple required><br><br>
       
       </div>
       <div class="modal-footer">
@@ -340,7 +340,7 @@
       <div class="modal-body">
         
             Video Description:<br>
-            <textarea name='video_desc' id='video_desc'></textarea> <br><br> 
+            <textarea name='video_desc' id='video_desc' class='form-control'></textarea> <br><br> 
             <input type="text" id="video_id" name="video_id" hidden>
       
       </div>
@@ -370,11 +370,11 @@
       <div class="modal-body">
         
             Album Title:<br>
-            <input type='text' name='album_name' required><br>
+            <input type='text' name='album_name' class='form-control' required><br>
             Description:<br>
-            <input type='text' name='album_desc' required><br>
+            <input type='text' name='album_desc' class='form-control' required><br>
             Add Album Picture:<br>
-            <input type='file' name='album_pic' accept="image/*" required><br><br>            
+            <input type='file' name='album_pic'  class='form-control' accept="image/*" required><br><br>            
             <br>
 
 
@@ -405,9 +405,9 @@
       <div class="modal-body">
         
             Album Title:<br>
-            <input type='text' name='album_name' id="album_name"><br>
+            <input type='text' name='album_name' id="album_name" class='form-control'><br>
             Description:<br>
-            <input type='text' name='album_desc' id="album_desc"><br>
+            <input type='text' name='album_desc' id="album_desc" class='form-control'><br>
             <br>
             <input type="text" id="album_id" name="album_id" hidden><br>
             <br>
@@ -440,9 +440,9 @@
       <div class="modal-body">
         
             Title of Article:<br>
-            <input type='text' name='art_title' required><br><br>
+            <input type='text' name='art_title' class='form-control' required><br><br>
             Content:<br>
-            <textarea name='content' required></textarea><br><br>
+            <textarea name='content' class='form-control' required></textarea><br><br>
       
       </div>
       <div class="modal-footer">
@@ -470,9 +470,9 @@
       <div class="modal-body">
         
             Title of Article:<br>
-            <input type='text' name='art_title' id="art_title"><br><br>
+            <input type='text' name='art_title' id="art_title" class='form-control'><br><br>
             Content:<br>
-            <textarea name='content' id="content"></textarea><br><br>
+            <textarea name='content' id="content" class='form-control'></textarea><br><br>
             <input type="text" name="art_id" id="art_id" hidden>
       
       </div>
@@ -502,10 +502,10 @@
       <div class="modal-body">
         
         Song Description:<br>
-        <input type="text" name="song_desc" required><br><br>
-        <input type="file" name="song_audio[]" accept="audio/*" multiple required><br>
+        <input type="text" name="song_desc"  class='form-control' required><br><br>
+        <input type="file" name="song_audio[]" class='form-control' accept="audio/*" multiple required><br>
         <input type="text" name="album_id" id="album_id" hidden><br>
-        <select name="genre_id">
+        <select name="genre_id" class='form-control'>
             @foreach($genres as $genre)
             <option value="{{$genre->genre_id}}">{{$genre->genre_name}}</option>
             @endforeach
@@ -538,10 +538,10 @@
       <div class="modal-body edit-modal">
         
         Song Description:<br>
-        <input type="text" name="song_desc" id="song_desc"><br><br>
+        <input type="text" name="song_desc" id="song_desc" class='form-control'><br><br>
 
         <div class="showgenre">
-        <select name="genre_id" id="genre_id">
+        <select name="genre_id" id="genre_id" class='form-control'>
             @foreach($genres as $genre)
             <option value="{{$genre->genre_id}}">{{$genre->genre_name}}</option>
             @endforeach
