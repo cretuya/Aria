@@ -151,7 +151,10 @@
        <td><input type="text" name="band-member-role" class="member-role" style="border: none; background: transparent;" value="{{$members->bandrole}}" readonly></td>
        <input type="text" value="{{$band->band_name}}" name="bandName" hidden>
        <!-- <td><a href="#"><span class="fa fa-pencil"></span></a></td> -->
-       <td><button type="submit" style="background: transparent; border: none;" class="fa fa-close"></button></td>
+       <td>
+        <button type="button" data-id="{{$members->user_id}}" data-toggle="modal" data-target="#editRoleModal" style="background: transparent; border: none;" class="fa fa-pencil bandmemberIdPassToModal"></button>
+        <button type="submit" style="background: transparent; border: none;" class="fa fa-close"></button>
+       </td>
      </tr>
    </form>
    @endforeach
@@ -582,6 +585,41 @@
 
   </div>
 </div>
+
+<div id="editRoleModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-body">
+        <form method="post" action="{{ url('/editrolemember') }}">
+        {{csrf_field()}}
+        <h3>Select a new role</h3>
+          <input type="text" id="bandmemberIDeditrole" name="bandmemberIDeditrole" hidden>
+          <input type="text" value="{{ $band->band_id }}" name="bandmemberroleedit_bandid" hidden>
+          <input type="text" value="{{ $band->band_name }}" name="bandName" hidden>
+          <select name="member_role" class="form-control">
+            <option selected hidden>Select a new role</option>
+            <option value="Vocalist">Vocalist</option>
+            <option value="Lead Guitar">Lead Guitar</option>
+            <option value="Rythm Guitar">Rythm Guitar</option>
+            <option value="Keyboardist">Keyboardist</option>
+            <option value="Drummer">Drummer</option>
+            <option value="Bassist">Bassist</option>
+          </select>
+        
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-default">Submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
 </body>
 <script type="text/javascript">
 
@@ -597,6 +635,11 @@ $( function() {
       }
     });
 
+});
+
+$(document).on("click", ".bandmemberIdPassToModal", function () {
+     var userid = $(this).data('id');
+     $("#bandmemberIDeditrole").val( userid );
 });
 
 function openfile(){

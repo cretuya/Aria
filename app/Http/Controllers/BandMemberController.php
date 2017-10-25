@@ -92,6 +92,66 @@ class BandMemberController extends Controller
 		// return redirect('/'.$bandName."/manage");
 	}
 
+	public function acceptRequest(Request $request){
+		$bandName = $request->input('band_name_requested1');
+		$bandID = $request->input('band_id_requested1');
+		$userID = $request->input('user_id_requested1');
+		$bandrole = $request->input('bandrole_requested1');
+		$invitor = $request->input('invitor_requested1');
+
+		$bandmember = Bandmember::create([
+			'band_id' => $bandID,
+			'user_id' => $userID,
+			'bandrole' => $bandrole
+		 	]);
+
+		$delInvite = UserNotification::where([
+			['band_id', $bandID],
+			['user_id', $userID],			
+			['bandrole', $bandrole],
+			['invitor', $invitor],
+		])->delete();
+		
+		return redirect('/'.$bandName."/manage");
+	}
+
+	public function ignoreRequest(Request $request){
+		$url = $request->input('urlbeforeignore');
+		$newUrl = substr($url ,-(strlen($url)-1));
+
+		$bandID = $request->input('band_id_requested2');
+		$userID = $request->input('user_id_requested2');
+		$bandrole = $request->input('bandrole_requested2');
+		$invitor = $request->input('invitor_requested2');
+
+		$delInvite = UserNotification::where([
+			['band_id', $bandID],
+			['user_id', $userID],			
+			['bandrole', $bandrole],
+			['invitor', $invitor],
+		])->delete();
+
+		return redirect('../../'.$newUrl);
+
+	}
+
+	public function editrolemember(Request $request){
+		$bandName=$request->input('bandName');
+		$bandmemberID = $request->input('bandmemberIDeditrole');
+		// dd($bandmemberID);
+		$bandmemberrole = $request->input('member_role');
+		$bandidofmember = $request->input('bandmemberroleedit_bandid');
+
+		$updaterole = Bandmember::where([
+					['user_id', $bandmemberID],
+					['band_id', $bandidofmember],			
+				])->update([
+					'bandrole' => $bandmemberrole
+			 	]);
+
+		return redirect('/'.$bandName."/manage");
+	}
+
 	public function deleteBandMember(Request $request){
 		$memberID=$request->input('band-member-id');
 		$delMember = Bandmember::where([

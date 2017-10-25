@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\UserNotification;
 use App\Band;
 use App\Album;
 use App\Song;
@@ -41,8 +42,10 @@ class AlbumController extends Controller
                 array_push($likers, $liker->album_id);
             }
         }
+
+        $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
         // dd($likers);
-        return view('view-band-album', compact('band', 'albums', 'likers'));
+        return view('view-band-album', compact('band', 'albums', 'likers','usernotifinvite'));
     }
     public function addAlbum(Request $request, $bname)
     {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Band;
 use App\User;
+use App\UserNotification;
 use App\Genre;
 use App\BandGenre;
 use App\Album;
@@ -73,7 +74,9 @@ class SearchController extends Controller
 			]);
     	}
 
-    	return view('search-result',compact('searchResultBand','searchResultUser','searchResultGenre','searchResultAlbum','searchResultSong','searchResultVideo','searchResultArticle','termSearched','band','bandGenre'));
+        $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
+
+    	return view('search-result',compact('searchResultBand','searchResultUser','searchResultGenre','searchResultAlbum','searchResultSong','searchResultVideo','searchResultArticle','termSearched','band','bandGenre','usernotifinvite'));
 
     }
 }
