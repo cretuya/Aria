@@ -88,8 +88,8 @@
         @else
           @foreach($recommend as $rec)
             <li class="list-group-item" style="border: 0">
-              <a href="#"><img class="friends-in-aria-pic img-circle" src="{{$rec->band_pic}}"></a>
-              <a href="{{url($rec->band_name)}}"><span class="feed-band-name">{{$rec->band_name}}</span></a>
+              <a href="#"><img class="friends-in-aria-pic img-circle" src="{{$rec['band']->band_pic}}"></a>
+              <a href="{{url($rec['band']->band_name)}}"><span class="feed-band-name">{{$rec['band']->band_name}}</span></a>
             </li>
           @endforeach
         @endif

@@ -328,6 +328,7 @@ class BandController extends Controller
     public function scoringfunc($bandId){
         $band = Band::where('band_id',$bandId)->first();
         $maxfollowers = Band::all()->max('num_followers');
+        // $testing = Preference::all()->max()->count();
         $maxvisits = Band::all()->max('visit_counts');
         $maxalbumlike = 0;
         $maxsongplayed = 0;

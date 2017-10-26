@@ -82,6 +82,7 @@ class UserController extends Controller
         $bands = Band::all();
         $genreArray= Array();
         $data = Array();
+        $scores = Array();
 
         if (count($preferences) > 0)
         {
@@ -128,25 +129,14 @@ class UserController extends Controller
               $poppartial = $countPref - 1;
               $popPart = $count - $poppartial;
               $ptotal = $popPart / $weight;
-              // array_push($test, $ptotal);
+
+              $compact = array('band_id' => $g->band_id, 'rankscore' => $rtotal, 'followerscore' => $ptotal);
+
+              array_push($scores, $compact);
+
             }
-            // calculate ranking
-            // $scoreRankings = array();
-            // foreach ($get as $g)
-            // {
-            //   $count = count(Band::all());
-
-            //   $scoreRanking = $count - ($g->band_id -1) / ($count * 100) * .03;
-            //   array_push($scoreRankings, $scoreRanking);
-            // }
-            // //calculate followers
-            // {
-
-            // }
-
-            // $wholeGenre = Array();
-            $scoresGenres = Array();
             
+            $total = Array();
 
             if (count($genreArray) > 0)
             {
@@ -165,24 +155,35 @@ class UserController extends Controller
                   array_push($data, $gband);
                   $scoreGenre = 2;
                 }
+                $k = Band::where('band_id', $key)->first();
+                foreach ($scores as $score)
+                {
+                  if ($key == $score['band_id'])
+                  {
+                    $compute = $score['rankscore'] + $score['followerscore'] + $scoreGenre;
+                  }
+                  $insert = array('band' => $k,'total' => $compute);
+                }
+                array_push($total, $insert);
                 // array_push($scoreGenres, $key=>$scoreGenre);
               }
               // $data = array($wholeGenre, $halfGenre);
               // array_push($display, $data);
-              return $data;
+
+              return $total;
             }
             else
             {
-              return 'No bands matches your interests.';
+
+              $randomBands = Band::inRandomOrder()->get();
+              return $randomBands;
             }
-              // return $genreArray;
         }
         else
         {
           $randomBands = Band::inRandomOrder()->get();
           $randomSongs = Song::inRandomOrder()->get();
           return $randomBands;
-          // return array($randomBands, $randomSongs);
         }
 
     }
