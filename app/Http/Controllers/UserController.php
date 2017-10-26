@@ -181,9 +181,16 @@ class UserController extends Controller
         }
         else
         {
+          $comp = Array();
+
           $randomBands = Band::inRandomOrder()->get();
           $randomSongs = Song::inRandomOrder()->get();
-          return $randomBands;
+          foreach ($randomBands as $randomBand)
+          {
+            $compact = array('band' => $randomBand);
+            array_push($comp, $compact);
+          }
+          return $comp;
         }
 
     }
