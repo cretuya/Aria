@@ -78,6 +78,7 @@ class UserController extends Controller
         $get = Array();
         $bands = Band::all();
         $genreArray= Array();
+        $data = Array();
 
         if (count($preferences) > 0)
         {
@@ -113,7 +114,7 @@ class UserController extends Controller
 
             // $wholeGenre = Array();
             // $halfGenre = Array();
-            $data = Array();
+            
 
             if (count($genreArray) > 0)
             {
@@ -147,7 +148,8 @@ class UserController extends Controller
         {
           $randomBands = Band::inRandomOrder()->get();
           $randomSongs = Song::inRandomOrder()->get();
-          return array($randomBands, $randomSongs);
+          return $randomBands;
+          // return array($randomBands, $randomSongs);
         }
 
     }

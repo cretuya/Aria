@@ -172,6 +172,7 @@ return [
         /*
          * Application Service Providers...
          */
+        Unisharp\Ckeditor\ServiceProvider::class,
         'JD\Cloudder\CloudderServiceProvider',
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,

@@ -442,7 +442,7 @@
             Title of Article:<br>
             <input type='text' name='art_title' class='form-control' required><br><br>
             Content:<br>
-            <textarea name='content' class='form-control' required></textarea><br><br>
+            <textarea name='content' id="content" class='form-control' required></textarea><br><br>
       
       </div>
       <div class="modal-footer">
@@ -583,8 +583,14 @@
   </div>
 </div>
 </body>
-<script type="text/javascript">
 
+<script src="/vendor/unisharp/laravel-ckeditor/ckeditor.js"></script>
+<script src="/vendor/unisharp/laravel-ckeditor/adapters/jquery.js"></script>
+<script type="text/javascript">
+// CKEDITOR.replace("#content");
+    $('#content').ckeditor(); // if class is prefered.
+</script>
+<script type="text/javascript">
 $( function() {
     
     $( "#add-band-member-name").autocomplete({

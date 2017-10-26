@@ -111,7 +111,7 @@ class BandController extends Controller
             $followers = count($preference);            
         }
 
-        scoringfunc($band->band_id);
+        // scoringfunc($band->band_id);
         return response ()->json(['band' => $newband, 'preference' => $create, 'followers' => $followers]);
 
     }
@@ -144,7 +144,7 @@ class BandController extends Controller
             $followers = count($preference);
         }
 
-        scoringfunc($band->band_id);
+        // scoringfunc($band->band_id);
         return response ()->json(['band' => $newband, 'preference' => $follower, 'followers' => $followers]);
     }
 
