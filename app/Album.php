@@ -18,13 +18,13 @@ class Album extends Model
 	];
 
 	public $rules = [
-	'album_name' => 'required|max:50',
+	'album_name' => 'required|max:100',
 	'album_desc' => 'required|max:255',
 	'album_pic' => 'required|max:255',
 	];
 
 	public $updaterules = [
-	'album_name' => 'required|max:50',
+	'album_name' => 'required|max:100',
 	'album_desc' => 'required|max:255',
 	'album_pic' => 'required|max:255',
 	];

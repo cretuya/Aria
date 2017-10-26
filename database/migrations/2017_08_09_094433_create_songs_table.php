@@ -15,7 +15,8 @@ class CreateSongsTable extends Migration
     {
         Schema::create('songs', function (Blueprint $table) {
             $table->increments('song_id');
-            $table->string('song_desc', 50);
+            $table->string('song_title');
+            $table->string('song_desc')->unique();
             $table->string('song_audio');
             $table->integer('genre_id')->unsigned();
             $table->foreign('genre_id')->references('genre_id')->on('genres')->onDelete('cascade');

@@ -25,7 +25,8 @@ class SongController extends Controller
 	public function addSongs(Request $request, $bname)
 	{
         $id = $request->input('album_id');
-        $title = $request->input('song_desc');
+        $title = $request->input('song_title');
+        $desc = $request->input('song_desc');
         $audios = $request->file('song_audio');
         $genre = $request->input('genre_id');
         $aid = Album::where('album_id', $id)->first();
@@ -44,7 +45,8 @@ class SongController extends Controller
                 $audioPath = $this->addPathforSongs($audio);
 
                 $createSong = Song::create([
-                    'song_desc' => $title,
+                    'song_title'=> $title,
+                    'song_desc' => $desc,
                     'song_audio' => $audioPath,
                     'genre_id' => $genre,
                     'album_id' => $id,
@@ -108,6 +110,7 @@ class SongController extends Controller
         $id = Song::find($request->input('song_id'));
     	$album = Album::where('album_id', $id->album_id)->first();
     	$band = Band::where('band_id', $album->band_id)->first();
+        $title = $request->input('song_title');
     	$desc = $request->input('song_desc');
     	$genre = $request->input('genre_id');
         $rules = new Song;
@@ -119,6 +122,7 @@ class SongController extends Controller
         else
         {
         	$update = $id->update([
+                'song_title' => $title,
         		'song_desc' => $desc,
         		'genre_id' => $genre,
                 'album_id' => $album->album_id,

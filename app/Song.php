@@ -11,20 +11,22 @@ class Song extends Model
 	protected $primaryKey = 'song_id';
 
 	protected $fillable = [
+		'song_title',
 		'song_desc' ,
 		'song_audio' ,
 		'genre_id' , 
 		'album_id' ,
 	];
 	public $rules = [
+	'song_title' => 'required|unique:songs',
 	'song_desc' => 'required|max:255',
-	'song_audio' => 'required',
+	'song_audio' => 'required|',
 	'genre_id' => 'numeric',
 	'album_id' => 'numeric',
 	];
 	public $updaterules = [
+	'song_title' => 'required',
 	'song_desc' => 'required|max:255',
-	'song_audio' => 'required',
 	'genre_id' => 'numeric',
 	'album_id' => 'numeric',
 	];

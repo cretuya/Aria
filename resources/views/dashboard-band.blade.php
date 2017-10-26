@@ -151,10 +151,7 @@
        <td><input type="text" name="band-member-role" class="member-role" style="border: none; background: transparent;" value="{{$members->bandrole}}" readonly></td>
        <input type="text" value="{{$band->band_name}}" name="bandName" hidden>
        <!-- <td><a href="#"><span class="fa fa-pencil"></span></a></td> -->
-       <td>
-        <button type="button" data-id="{{$members->user_id}}" data-toggle="modal" data-target="#editRoleModal" style="background: transparent; border: none;" class="fa fa-pencil bandmemberIdPassToModal"></button>
-        <button type="submit" style="background: transparent; border: none;" class="fa fa-close"></button>
-       </td>
+       <td><button type="submit" style="background: transparent; border: none;" class="fa fa-close"></button></td>
      </tr>
    </form>
    @endforeach
@@ -503,7 +500,8 @@
         <h4 class="modal-title">Add Song</h4>
       </div>
       <div class="modal-body">
-        
+        Song Title:<br>
+        <input type="text" name="song_title"  class='form-control' required><br><br>
         Song Description:<br>
         <input type="text" name="song_desc"  class='form-control' required><br><br>
         <input type="file" name="song_audio[]" class='form-control' accept="audio/*" multiple required><br>
@@ -539,7 +537,8 @@
         <h4 class="modal-title">Edit Song</h4>
       </div>
       <div class="modal-body edit-modal">
-        
+        Song Title:<br>
+        <input type="text" name="song_title" id="song_title" class='form-control'><br><br>
         Song Description:<br>
         <input type="text" name="song_desc" id="song_desc" class='form-control'><br><br>
 
@@ -585,41 +584,6 @@
 
   </div>
 </div>
-
-<div id="editRoleModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-body">
-        <form method="post" action="{{ url('/editrolemember') }}">
-        {{csrf_field()}}
-        <h3>Select a new role</h3>
-          <input type="text" id="bandmemberIDeditrole" name="bandmemberIDeditrole" hidden>
-          <input type="text" value="{{ $band->band_id }}" name="bandmemberroleedit_bandid" hidden>
-          <input type="text" value="{{ $band->band_name }}" name="bandName" hidden>
-          <select name="member_role" class="form-control">
-            <option selected hidden>Select a new role</option>
-            <option value="Vocalist">Vocalist</option>
-            <option value="Lead Guitar">Lead Guitar</option>
-            <option value="Rythm Guitar">Rythm Guitar</option>
-            <option value="Keyboardist">Keyboardist</option>
-            <option value="Drummer">Drummer</option>
-            <option value="Bassist">Bassist</option>
-          </select>
-        
-      </div>
-
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-default">Submit</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-      </form>
-    </div>
-
-  </div>
-</div>
-
 </body>
 
 <script src="/vendor/unisharp/laravel-ckeditor/ckeditor.js"></script>
@@ -641,11 +605,6 @@ $( function() {
       }
     });
 
-});
-
-$(document).on("click", ".bandmemberIdPassToModal", function () {
-     var userid = $(this).data('id');
-     $("#bandmemberIDeditrole").val( userid );
 });
 
 function openfile(){
@@ -759,7 +718,7 @@ $(document).ready(function()
                 var source = "{{url('/assets/music/')}}";
                 var audio = source +'/'+ song;
 
-               $('.tablist').append('<li id="listItem'+value.song_id+'" class="list-group-item"><label>'+value.song_audio+'</label><audio controls><source src="'+audio+'" type="audio/mpeg"></audio><button class="btn pull-right delete" value="'+value.song_id+'"><span class="fa fa-close"></span></button><button class="btn pull-right edit" data-toggle="modal" data-genre="'+value.genre_id+'" data-desc="'+value.song_desc+'" data-id="'+value.song_id+'"><span class="fa fa-pencil"></span></button></li>'); 
+               $('.tablist').append('<li id="listItem'+value.song_id+'" class="list-group-item"><label>'+value.song_title+'</label><audio controls><source src="'+audio+'" type="audio/mpeg"></audio><button class="btn pull-right delete" value="'+value.song_id+'"><span class="fa fa-close"></span></button><button class="btn pull-right edit" data-toggle="modal" data-genre="'+value.genre_id+'" data-desc="'+value.song_desc+'" data-title="'+value.song_title+'" data-id="'+value.song_id+'"><span class="fa fa-pencil"></span></button></li>'); 
 
               });
           },
@@ -812,8 +771,10 @@ $(document).ready(function()
       var id = $(this).data('id');
       var gid = $(this).data('genre');
       var desc = $(this).data('desc');
+      var title = $(this).data('title');
       console.log(gid);
 
+          $('.modal-body #song_title').val(title);
           $('.modal-body #song_desc').val(desc);
           $('.modal-body #song_id').val(id);
           $('.showgenre select').val(gid);
