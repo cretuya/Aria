@@ -11,7 +11,9 @@ use App\BandGenre;
 use App\BandArticle;
 use App\Preference;
 Use App\Song;
-
+use App\Playlist;
+// use App\List;
+use Auth;
 class UserController extends Controller
 {
     
@@ -210,12 +212,13 @@ class UserController extends Controller
 
         $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
 
+        $playlists = Playlist::where('pl_creator', Auth::user()->user_id)->get();
         // $bandGenre = BandGenre::select('genre_name')->join('genres', 'bandgenres.genre_id', '=', 'genres.genre_id')->join('bands', 'bandgenres.band_id', '=', 'bands.band_id')->get();
 
         // dd($bandsfollowed);
         // dd($usersBand);
         //nag usab ko diri
-            return view('user-profile', compact('userHasBand','userBandRole','usersBand','user','bandsfollowed','bandsfollowedNoGenre','usernotifinvite'));
+            return view('user-profile', compact('userHasBand','userBandRole','usersBand','user','bandsfollowed','bandsfollowedNoGenre','usernotifinvite', 'playlists'));
     }
 
     public function friendprofile($uid)
@@ -236,6 +239,35 @@ class UserController extends Controller
         // $bandGenre = BandGenre::select('genre_name')->join('genres', 'bandgenres.genre_id', '=', 'genres.genre_id')->join('bands', 'bandgenres.band_id', '=', 'bands.band_id')->get();
         //nag usab ko diri
         return view('friend-profile', compact('user', 'userHasBand','userBandRole','usersBand','bandsfollowed','bandsfollowedNoGenre','usernotifinvite'));
+    }
+
+    public function createplaylist(Request $request)
+    {
+      $uid = Auth::user()->user_id;
+      $title = $request->input('title');
+      $desc = $request->input('desc');
+      $image = $request->file('image');
+      // dd($uid);
+
+
+      if ($image == null)
+      {
+        $create = Playlist::create([
+          'pl_title' => $title,
+          'pl_desc' => $desc,
+          'pl_creator' => $uid,
+        ]);
+      }
+      else
+      {
+        $create = Playlist::create([
+          'pl_title' => $title,
+          'pl_desc' => $desc,
+          'pl_creator' => $uid,
+          'image' => $image,
+        ]);
+      }
+    return redirect('/user/profile');
     }
 
 }

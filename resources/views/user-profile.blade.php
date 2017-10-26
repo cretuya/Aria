@@ -64,7 +64,35 @@
   </div>
 
   <br><br>
+  <h3>Playlists</h3>
 
+      
+  <div class="container" style="padding: 0;">
+  <!-- nag usab ko diri -->
+      <div class="row">
+      @if($playlists == null)
+      <p style="text-align:center; color: #a4a4a4; font-size: 16px;">{{$user->fname}} has not followed any bands yet</p>
+      @else
+        @foreach ($playlists as $playlist)
+          <div class="col-xs-4">
+            <div class="media">
+              <div class="media-left">
+                @if($playlist->image == null)
+                <a href=""><img src="#" class="media-object" style="max-width:200px; height: 100%; max-height: 180px;">{{$playlist->pl_title}}</a>
+                @else
+                <a href=""><img src="{{$playlist->image}}" class="media-object" style="max-width:200px; height: 100%; max-height: 180px;">{{$playlist->pl_title}}</a>
+                @endif
+                <p>{{$playlist->followers}} Followers</p>
+              </div>
+            </div>
+          </div>
+          @endforeach
+        @endif
+      </div>
+      <br>
+  </div>
+
+  <br><br>
 
   <h3>Bands Followed</h3>
 
@@ -175,7 +203,7 @@
         <div class="modal-header">
           <h4 class="modal-title">Create Playlist</h4>
         </div>
-        <form action="" method="post">
+        <form action="{{url('createplaylist')}}" method="post">
         {{csrf_field()}}
         <div class="modal-body" style="padding-left: 25px;padding-right: 25px;">
           <label>Title</label><br>
@@ -183,7 +211,7 @@
           <label>Description</label><br>
           <input type="text" name="desc" class="form-control" required>
           <label>Add Image</label><br>
-          <input type='file' name='image'  class='form-control' accept="image/*" required><br><br> 
+          <input type='file' name='image'  class='form-control' accept="image/*"><br><br> 
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

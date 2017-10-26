@@ -86,4 +86,6 @@ Route::middleware(['auth'])->group(function(){
 	Route::post('unlikeAlbum', 'AlbumController@unlikeAlbum');
 	Route::post('addSongPlayed', 'SongController@addSongPlayed');
 	Route::post('visitCount', 'BandController@visitCount');
+
+	Route::post('createplaylist', 'UserController@createplaylist');
 });
