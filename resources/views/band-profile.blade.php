@@ -228,7 +228,7 @@
 	        $button.removeClass('following');
 	        // $button.removeClass('unfollow');
 	        $button.text('Follow');
-	        $('.followers').text(json.band.num_followers+' Followers');
+	        $('.followers').text(json.followers+' Followers');
           },
           error: function(a,b,c)
           {

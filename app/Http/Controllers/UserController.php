@@ -99,6 +99,7 @@ class UserController extends Controller
               }
             }
             // compare genres
+            $test = Array();
             foreach($get as $g)
             {
               $genres = $g->bandgenres;
@@ -113,10 +114,38 @@ class UserController extends Controller
                     } 
                 }                
               }
+
+              
+              $count = count(Band::all()); 
+              $weight = $count * 100 * .03;
+              // calculate ranking
+              $rankpartial = $g->band_id - 1;
+              $rankPart = $count - $rankpartial;
+              $rtotal = $rankPart / $weight;
+              // // calculate popularity
+              $pref = Preference::where('band_id', $g->band_id)->get();
+              $countPref = count($pref);
+              $poppartial = $countPref - 1;
+              $popPart = $count - $poppartial;
+              $ptotal = $popPart / $weight;
+              // array_push($test, $ptotal);
             }
+            // calculate ranking
+            // $scoreRankings = array();
+            // foreach ($get as $g)
+            // {
+            //   $count = count(Band::all());
+
+            //   $scoreRanking = $count - ($g->band_id -1) / ($count * 100) * .03;
+            //   array_push($scoreRankings, $scoreRanking);
+            // }
+            // //calculate followers
+            // {
+
+            // }
 
             // $wholeGenre = Array();
-            // $halfGenre = Array();
+            $scoresGenres = Array();
             
 
             if (count($genreArray) > 0)
@@ -128,14 +157,15 @@ class UserController extends Controller
                   $gband = Band::where('band_id',$key)->first();
                   array_push($data, $gband);
 
-                  // calculation para 2 genres
+                  $scoreGenre = 4;
                 }
                 else
                 {
                   $gband = Band::where('band_id',$key)->first();
                   array_push($data, $gband);
-                  // calculation for 1 genre
+                  $scoreGenre = 2;
                 }
+                // array_push($scoreGenres, $key=>$scoreGenre);
               }
               // $data = array($wholeGenre, $halfGenre);
               // array_push($display, $data);
