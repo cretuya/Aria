@@ -28,7 +28,8 @@
           <a href="#" class="showSongs" data-id='{{$album->album_id}}' style="text-decoration: none;">
             <div class="panel panel-default" style="margin-top: -20px;">
               <div class="panel-body">
-                {{$album->album_name}}
+              <img class="friends-in-aria-pic img-circle" src="{{$album->album_pic}}">
+              {{$album->album_name}}
               </div>
             </div>
           </a>

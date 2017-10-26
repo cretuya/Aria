@@ -23,6 +23,7 @@
 
     <div class="col-md-8">
       <a href="#" data-toggle="modal" data-target="#edit-profile-modal" class="editprof-btn pull-right"><span class="fa fa-pencil"></span></a>
+      <a href="#" data-toggle="modal" data-target="#create_playlist_modal" class="editprof-btn pull-right"><span class="fa fa-folder"></span></a>
       <div class="row prfcntnt">
         <h1 class="profile-name">{{$user->fullname}}</h1>
         @if(count($userHasBand) > 0)
@@ -165,5 +166,33 @@
 
     </div>
   </div>
+
+<div id="create_playlist_modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Create Playlist</h4>
+        </div>
+        <form action="" method="post">
+        {{csrf_field()}}
+        <div class="modal-body" style="padding-left: 25px;padding-right: 25px;">
+          <label>Title</label><br>
+          <input type="text" name="title" class="form-control" required>
+          <label>Description</label><br>
+          <input type="text" name="desc" class="form-control" required>
+          <label>Add Image</label><br>
+          <input type='file' name='image'  class='form-control' accept="image/*" required><br><br> 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-default">Submit</button>
+        </div>
+        </form>
+    </div>
+
+  </div>
+</div>
 
 @stop
