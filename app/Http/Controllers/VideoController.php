@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\UserNotification;
 use App\Band;
 use App\BandVideo;
 use App\Video;
@@ -15,7 +16,8 @@ class VideoController extends Controller
         $band = Band::where('band_name', $bname)->first();
         $videos = $band->bandvids;
         // dd($videos);
-        return view('videos', compact('band', 'videos'));
+        $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
+        return view('videos', compact('band', 'videos','usernotifinvite'));
     }
     public function addVideo(Request $request, $bname)
     {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\UserNotification;
 use App\Band;
 use App\BandArticle;
 use App\Article;
@@ -14,8 +15,8 @@ class ArticleController extends Controller
     {
         $band = Band::where('band_name', $bname)->first();
         $articles = $band->bandarticles;
-
-        return view('article', compact('band', 'articles'));
+        $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
+        return view('article', compact('band', 'articles','usernotifinvite'));
     }
     public function addArticle(Request $request , $bname)
     {

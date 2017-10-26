@@ -57,11 +57,19 @@
 		            </div>
 		            <div class="media-body" style="padding-top: 10px">
 		              <a href="{{ url('/'.$searchResultBand[$i]->band_name) }}"><h4 class="media-heading">{{$searchResultBand[$i]->band_name}}</h4></a>
-		              <p>{{ $bandGenre[$j]->genre_name }} | {{ $bandGenre[$j+1]->genre_name }} • 
-		              @if($searchResultBand[$i]->num_followers == null)
-		              0 Followers</p>
-		              @else
-		              {{$searchResultBand[$i]->num_followers}} Followers</p>
+		              @if(count($bandGenre) == 0)
+			              @if($searchResultBand[$i]->num_followers == null)
+				          0 Followers</p>
+				          @else
+				          <p>{{$searchResultBand[$i]->num_followers}} Followers</p>
+				          @endif
+			          @else			          
+				          <p>{{ $bandGenre[$j]->genre_name }} | {{ $bandGenre[$j+1]->genre_name }} • 
+				          @if($searchResultBand[$i]->num_followers == null)
+				          0 Followers</p>
+				          @else
+				          <p>{{$searchResultBand[$i]->num_followers}} Followers</p>
+				          @endif
 		              @endif
 		            </div>
 		          </div>

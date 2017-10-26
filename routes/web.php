@@ -45,6 +45,9 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('{band_name}/manage/search', 'BandController@search');
 	Route::post('addmember', 'BandMemberController@addBandMember');
 	Route::post('deletemember', 'BandMemberController@deleteBandMember');
+	Route::post('acceptRequest', 'BandMemberController@acceptRequest');
+	Route::post('ignoreRequest', 'BandMemberController@ignoreRequest');
+	Route::post('editrolemember', 'BandMemberController@editrolemember');
 
 	Route::get('{band_name}/albums', 'AlbumController@index');
 	Route::post('{band_name}/addAlbum' , 'AlbumController@addAlbum');

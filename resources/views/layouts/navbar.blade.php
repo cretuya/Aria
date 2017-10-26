@@ -27,22 +27,45 @@
         <ul class="nav navbar-nav navbar-right">
 
           <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="background: #F9A825"><span class="fa fa-bell" style="color: #fff;"></span></a>
-          <ul class="dropdown-menu" style="width: 300px;">
-            <li class="dropdown-header">Notifications</li>
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="background: #F9A825"><span class="fa fa-envelope" style="color: #fff;"></span></a>
+          <ul class="dropdown-menu" style="width: 400px;">
+            <li class="dropdown-header">Band Invitations</li>
             <li class="divider"></li>
             
             <a href="#">
-            <li style="padding: 10px;">
-              <div class="media">
+            <li style="padding: 5px;">
+
+              @foreach($usernotifinvite as $notificationinvite)
+              <div class="media" style="padding: 5px;">
                 <div class="media-left">
-                  <img src="img/oln.jpg" class="media-object img-circle" style="width:40px">
+                  <img src="{{$notificationinvite->band_pic}}" class="media-object img-circle" style="width:50px;">
                 </div>
-                <div class="media-body">
-                  <span class="media-heading" style="font-size: 14px;">John Doe</span>
-                  <p style="font-size: 12px;">Lorem ipsum...</p>
+                <div class="media-body" style="padding-left: 10px;">
+                  <span class="media-heading" style="font-size: 13px;">{{$notificationinvite->invitor}} of {{$notificationinvite->band_name}} has invited you to become their {{$notificationinvite->bandrole}}</span>
                 </div>
-              </div>            
+                <div class="media-body" style="width: 4515px; padding-top: 10px;">
+                <form action="{{ url('ignoreRequest') }}" method="post">
+                  <input type="text" name="urlbeforeignore" value="{{$_SERVER['REQUEST_URI']}}" hidden>
+                  <input type="text" name="band_id_requested2" value="{{$notificationinvite->band_id}}" hidden>
+                  <input type="text" name="user_id_requested2" value="{{$notificationinvite->user_id}}" hidden>
+                  <input type="text" name="bandrole_requested2" value="{{$notificationinvite->bandrole}}" hidden>
+                  <input type="text" name="invitor_requested2" value="{{$notificationinvite->invitor}}" hidden>
+                  <button class="btn btn-danger pull-right" style="padding: 5px; margin-right: 10px">Ignore</button>
+                  {{ csrf_field() }}
+                </form>
+                <form action="{{ url('acceptRequest') }}" method="post">                
+                  <input type="text" name="band_name_requested1" value="{{$notificationinvite->band_name}}" hidden>
+                  <input type="text" name="band_id_requested1" value="{{$notificationinvite->band_id}}" hidden>
+                  <input type="text" name="user_id_requested1" value="{{$notificationinvite->user_id}}" hidden>
+                  <input type="text" name="bandrole_requested1" value="{{$notificationinvite->bandrole}}" hidden>
+                  <input type="text" name="invitor_requested1" value="{{$notificationinvite->invitor}}" hidden>
+                  <button class="btn btn-success pull-right" style="padding: 5px; margin-right: 5px">Accept</button>
+                  {{ csrf_field() }}
+                </form>
+                </div>
+              </div>
+              @endforeach
+
             </li>
             </a>
           </ul>
