@@ -19,16 +19,16 @@ class Playlist extends Model
 	];
 
 	public $rules = [
-		'pl_title'  =>'required|max:200', 
+		'pl_title'  =>'required|max:200|unique:playlists', 
 		'pl_desc'   =>'required', 
-		'pl_creator'=>'required', 
+		// 'pl_creator'=>'required', 
 		'followers' =>'numeric',
 	];
 
 	public $updaterules = [
-		'pl_title'  =>'required|max:200', 
+		'pl_title'  =>'required|max:200|unique:playlists', 
 		'pl_desc'   =>'required', 
-		'pl_creator'=>'required', 
+		// 'pl_creator'=>'required', 
 		'followers' =>'numeric',
 	];
 
@@ -44,6 +44,6 @@ class Playlist extends Model
 
 	public function lists()
 	{
-		return $this->hasMany('App\List', 'pl_id');
+		return $this->hasMany('App\Plist', 'pl_id');
 	}
 }

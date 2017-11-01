@@ -111,7 +111,7 @@ $(document).ready(function(){
                 var source = "{{url('/assets/music/')}}";
                 var audio = source +'/'+ song;
 
-               $('.list').append('<label>'+value.song_audio+'</label><br><audio onplay="playSong('+value.song_id+')" class="audio" controls><source src="'+audio+'" type="audio/mpeg"></audio><br><br>'); 
+               $('.list').append('<label>'+value.song_title+'</label><br><audio onplay="playSong('+value.song_id+')" class="audio" controls><source src="'+audio+'" type="audio/mpeg"></audio><br><br>'); 
 
               });
           },

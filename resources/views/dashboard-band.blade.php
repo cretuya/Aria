@@ -718,7 +718,7 @@ $(document).ready(function()
                 var source = "{{url('/assets/music/')}}";
                 var audio = source +'/'+ song;
 
-               $('.tablist').append('<li id="listItem'+value.song_id+'" class="list-group-item"><label>'+value.song_title+'</label><audio controls><source src="'+audio+'" type="audio/mpeg"></audio><button class="btn pull-right delete" value="'+value.song_id+'"><span class="fa fa-close"></span></button><button class="btn pull-right edit" data-toggle="modal" data-genre="'+value.genre_id+'" data-desc="'+value.song_desc+'" data-title="'+value.song_title+'" data-id="'+value.song_id+'"><span class="fa fa-pencil"></span></button></li>'); 
+               $('.tablist').append('<li id="listItem'+value.song_id+'" class="list-group-item"><label>'+value.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio><button class="btn pull-right delete" value="'+value.song_id+'"><span class="fa fa-close"></span></button><button class="btn pull-right edit" data-toggle="modal" data-genre="'+value.genre_id+'" data-desc="'+value.song_desc+'" data-title="'+value.song_title+'" data-id="'+value.song_id+'"><span class="fa fa-pencil"></span></button></li>'); 
 
               });
           },

@@ -16,6 +16,10 @@ class Genre extends Model
     }
     public function list()
     {
-    	return $this->belongsTo('App\List', 'genre_id', 'genre_id');
+    	return $this->belongsTo('App\Plist', 'genre_id', 'genre_id');
+    }
+    public function songs()
+    {
+        return $this->hasMany('App\Song', 'song_id');
     }
 }

@@ -31,9 +31,9 @@ class Song extends Model
 	'album_id' => 'numeric',
 	];
 	
-	public function genres()
+	public function genre()
 	{
-		return $this->hasMany('App\Genre', 'genre_id');
+		return $this->belongsTo('App\Genre', 'genre_id', 'genre_id');
 	} 
 	public function album()
 	{
@@ -41,6 +41,6 @@ class Song extends Model
 	}
 	public function list()
 	{
-		return $this->belongsTo('App\List', 'song_id', 'song_id');
+		return $this->hasMany('App\Plist', 'song_id');
 	}
 }

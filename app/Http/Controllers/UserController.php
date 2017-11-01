@@ -12,8 +12,9 @@ use App\BandArticle;
 use App\Preference;
 Use App\Song;
 use App\Playlist;
-// use App\List;
+use App\Plist;
 use Auth;
+use Validator;
 class UserController extends Controller
 {
     
@@ -244,30 +245,95 @@ class UserController extends Controller
     public function createplaylist(Request $request)
     {
       $uid = Auth::user()->user_id;
-      $title = $request->input('title');
-      $desc = $request->input('desc');
+      $title = $request->input('pl_title');
+      $desc = $request->input('pl_desc');
       $image = $request->file('image');
       // dd($uid);
-
-
-      if ($image == null)
+      $rules = new Playlist;
+      $validator = Validator::make($request->all(), $rules->rules);
+      if ($validator->fails())
       {
-        $create = Playlist::create([
-          'pl_title' => $title,
-          'pl_desc' => $desc,
-          'pl_creator' => $uid,
-        ]);
+          return redirect('/user/profile')->withErrors($validator)->withInput();
       }
       else
       {
-        $create = Playlist::create([
-          'pl_title' => $title,
-          'pl_desc' => $desc,
-          'pl_creator' => $uid,
-          'image' => $image,
-        ]);
-      }
-    return redirect('/user/profile');
+
+        if ($image == null)
+        {
+          $create = Playlist::create([
+            'pl_title' => $title,
+            'pl_desc' => $desc,
+            'pl_creator' => $uid,
+          ]);
+        }
+        else
+        {
+          $create = Playlist::create([
+            'pl_title' => $title,
+            'pl_desc' => $desc,
+            'pl_creator' => $uid,
+            'image' => $image,
+          ]);
+        }
+      return redirect('/user/profile');
     }
+  }
+
+  public function viewplaylist($id)
+  {
+    $pl = Playlist::where('pl_id', $id)->first();
+    $lists = Plist::where('pl_id', $id)->get();
+    $rsongs = Song::inRandomOrder()->get();
+
+
+    return view('view-playlist', compact('pl', 'lists', 'rsongs'));
+  }
+
+  public function addtonlist(Request $request)
+  {
+    $id = $request->input('id');
+    $pid = $request->input('pid');
+
+    $song = Song::where('song_id', $id)->first();
+    $genre = $song->genre;
+
+    if (count($song) > 0)
+    {
+      $create = Plist::create([
+        'genre_id' => $genre->genre_id,
+        'song_id' => $song->song_id,
+        'pl_id' => $pid,
+      ]);
+    }
+
+    return response ()->json(['create' => $create, 'song' => $song]);
+  }
+
+  public function nrecommend(Request $request)
+  {
+    $id = $request->input('id');
+    $pid = $request->input('pid');
+
+    $song = Song::where('song_id', $id)->first();
+    $origs = Song::all();
+    $recs = Array();
+
+    foreach($origs as $orig)
+    {
+      if ($song->song_id == $orig->song_id && $song->genre == $orig->genre)
+      {
+
+      }
+      else
+      {
+        if ($song->genre == $orig->genre)
+        {
+          array_push($recs, $orig);
+        }
+      }
+    }
+
+    return response ()->json($recs);
+  }
 
 }

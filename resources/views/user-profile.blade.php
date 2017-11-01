@@ -5,8 +5,16 @@
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/user-profile.css').'?'.rand()}}">
 
 @include('layouts.navbar')
-
 <br><br><br><br>
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 <div class="container">
 
   <div class="row">
@@ -78,11 +86,10 @@
             <div class="media">
               <div class="media-left">
                 @if($playlist->image == null)
-                <a href=""><img src="#" class="media-object" style="max-width:200px; height: 100%; max-height: 180px;">{{$playlist->pl_title}}</a>
+                <a href="{{url('playlist/'.$playlist->pl_id)}}"><img src="#" class="media-object" style="max-width:200px; height: 100%; max-height: 180px;">{{$playlist->pl_title}}</a>
                 @else
-                <a href=""><img src="{{$playlist->image}}" class="media-object" style="max-width:200px; height: 100%; max-height: 180px;">{{$playlist->pl_title}}</a>
+                <a href="{{url('playlist/'.$playlist->pl_id)}}"><img src="{{$playlist->image}}" class="media-object" style="max-width:200px; height: 100%; max-height: 180px;">{{$playlist->pl_title}}</a>
                 @endif
-                <p>{{$playlist->followers}} Followers</p>
               </div>
             </div>
           </div>
@@ -207,9 +214,9 @@
         {{csrf_field()}}
         <div class="modal-body" style="padding-left: 25px;padding-right: 25px;">
           <label>Title</label><br>
-          <input type="text" name="title" class="form-control" required>
+          <input type="text" name="pl_title" class="form-control" required>
           <label>Description</label><br>
-          <input type="text" name="desc" class="form-control" required>
+          <input type="text" name="pl_desc" class="form-control" required>
           <label>Add Image</label><br>
           <input type='file' name='image'  class='form-control' accept="image/*"><br><br> 
         </div>

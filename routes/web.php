@@ -88,4 +88,7 @@ Route::middleware(['auth'])->group(function(){
 	Route::post('visitCount', 'BandController@visitCount');
 
 	Route::post('createplaylist', 'UserController@createplaylist');
+	Route::get('playlist/{pl_id}', 'UserController@viewplaylist');
+	Route::post('addtonlist', 'UserController@addtonlist');
+	Route::post('nrecommend', 'UserController@nrecommend');
 });
