@@ -16,6 +16,7 @@ class Plist extends Model
 	];
 
 
+
 	public function playlist()
 	{
 		return $this->belongsTo('App\Playlist', 'pl_id', 'pl_id');

@@ -40,16 +40,16 @@
       </div>
     @else
     <div class="list">
-        @foreach($ulists as $ulist)
+        @foreach($lists as $list)
         <div align="center">
           <div class="row">
             <div class="col-md-7">
-              <label>{{$ulist->song_title}}</label><br>
-              <audio controls><source src="{{url('/assets/music/'.$ulist->song_audio)}}" type="audio/mpeg"></audio>
+              <label>{{$list->songs->song_title}}</label><br>
+              <audio controls><source src="{{url('/assets/music/'.$list->songs->song_audio)}}" type="audio/mpeg"></audio>
             </div>
             <br>
             <div class="col-md-2">
-              <button type="button" data-id="{{$ulist->song_id}}" class="remlist">Remove</button>
+              <button type="button" data-id="{{$list->songs->song_id}}" class="remlist">Remove</button>
             </div>
           </div>
         </div>

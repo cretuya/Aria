@@ -5,6 +5,7 @@
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/user-profile.css').'?'.rand()}}">
 
 @include('layouts.navbar')
+<meta name ="csrf-token" content = "{{csrf_token() }}"/>
 <br><br><br><br>
 @if ($errors->any())
     <div class="alert alert-danger">
@@ -75,11 +76,11 @@
   <h3>Playlists</h3>
 
       
-  <div class="container" style="padding: 0;">
+  <div class="container playlists" style="padding: 0;">
   <!-- nag usab ko diri -->
       <div class="row">
-      @if($playlists == null)
-      <p style="text-align:center; color: #a4a4a4; font-size: 16px;">{{$user->fname}} has not followed any bands yet</p>
+      @if(count($playlists) == null)
+      <p style="text-align:center; color: #a4a4a4; font-size: 16px;">{{$user->fname}} has not created any playlists yet.</p>
       @else
         @foreach ($playlists as $playlist)
           <div class="col-xs-4">
@@ -91,8 +92,8 @@
                 <a href="{{url('playlist/'.$playlist->pl_id)}}"><img src="{{$playlist->image}}" class="media-object" style="max-width:200px; height: 100%; max-height: 180px;">{{$playlist->pl_title}}</a>
                 @endif
                 <!-- <div> -->
-                <button class="edit">Edit</button>
-                <button class="delete">Delete</button>
+                <button class="edit" data-id="{{$playlist->pl_id}}">Edit</button>
+                <button class="delete" data-id="{{$playlist->pl_id}}">Delete</button>
                 <!-- </div> -->
               </div>
             </div>
@@ -234,4 +235,79 @@
   </div>
 </div>
 
+<div id="edit_playlist_modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Edit Playlist</h4>
+        </div>
+        <form action="{{url('updateplaylist')}}" method="post">
+        {{csrf_field()}}
+        <div class="modal-body" style="padding-left: 25px;padding-right: 25px;">
+          <label>Title</label><br>
+          <input type="text" name="pl_title" class="form-control" id="pl_title" required>
+          <label>Description</label><br>
+          <input type="text" name="pl_desc" class="form-control" id="pl_desc" required>
+          <input type="text" name="pl_id" class="form-control" id="pl_id" hidden>
+
+<!--           <label>Add Image</label><br>
+          <input type='file' name='image'  class='form-control' id="image" accept="image/*"><br><br>  -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-default">Submit</button>
+        </div>
+        </form>
+    </div>
+
+  </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+$('.delete').click(function()
+{
+  var id = $(this).data('id');
+  // alert(id);
+  window.location = '../playlist/delete/'+id;
+});
+$('.edit').click(function()
+{
+  var id = $(this).data('id');
+  // alert(id);
+  editplaylist(id);
+});
+
+function editplaylist(id)
+{
+    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+
+        $.ajax({
+          method : "post",
+          url : "../editplaylist",
+          data : { '_token' : CSRF_TOKEN,
+            'id' : id
+          },
+          success: function(data){
+            console.log(data);
+          $('.modal-body #pl_id').val(data.pl_id);
+          $('.modal-body #pl_title').val(data.pl_title);
+          $('.modal-body #pl_desc').val(data.pl_desc);
+          // $('.modal-body #image').val(data.image);
+
+          $('#edit_playlist_modal').modal('show');            
+          },
+          error: function(a,b,c)
+          {
+            console.log('Error');
+
+          }
+        });  
+}
+
+
+});
+</script>
 @stop

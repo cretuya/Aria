@@ -279,6 +279,43 @@ class UserController extends Controller
     }
   }
 
+  public function deleteplaylist($id)
+  {
+    // $pl = Playlist::where('pl_id', $id)->first();
+
+    $delete = Playlist::where('pl_id', $id)->delete();
+    return redirect('/user/profile');
+    // return response ()->json($id);
+  }
+
+  public function editplaylist(Request $request)
+  {
+    $pl = Playlist::where('pl_id', $request->input('id'))->first();
+    return response ()->json($pl);
+  }
+
+  public function updateplaylist(Request $request)
+  {
+    $id = Playlist::where('pl_id', $request->input('pl_id'))->first();
+    $title = $request->input('pl_title');
+    $desc = $request->input('pl_desc');
+
+    $rules = new Playlist;
+    $validator = Validator::make($request->all(), $rules->updaterules);
+    if ($validator->fails())
+    {
+      return redirect('/user/profile')->withErrors($validator)->withInput();
+    }
+    else
+    {
+      $update = Playlist::where('pl_id', $id->pl_id)->update([
+        'pl_title' => $title,
+        'pl_desc' => $desc,
+      ]);
+      // dd($update);
+      return redirect('/user/profile');
+    }
+  }
   public function viewplaylist($id)
   {
     $pl = Playlist::where('pl_id', $id)->first();
@@ -299,7 +336,7 @@ class UserController extends Controller
         {
           if ($song == $list->songs && $song->genre == $list->songs->genre)
           {
-            array_push($ulists, $song);
+            
           }
           else if ($song != $list->songs)
           {
@@ -341,7 +378,7 @@ class UserController extends Controller
       // dd($get);
     }
 
-    return view('view-playlist', compact('pl', 'lists', 'rsongs', 'ulists', 'recsongs'));
+    return view('view-playlist', compact('pl', 'lists', 'rsongs', 'recsongs'));
   }
 
   public function addtonlist(Request $request)
