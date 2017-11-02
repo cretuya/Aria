@@ -90,6 +90,10 @@
                 @else
                 <a href="{{url('playlist/'.$playlist->pl_id)}}"><img src="{{$playlist->image}}" class="media-object" style="max-width:200px; height: 100%; max-height: 180px;">{{$playlist->pl_title}}</a>
                 @endif
+                <!-- <div> -->
+                <button class="edit">Edit</button>
+                <button class="delete">Delete</button>
+                <!-- </div> -->
               </div>
             </div>
           </div>

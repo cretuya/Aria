@@ -91,4 +91,7 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('playlist/{pl_id}', 'UserController@viewplaylist');
 	Route::post('addtonlist', 'UserController@addtonlist');
 	Route::post('nrecommend', 'UserController@nrecommend');
+	Route::post('addtolist', 'UserController@addtolist');
+	Route::post('listrecommend', 'UserController@listrecommend');
+
 });

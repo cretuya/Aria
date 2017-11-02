@@ -285,8 +285,28 @@ class UserController extends Controller
     $lists = Plist::where('pl_id', $id)->get();
     $rsongs = Song::inRandomOrder()->get();
 
+    $songs = Song::all();
+    // get songs naa iya list
+    $ulists = Array();
+    $tmp = Array();
+    $recsongs = Array();
+    if (count($lists) > 0)
+    {
+      // compute para recommendation
+      foreach ($songs as $song)
+      {
+        foreach ($lists as $list)
+        {
+          if ($song == $list->songs && $song->genre == $list->songs->genre)
+          {
+            array_push($ulists, $song);
+          }
+        }
+      }
+      // dd($recsongs);
+    }
 
-    return view('view-playlist', compact('pl', 'lists', 'rsongs'));
+    return view('view-playlist', compact('pl', 'lists', 'rsongs', 'ulists', 'recsongs'));
   }
 
   public function addtonlist(Request $request)
@@ -335,5 +355,52 @@ class UserController extends Controller
 
     return response ()->json($recs);
   }
+
+  public function addtolist(Request $request)
+  {
+    $id = $request->input('id');
+    $pid = $request->input('pid');
+
+    $song = Song::where('song_id', $id)->first();
+    $genre = $song->genre;
+
+    if (count($song) > 0)
+    {
+      $create = Plist::create([
+        'genre_id' => $genre->genre_id,
+        'song_id' => $song->song_id,
+        'pl_id' => $pid,
+      ]);
+    }
+
+    return response ()->json(['create' => $create, 'song' => $song]);
+  }  
+
+  public function listrecommend(Request $request)
+  {
+    $id = $request->input('id');
+    $pid = $request->input('pid');
+
+    $song = Song::where('song_id', $id)->first();
+    $origs = Song::all();
+    $recs = Array();
+
+    foreach($origs as $orig)
+    {
+      if ($song->song_id == $orig->song_id && $song->genre == $orig->genre)
+      {
+
+      }
+      else
+      {
+        if ($song->genre == $orig->genre)
+        {
+          array_push($recs, $orig);
+        }
+      }
+    }
+
+    return response ()->json($recs);
+  }  
 
 }
