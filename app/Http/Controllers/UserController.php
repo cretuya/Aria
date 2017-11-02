@@ -301,9 +301,44 @@ class UserController extends Controller
           {
             array_push($ulists, $song);
           }
+          else if ($song != $list->songs)
+          {
+            if ($song->genre == $list->songs->genre)
+            {
+              array_push($tmp, $song);
+            }
+          }
         }
       }
-      // dd($recsongs);
+      $ul = collect($ulists);
+      // $get= Array();
+      foreach ($tmp as $t)
+      {
+        if ($ul->contains('song_id', $t->song_id))
+        {
+
+        }
+        else
+        {
+          array_push($recsongs, $t);
+        }
+      }
+      // if (count($recsongs) == null)
+      // {
+      //   foreach ($lists as $list)
+      //   {
+      //     if ($songs->contains('song_id', $list->songs->song_id))
+      //     {
+      //       array_push($get, $song);
+
+      //     }
+      //     else
+      //     {
+      //     }
+      //   }
+      //   $recsongs = $get;
+      // }
+      // dd($get);
     }
 
     return view('view-playlist', compact('pl', 'lists', 'rsongs', 'ulists', 'recsongs'));

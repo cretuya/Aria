@@ -57,7 +57,10 @@
     </div>
     <hr>
     <div class="recsongs">
-      <h4>Recommended Songs</h4>        
+      <h4>Recommended Songs</h4>
+      @if(count($recsongs) == null)
+      <h6>No available songs at the moment.</h6>
+      @else        
         @foreach($recsongs as $recsong)
         <div align="center">
           <div class="row">
@@ -72,6 +75,7 @@
           </div>
         </div>
         @endforeach
+      @endif
       </div>
       <div class="recommend" hidden>
       <h4>Recommended Songs</h4>        
