@@ -377,7 +377,6 @@ class UserController extends Controller
       // }
       // dd($get);
     }
-
     return view('view-playlist', compact('pl', 'lists', 'rsongs', 'recsongs'));
   }
 
@@ -473,6 +472,15 @@ class UserController extends Controller
     }
 
     return response ()->json($recs);
+  }
+
+  public function delplsong($sid, $pid)
+  {
+    $song = PList::where([
+    ['song_id', $sid],
+    ['pl_id', $pid],
+    ])->delete();
+    return redirect('playlist/'.$pid);
   }  
 
 }

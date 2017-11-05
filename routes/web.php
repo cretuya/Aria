@@ -91,6 +91,7 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('playlist/delete/{pl_id}', 'UserController@deleteplaylist');
 	Route::post('editplaylist', 'UserController@editplaylist');
 	Route::post('updateplaylist', 'UserController@updateplaylist');
+	Route::get('delplsong/{song_id}/{pl_id}', 'UserController@delplsong');
 	
 
 	Route::get('playlist/{pl_id}', 'UserController@viewplaylist');

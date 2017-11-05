@@ -124,7 +124,7 @@ function addtonlist(id)
             $('.nlist h3').remove();
             $('.nlist').append('<div align="center"><div class="row"><div class="col-md-7"><label>'+data.song.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio></div><div class="col-md-2"><button type="button" class="remnlist" data-id="'+data.song.song_id+'">Remove</button></div></div></div>');
             $('.rsongs').remove();
-            nrecommend(data.song.song_id);
+            // nrecommend(data.song.song_id);
 
           },
           error: function(a,b,c)
@@ -170,6 +170,14 @@ function nrecommend(id)
           }
         });  
 }
+$('.nlist').on('click', '.remnlist' , function()
+{
+    var sid = $(this).data('id');
+    var pid = $('#pid').val();
+    window.location = '../delplsong/'+sid+'/'+pid;
+    // alert(sid);
+});
+
 $('.addlist').click(function()
 {
     var sid = $(this).data('id');
@@ -196,9 +204,9 @@ function addtolist(id)
               var source = "{{url('/assets/music/')}}";
               var audio = source +'/'+ song;
 // // console.log(audio);
-            $('.list').append('<div align="center"><div class="row"><div class="col-md-7"><label>'+data.song.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio></div><div class="col-md-2"><button type="button" class="remnlist" data-id="'+data.song.song_id+'">Remove</button></div></div></div>');
+            $('.list').append('<div align="center"><div class="row"><div class="col-md-7"><label>'+data.song.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio></div><div class="col-md-2"><button type="button" class="remlist" data-id="'+data.song.song_id+'">Remove</button></div></div></div>');
             $('.recsongs').remove();
-            recommend(data.song.song_id);
+            // recommend(data.song.song_id);
 
           },
           error: function(a,b,c)
@@ -245,7 +253,13 @@ function recommend(id)
           }
         });  
 }
-
+$('.list').on('click', '.remlist' , function()
+{
+    var sid = $(this).data('id');
+    var pid = $('#pid').val();
+    // alert(pid);
+    window.location = '../delplsong/'+sid+'/'+pid;
+});
 
 
 });
