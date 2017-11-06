@@ -13,6 +13,7 @@ class Band extends Model
 	protected $fillable = [
         'band_name' ,
         'band_desc' ,
+        'num_followers' ,
         'scored_updated_date',
     ];
 

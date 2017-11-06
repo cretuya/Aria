@@ -56,6 +56,7 @@ class BandController extends Controller
     {
         $name = $request->input('band_name');
         $role = $request->input('band_role_create');
+        $numfollowers = 0;
         // $role = $request->input('band_pic');
 
         date_default_timezone_set("Asia/Manila");
@@ -73,6 +74,7 @@ class BandController extends Controller
             $create = Band::create([
                 'band_name' => $name,
                 'band_pic' => 'dummy-pic.jpg',
+                'num_followers' => $numfollowers,
                 'scored_updated_date' => $dateToday
             ]);
 
