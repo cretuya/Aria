@@ -26,24 +26,49 @@ class BandController extends Controller
 	public function createBand(Request $request)
 	{
 		$name = $request->input('band_name');
-		$role = $request->input('band_role_create');
+        $role = $request->input('band_role_create');
+        $zero = 0;
+
+        $genre1 = $request->input('genre_select_1');
+        $genre2 = $request->input('genre_select_2');
+
+        // $role = $request->input('band_pic');
+
+        date_default_timezone_set("Asia/Manila");
+        $dateToday = date('Y-m-d');
+
 		$uid = $request->input('user_id');
 		$user = User::where('user_id', $uid)->first();
 
 		if(count($user) > 0)
 		{
 			$create = Band::create([
-				'band_name' => $name,
-				'band_pic' => 'dummy-pic.jpg'
-			]);
+                'band_name' => $name,
+                'band_pic' => 'dummy-pic.jpg',
+                'band_desc' => $request->input('bandDescr'),
+                'num_followers' => $zero,
+                'visit_counts' => $zero,
+                'scored_updated_date' => $dateToday
+            ]);
 
-			$bandmember = Bandmember::create([
-				'band_id' => $create->id,
-				'user_id' => $uid,
-				'bandrole' => $role,
-				// 'band_desc' => $desc,
-			]);	
-			return response ()->json(['band' => $create ,'member' => $bandmember]);		
+
+            $bandmember = Bandmember::create([
+                'band_id' => $create->id,
+                'user_id' => $uid,
+                'bandrole' => $role
+                // 'band_desc' => $desc,
+            ]);
+
+            $bgenre1 = BandGenre::create([
+                'band_id' => $create->id,
+                'genre_id' => $genre1
+            ]);
+
+            $bgenre2 = BandGenre::create([
+                'band_id' => $create->id,
+                'genre_id' => $genre2
+            ]);
+			return response ()->json(['band' => $create ,'member' => $bandmember , 'genre1' => $bgenre1 , 'genre2' => $bgenre2]);		
 		}
 		else
 		{

@@ -73,6 +73,7 @@ class UserController extends Controller
         // dd($articlesfeed);
         $recommend = $this->recommend();
         // dd($recommend);
+        // dd($friends);
         return view('feed', compact('userHasBand','userBandRole','usersBand','user', 'friends','articlesfeed', 'recommend','usernotifinvite'));
     }
 
@@ -213,12 +214,12 @@ class UserController extends Controller
 
         $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
 
-        $playlists = Playlist::where('pl_creator', Auth::user()->user_id)->get();
+        $playlists = Playlist::join('users','playlists.pl_creator','=','users.user_id')->where('pl_creator', Auth::user()->user_id)->get();
         // $bandGenre = BandGenre::select('genre_name')->join('genres', 'bandgenres.genre_id', '=', 'genres.genre_id')->join('bands', 'bandgenres.band_id', '=', 'bands.band_id')->get();
 
         // dd($bandsfollowed);
         // dd($usersBand);
-        //nag usab ko diri
+
             return view('user-profile', compact('userHasBand','userBandRole','usersBand','user','bandsfollowed','bandsfollowedNoGenre','usernotifinvite', 'playlists'));
     }
 
@@ -247,7 +248,12 @@ class UserController extends Controller
       $uid = Auth::user()->user_id;
       $title = $request->input('pl_title');
       $desc = $request->input('pl_desc');
-      $image = $request->file('image');
+      $image = $request->file('pl_image');
+
+      \Cloudder::upload($image);
+      $cloudder=\Cloudder::getResult();
+      
+
       // dd($uid);
       $rules = new Playlist;
       $validator = Validator::make($request->all(), $rules->rules);
@@ -272,7 +278,7 @@ class UserController extends Controller
             'pl_title' => $title,
             'pl_desc' => $desc,
             'pl_creator' => $uid,
-            'image' => $image,
+            'image' => $cloudder['url'],
           ]);
         }
       return redirect('/user/profile');
@@ -299,26 +305,24 @@ class UserController extends Controller
     $id = Playlist::where('pl_id', $request->input('pl_id'))->first();
     $title = $request->input('pl_title');
     $desc = $request->input('pl_desc');
+    $image = $request->file('pl_image');
 
-    $rules = new Playlist;
-    $validator = Validator::make($request->all(), $rules->updaterules);
-    if ($validator->fails())
-    {
-      return redirect('/user/profile')->withErrors($validator)->withInput();
-    }
-    else
-    {
+    \Cloudder::upload($image);
+      $cloudder=\Cloudder::getResult();
+
+    
       $update = Playlist::where('pl_id', $id->pl_id)->update([
         'pl_title' => $title,
         'pl_desc' => $desc,
+        'image' => $cloudder['url'],
       ]);
       // dd($update);
       return redirect('/user/profile');
-    }
+    
   }
   public function viewplaylist($id)
   {
-    $pl = Playlist::where('pl_id', $id)->first();
+    $pl = Playlist::join('users','playlists.pl_creator','=','users.user_id')->where('pl_id', $id)->first();
     $lists = Plist::where('pl_id', $id)->get();
     $rsongs = Song::inRandomOrder()->get();
 

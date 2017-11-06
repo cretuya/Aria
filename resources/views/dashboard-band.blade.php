@@ -67,13 +67,21 @@
 
     <?php
     $checker = 0;
+    $counter = 0;
     ?>
 
-    <div class="col-md-6" style="max-height: 270px; overflow-y: scroll;">
+    <div class="col-md-6" style="max-height: 270px;">
           <h4>Choose 2 main genres</h4>
             <div class="row">
                <div class="col-md-4">
                 @foreach($genres as $genre)
+                <?php 
+                if($counter == 6){
+                  echo "</div>";
+                  echo "<div class='col-md-4'>";
+                  $counter = 0;
+                }
+                ?>
                   @foreach($bandGenreSelected as $genreSelected)
                     @if($genre->genre_id == $genreSelected->genre_id)
                       <div class="checkbox">
@@ -92,6 +100,7 @@
                      </div>
                      @endif
                       <?php $checker = 0; ?>
+                      <?php $counter++; ?>
                  @endforeach
             </div>
           </div>
@@ -102,7 +111,8 @@
   <br>
     
 <div class="row">
- <div class="col-md-12" style="height: 263px;max-height: 263px; overflow-y: scroll;">
+ <div class="col-md-12" style="height: 263px;">
+ <!-- <div class="col-md-12" style="height: 263px;max-height: 263px;"> -->
    <h4>Band Members</h4>
 
    <form method="post" action="{{url('/addmember')}}">

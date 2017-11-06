@@ -83,21 +83,20 @@
       <p style="text-align:center; color: #a4a4a4; font-size: 16px;">{{$user->fname}} has not created any playlists yet.</p>
       @else
         @foreach ($playlists as $playlist)
-          <div class="col-xs-4">
-            <div class="media">
-              <div class="media-left">
-                @if($playlist->image == null)
-                <a href="{{url('playlist/'.$playlist->pl_id)}}"><img src="#" class="media-object" style="max-width:200px; height: 100%; max-height: 180px;">{{$playlist->pl_title}}</a>
-                @else
-                <a href="{{url('playlist/'.$playlist->pl_id)}}"><img src="{{$playlist->image}}" class="media-object" style="max-width:200px; height: 100%; max-height: 180px;">{{$playlist->pl_title}}</a>
-                @endif
-                <!-- <div> -->
-                <button class="edit" data-id="{{$playlist->pl_id}}">Edit</button>
-                <button class="delete" data-id="{{$playlist->pl_id}}">Delete</button>
+          <center>
+          <div class="col-xs-3">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <a href="{{url('playlist/'.$playlist->pl_id)}}"><img src="{{$playlist->image}}" class="img-responsive" style="height: 100%; max-height: 180px;"><span style="font-size: 18px;">{{$playlist->pl_title}}</span></a>
+                <br>
+                <p>by: {{$playlist->fullname}}</p>
+                <button class="btn btn-default edit" data-id="{{$playlist->pl_id}}">Edit</button>
+                <button class="btn btn-default delete" data-id="{{$playlist->pl_id}}">Delete</button>
                 <!-- </div> -->
               </div>
             </div>
           </div>
+          </center>
           @endforeach
         @endif
       </div>
@@ -187,13 +186,13 @@
           <!-- {{--<label>Birthdate</label>
                               <input type="text" name="usersbod" class="form-control" value="{{session('userSocial')['birthday'] }}" disabled>--}} -->
           <label>City/Town</label>
-          <input type="text" name="userscity" class="form-control" value="{{ $user->address }}">
+          <input type="text" name="userscity" class="form-control" value="{{ $user->address }}" required>
           <!-- {{--<label>Gender</label>
                               <input type="text" name="usersgender" class="form-control" value="{{ session('userSocial')['gender'] }}" disabled>--}} -->
           <label>Email</label>
-          <input type="text" name="usersemail" class="form-control" value=" {{ $user->email }} ">
+          <input type="text" name="usersemail" class="form-control" value=" {{ $user->email }}" required>
           <label>Contact No.</label>
-          <input type="text" name="userscontact" class="form-control" value="{{ $user->contact }}">
+          <input type="text" name="userscontact" class="form-control" value="{{ $user->contact }}" required>
           <label>Bio</label>
           <textarea name="usersbio" class="form-control" rows="4">{{ $user->bio }}</textarea>
         </div>
@@ -215,7 +214,7 @@
         <div class="modal-header">
           <h4 class="modal-title">Create Playlist</h4>
         </div>
-        <form action="{{url('createplaylist')}}" method="post">
+        <form action="{{url('createplaylist')}}" method="post" enctype="multipart/form-data">
         {{csrf_field()}}
         <div class="modal-body" style="padding-left: 25px;padding-right: 25px;">
           <label>Title</label><br>
@@ -223,7 +222,7 @@
           <label>Description</label><br>
           <input type="text" name="pl_desc" class="form-control" required>
           <label>Add Image</label><br>
-          <input type='file' name='image'  class='form-control' accept="image/*"><br><br> 
+          <input type="file" name="pl_image"  class="form-control" accept="image/*" required><br><br> 
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -243,14 +242,16 @@
         <div class="modal-header">
           <h4 class="modal-title">Edit Playlist</h4>
         </div>
-        <form action="{{url('updateplaylist')}}" method="post">
+        <form action="{{url('updateplaylist')}}" method="post" enctype="multipart/form-data">
         {{csrf_field()}}
         <div class="modal-body" style="padding-left: 25px;padding-right: 25px;">
           <label>Title</label><br>
           <input type="text" name="pl_title" class="form-control" id="pl_title" required>
           <label>Description</label><br>
           <input type="text" name="pl_desc" class="form-control" id="pl_desc" required>
-          <input type="text" name="pl_id" class="form-control" id="pl_id" hidden>
+          <label>Change Image</label><br>
+          <input type="file" name="pl_image"  class="form-control" accept="image/*">
+          <input type="text" name="pl_id" class="form-control hidden" id="pl_id" >
 
 <!--           <label>Add Image</label><br>
           <input type='file' name='image'  class='form-control' id="image" accept="image/*"><br><br>  -->
@@ -292,9 +293,9 @@ function editplaylist(id)
           },
           success: function(data){
             console.log(data);
-          $('.modal-body #pl_id').val(data.pl_id);
-          $('.modal-body #pl_title').val(data.pl_title);
-          $('.modal-body #pl_desc').val(data.pl_desc);
+          $('.modal-body #pl_id').attr('placeholder',data.pl_id);
+          $('.modal-body #pl_title').attr('placeholder',data.pl_title);
+          $('.modal-body #pl_desc').attr('placeholder',data.pl_desc);
           // $('.modal-body #image').val(data.image);
 
           $('#edit_playlist_modal').modal('show');            

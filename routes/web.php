@@ -25,7 +25,7 @@ Route::middleware(['auth'])->group(function(){
 	});
 
 	Route::get('feed', 'UserController@feedshow');
-	Route::get('feed/{user_id}', 'UserController@friendprofile');
+	Route::get('profile/{user_id}', 'UserController@friendprofile');
 
 	Route::get('charts', 'ChartsController@show');
 

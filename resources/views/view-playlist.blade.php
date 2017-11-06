@@ -9,10 +9,13 @@
 <input type="text" value="{{$pl->pl_id}}" id="pid" hidden>
 
 <br><br><br><br>
-<div class="containter">
-  <div align="center">
-    <h3>{{$pl->pl_title}}</h3>
-    <br><br>
+<div class="container">
+  <div class="col-md-3">
+    <img src="{{$pl->image}}" class="img-responsive">
+    <h3 class="text-center">{{$pl->pl_title}}</h3>
+    <p class="text-center">by: {{$pl->fullname}}</p>
+  </div>
+  <div class="col-md-9">
     @if(count($lists) == null)
     <div class="nlist">
       <h3>You have no songs in your playlist yet.</h3>
@@ -21,7 +24,6 @@
     <div class="rsongs">
       <h4>Recommended Songs</h4>        
         @foreach($rsongs as $rsong)
-        <div align="center">
           <div class="row">
             <div class="col-md-7">
               <label>{{$rsong->song_title}}</label><br>
@@ -29,10 +31,9 @@
             </div>
             <br>
             <div class="col-md-2">
-              <button type="button" data-id="{{$rsong->song_id}}" class="addnlist">Add</button>
+              <button type="button" data-id="{{$rsong->song_id}}" class="addnlist">Add to this playlist</button>
             </div>
           </div>
-        </div>
         @endforeach
       </div>
       <div class="nrecommend" hidden>
@@ -41,7 +42,6 @@
     @else
     <div class="list">
         @foreach($lists as $list)
-        <div align="center">
           <div class="row">
             <div class="col-md-7">
               <label>{{$list->songs->song_title}}</label><br>
@@ -52,7 +52,6 @@
               <button type="button" data-id="{{$list->songs->song_id}}" class="remlist">Remove</button>
             </div>
           </div>
-        </div>
         @endforeach
     </div>
     <hr>
@@ -62,7 +61,6 @@
       <h6>No available songs at the moment.</h6>
       @else        
         @foreach($recsongs as $recsong)
-        <div align="center">
           <div class="row">
             <div class="col-md-7">
               <label>{{$recsong->song_title}}</label><br>
@@ -70,10 +68,9 @@
             </div>
             <br>
             <div class="col-md-2">
-              <button type="button" data-id="{{$recsong->song_id}}" class="addlist">Add</button>
+              <button type="button" data-id="{{$recsong->song_id}}" class="addlist">Add to this playlist</button>
             </div>
           </div>
-        </div>
         @endforeach
       @endif
       </div>
@@ -122,7 +119,7 @@ function addtonlist(id)
               var audio = source +'/'+ song;
 // // console.log(audio);
             $('.nlist h3').remove();
-            $('.nlist').append('<div align="center"><div class="row"><div class="col-md-7"><label>'+data.song.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio></div><div class="col-md-2"><button type="button" class="remnlist" data-id="'+data.song.song_id+'">Remove</button></div></div></div>');
+            $('.nlist').append('<div class="row"><div class="col-md-7"><label>'+data.song.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio></div><div class="col-md-2"><button type="button" class="remnlist" data-id="'+data.song.song_id+'">Remove</button></div></div>');
             $('.rsongs').remove();
             // nrecommend(data.song.song_id);
 
@@ -157,7 +154,7 @@ function nrecommend(id)
                 var source = "{{url('/assets/music/')}}";
                 var audio = source +'/'+ song;
 
-                $('.nrecommend').append('<div align="center"><div class="row"><div class="col-md-7"><label>'+value.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio></div><div class="col-md-2"><button type="button" class="addnlist" data-id="'+value.song_id+'">Add</button></div></div></div>');
+                $('.nrecommend').append('<div class="row"><div class="col-md-7"><label>'+value.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio></div><div class="col-md-2"><button type="button" class="addnlist" data-id="'+value.song_id+'">Add</button></div></div>');
 
               });
 
@@ -204,7 +201,7 @@ function addtolist(id)
               var source = "{{url('/assets/music/')}}";
               var audio = source +'/'+ song;
 // // console.log(audio);
-            $('.list').append('<div align="center"><div class="row"><div class="col-md-7"><label>'+data.song.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio></div><div class="col-md-2"><button type="button" class="remlist" data-id="'+data.song.song_id+'">Remove</button></div></div></div>');
+            $('.list').append('<div class="row"><div class="col-md-7"><label>'+data.song.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio></div><div class="col-md-2"><button type="button" class="remlist" data-id="'+data.song.song_id+'">Remove</button></div></div>');
             $('.recsongs').remove();
             // recommend(data.song.song_id);
 
@@ -240,7 +237,7 @@ function recommend(id)
                 var source = "{{url('/assets/music/')}}";
                 var audio = source +'/'+ song;
 
-                $('.recommend').append('<div align="center"><div class="row"><div class="col-md-7"><label>'+value.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio></div><div class="col-md-2"><button type="button" class="removenlist" data-id="'+value.song_id+'">Add</button></div></div></div>');
+                $('.recommend').append('<div class="row"><div class="col-md-7"><label>'+value.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio></div><div class="col-md-2"><button type="button" class="removenlist" data-id="'+value.song_id+'">Add</button></div></div>');
 
               });
 

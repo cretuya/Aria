@@ -56,7 +56,11 @@ class BandController extends Controller
     {
         $name = $request->input('band_name');
         $role = $request->input('band_role_create');
-        $numfollowers = 0;
+        $zero = 0;
+
+        $genre1 = $request->input('genre_select_1');
+        $genre2 = $request->input('genre_select_2');
+
         // $role = $request->input('band_pic');
 
         date_default_timezone_set("Asia/Manila");
@@ -74,7 +78,9 @@ class BandController extends Controller
             $create = Band::create([
                 'band_name' => $name,
                 'band_pic' => 'dummy-pic.jpg',
-                'num_followers' => $numfollowers,
+                'band_desc' => $request->input('bandDescr'),
+                'num_followers' => $zero,
+                'visit_counts' => $zero,
                 'scored_updated_date' => $dateToday
             ]);
 
@@ -84,6 +90,16 @@ class BandController extends Controller
                 'user_id' => session('userSocial')['id'],
                 'bandrole' => $role
                 // 'band_desc' => $desc,
+            ]);
+
+            $bgenre1 = BandGenre::create([
+                'band_id' => $create->id,
+                'genre_id' => $genre1
+            ]);
+
+            $bgenre2 = BandGenre::create([
+                'band_id' => $create->id,
+                'genre_id' => $genre2
             ]);
 
             return redirect('/'.$create->band_name.'/manage');
