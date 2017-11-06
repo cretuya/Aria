@@ -89,3 +89,9 @@ Route::get('bandgenres', 'Api\AlbumController@bandgenres');
 
 Route::get('preferences', 'Api\UserController@preferences');
 Route::get('userhistory','Api\UserController@userhistory');
+
+Route::post('AddPlayList', 'Api\UserController@AddPlayList');
+Route::get('DeletePlayList', 'Api\UserController@DeletePlayList');
+Route::post('updateplaylist', 'Api\UserController@updateplaylist');
+Route::get('getAllPlaylist', 'Api\UserController@getAllPlaylist');
+Route::get('addSongToPlaylist', 'Api\UserController@addSongToPlaylist');

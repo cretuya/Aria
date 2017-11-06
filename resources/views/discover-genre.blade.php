@@ -4,47 +4,61 @@
 
 @include('layouts.navbar')
 @section('content')
-<br><br><br><br><br>
+<br><br><br>
 <div class="container">
 <meta name ="csrf-token" content = "{{csrf_token() }}"/>
 
-	<center><h2>{{$genreChoice->genre_name}}</h2></center>
-	<section id="bands">
-	@if ($bands == null)
-	@else
-		@foreach ($bands as $band)
-		<div class="bandphoto">
-		@if ($band->band->band_pic == null)
-		<div class="col-sm-2">
-			<a href="#" data-id="{{$band->band->band_id}}" data-title="{{$band->band->band_name}}" data-desc="{{$band->band->band_desc}}" data-follower="{{$band->band->num_followers}}" data-pic="{{$band->band->band_pic}}" class="viewBand">
-			<div style="background: #222">
-				<img src="http://res.cloudinary.com/demo/image/upload/v1499589454/sample.jpg" class="img-responsive genre-thumbnail ">
-				<div class="carousel-caption">
-					<h4>{{$band->band->band_name}}</h4>
-				</div>
-				<div>
-					<h1> </h1>
-				</div>
-			</div>
-			</a>
-		</div>
-		@else
-		<div class="col-sm-2">
-			<a href="#" data-id="{{$band->band->band_id}}" data-title="{{$band->band->band_name}}" data-desc="{{$band->band->band_desc}}" data-follower="{{$band->band->num_followers}}" data-pic="{{$band->band->band_pic}}" class="viewBand">
-			<div style="background: #222">
-				<img src="{{$band->band->band_pic}}" class="img-responsive genre-thumbnail">				
-				<div>
-					<h1> </h1>
-				</div>
-			</div>
-			<center><h4>{{$band->band->band_name}}</h4></center>
-			</a>
-		</div>
-		@endif
-		</div>
-		@endforeach
-	@endif		
-	</section>
+	<center><h3>{{$genreChoice->genre_name}} Bands</h3><br></center>
+
+	<ul class="nav nav-pills">
+	  <li class="active"><a data-toggle="tab" href="#bandstab">Bands</a></li>
+	  <li><a data-toggle="tab" href="#playliststab">Playlists</a></li>
+	</ul>
+
+	<div class="tab-content" style="padding-top: 25px;">
+	  <div id="bandstab" class="tab-pane fade in active">
+	    	<section id="bands">
+	    	@if ($bands == null)
+	    	@else
+	    		@foreach ($bands as $band)
+	    		<div class="bandphoto">
+	    		@if ($band->band->band_pic == null)
+	    		<div class="col-xs-2">
+	    			<a href="#" data-id="{{$band->band->band_id}}" data-title="{{$band->band->band_name}}" data-desc="{{$band->band->band_desc}}" data-follower="{{$band->band->num_followers}}" data-pic="{{$band->band->band_pic}}" class="viewBand">
+	    			<div style="background: #222">
+	    				<img src="http://res.cloudinary.com/demo/image/upload/v1499589454/sample.jpg" class="img-responsive genre-thumbnail">
+	    				<div class="carousel-caption">
+	    					<h4>{{$band->band->band_name}}</h4>
+	    				</div>
+	    				<div>
+	    					<h1> </h1>
+	    				</div>
+	    			</div>
+	    			</a>
+	    		</div>
+	    		@else
+	    		<div class="col-xs-2">
+	    			<a href="#" data-id="{{$band->band->band_id}}" data-title="{{$band->band->band_name}}" data-desc="{{$band->band->band_desc}}" data-follower="{{$band->band->num_followers}}" data-pic="{{$band->band->band_pic}}" class="viewBand">
+	    			<div style="background: #222">
+	    				<img src="{{$band->band->band_pic}}" class="img-responsive genre-thumbnail">				
+	    				<div>
+	    					<h1> </h1>
+	    				</div>
+	    			</div>
+	    			<center><h4>{{$band->band->band_name}}</h4></center>
+	    			</a>
+	    		</div>
+	    		@endif
+	    		</div>
+	    		@endforeach
+	    	@endif		
+	    	</section>
+	  </div>
+	  <div id="playliststab" class="tab-pane fade">
+	    <h3>Menu 1</h3>
+	    <p>Some content in menu 1.</p>
+	  </div>
+	</div>
 
 	<div id="bandModal" class="modal fade" role="dialog">
 	  <div class="modal-dialog">

@@ -8,6 +8,8 @@ use App\User;
 use App\Bandmember;
 use App\Preference;
 use App\UserHistory;
+use App\Playlist;
+use App\Plist;
 
 class UserController extends Controller
 {
@@ -118,5 +120,77 @@ class UserController extends Controller
         {
             return response() ->json(['message' => 'No userhistory found in the table.']);   
         }
+    }
+
+    public function AddPlayList(Request $request){
+
+      $uid = $request->input('user_id');
+      $title = $request->input('pl_title');
+      $desc = $request->input('pl_desc');
+      $image = $request->file('pl_image');
+
+      \Cloudder::upload($image);
+      $cloudder=\Cloudder::getResult();
+
+      $create = Playlist::create([
+            'pl_title' => $title,
+            'pl_desc' => $desc,
+            'pl_creator' => $uid,
+            'image' => $cloudder['url'],
+          ]);
+
+      return response() ->json($create);;
+    }
+
+    public function DeletePlayList(Request $request){
+
+        $id = $request->input('pl_id');
+
+        $delete = Playlist::where('pl_id', $id)->delete();
+    }
+
+    public function updateplaylist(Request $request)
+    {
+        $id = Playlist::where('pl_id', $request->input('pl_id'))->first();
+        $title = $request->input('pl_title');
+        $desc = $request->input('pl_desc');
+        $image = $request->file('pl_image');
+
+        if($image != null){
+          \Cloudder::upload($image);
+          $cloudder=\Cloudder::getResult();
+
+        
+          $update = Playlist::where('pl_id', $id->pl_id)->update([
+            'pl_title' => $title,
+            'pl_desc' => $desc,
+            'image' => $cloudder['url'],
+          ]);
+        }
+        else{
+            $update = Playlist::where('pl_id', $id->pl_id)->update([
+            'pl_title' => $title,
+            'pl_desc' => $desc,
+          ]);
+        }
+    }
+
+    public function getAllPlaylist(Request $request){
+        $playlists = Playlist::all();
+
+        return response() ->json($playlists);
+    }
+
+    public function addSongToPlaylist(Request $request){
+        
+        $genre = $request->input('genre_id');
+        $song = $request->input('song_id');
+        $playlistId = $request->input('pl_id');
+
+        $create = Plist::create([
+        'genre_id' => $genre,
+        'song_id' => $song,
+        'pl_id' => $playlistId,
+      ]);
     }
 }
