@@ -381,7 +381,10 @@ class UserController extends Controller
       // }
       // dd($get);
     }
-    return view('view-playlist', compact('pl', 'lists', 'rsongs', 'recsongs'));
+
+    $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
+
+    return view('view-playlist', compact('pl', 'lists', 'rsongs', 'recsongs', 'usernotifinvite'));
   }
 
   public function addtonlist(Request $request)

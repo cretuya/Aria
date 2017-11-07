@@ -3,12 +3,13 @@
 @section('title')
 @endsection
 
+@include('layouts.navbar')
 
 @section('content')
 <meta name ="csrf-token" content = "{{csrf_token() }}"/>
 <input type="text" value="{{$pl->pl_id}}" id="pid" hidden>
 
-<br><br><br><br>
+<br><br><br><br><br>
 <div class="container">
   <div class="col-md-3">
     <img src="{{$pl->image}}" class="img-responsive">
@@ -24,15 +25,14 @@
     <div class="rsongs">
       <h4>Recommended Songs</h4>        
         @foreach($rsongs as $rsong)
+          <div class="well" style="padding: 5px; background: #fafafa">
           <div class="row">
-            <div class="col-md-7">
+            <div class="col-md-12">
               <label>{{$rsong->song_title}}</label><br>
               <audio controls><source src="{{url('/assets/music/'.$rsong->song_audio)}}" type="audio/mpeg"></audio>
+              <span data-id="{{$rsong->song_id}}" class="addnlist btn fa fa-plus-square pull-right" style="margin-top: -10px;font-size: 18px" title="Add to playlist"></span>
             </div>
-            <br>
-            <div class="col-md-2">
-              <button type="button" data-id="{{$rsong->song_id}}" class="addnlist">Add to this playlist</button>
-            </div>
+          </div>
           </div>
         @endforeach
       </div>
@@ -42,15 +42,14 @@
     @else
     <div class="list">
         @foreach($lists as $list)
+          <div class="well" style="padding: 5px; background: #fafafa">
           <div class="row">
-            <div class="col-md-7">
+            <div class="col-md-12">
               <label>{{$list->songs->song_title}}</label><br>
               <audio controls><source src="{{url('/assets/music/'.$list->songs->song_audio)}}" type="audio/mpeg"></audio>
+              <span data-id="{{$list->songs->song_id}}" class="remlist btn fa fa-trash pull-right" style="margin-top: -10px;font-size: 18px" title="Remove from playlist"></span>
             </div>
-            <br>
-            <div class="col-md-2">
-              <button type="button" data-id="{{$list->songs->song_id}}" class="remlist">Remove</button>
-            </div>
+          </div>
           </div>
         @endforeach
     </div>
@@ -61,15 +60,14 @@
       <h6>No available songs at the moment.</h6>
       @else        
         @foreach($recsongs as $recsong)
+          <div class="well" style="padding: 5px; background: #fafafa">
           <div class="row">
-            <div class="col-md-7">
+            <div class="col-md-12">
               <label>{{$recsong->song_title}}</label><br>
               <audio controls><source src="{{url('/assets/music/'.$recsong->song_audio)}}" type="audio/mpeg"></audio>
+              <span data-id="{{$recsong->song_id}}" class="addlist btn fa fa-plus-square pull-right" style="margin-top: -10px;font-size: 18px" title="Add to playlist"></span>
             </div>
-            <br>
-            <div class="col-md-2">
-              <button type="button" data-id="{{$recsong->song_id}}" class="addlist">Add to this playlist</button>
-            </div>
+          </div>
           </div>
         @endforeach
       @endif

@@ -8,7 +8,7 @@
 <div class="container">
 <meta name ="csrf-token" content = "{{csrf_token() }}"/>
 
-	<center><h3>{{$genreChoice->genre_name}} Bands</h3><br></center>
+	<center><h3>{{$genreChoice->genre_name}}</h3><br></center>
 
 	<ul class="nav nav-pills">
 	  <li class="active"><a data-toggle="tab" href="#bandstab">Bands</a></li>
@@ -55,8 +55,20 @@
 	    	</section>
 	  </div>
 	  <div id="playliststab" class="tab-pane fade">
-	    <h3>Menu 1</h3>
-	    <p>Some content in menu 1.</p>
+	    <div class="col-xs-2">
+	    	<a href="#">
+	    	<div style="background: #222">
+	    		<img src="https://images.pexels.com/photos/287240/pexels-photo-287240.jpeg?w=940&h=650" class="img-responsive genre-thumbnail">				
+	    		<div>
+	    			<h1> </h1>
+	    		</div>
+	    	</div>
+	    	<center>
+	    	<h4>Relax and Unwind</h4>
+	    	<p>by: Aria</p>
+	    	</center>
+	    	</a>
+	    </div>
 	  </div>
 	</div>
 
