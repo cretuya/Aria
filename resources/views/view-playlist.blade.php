@@ -31,6 +31,9 @@
     #playlist .current-song a{
         color:#fafafa;
     }
+    .buttons{
+      padding: 10px;
+    }
     #playButton{
       border: none;
       background: transparent;
@@ -45,6 +48,7 @@
       width: 35px;
       padding: 4px;
     }
+
 </style>
 
 @include('layouts.navbar')
@@ -95,11 +99,12 @@
       <span id="playButton" class="btn" onclick="playOrPause();" style="margin-left: 5px;"><img id="playPauseImg" src="{{url('/assets/img/play.png')}}" class="img-responsive"></span>
       <span id="muteButton" class="btn" onclick="muteOrUnmute();" style="margin-left: -8px;"><img id="muteUnmuteImg" src="{{url('/assets/img/unmute.png')}}" class="img-responsive"></span>
       <span id="currentTime" style="color: #fafafa; vertical-align: text-top;">0:00</span><span style="color: #fafafa; vertical-align: text-top;">  / </span><span id="fullDuration" style="color: #fafafa; vertical-align: text-top;">0:00</span>
+      <span class="pull-right" style="color: #fafafa; margin-top: 8px; margin-right: 25px;" >Now playing : <span id="song-name">The Diary of Jane</span> by <span id="song-artist">Breaking Benjamin</span></span>
     </div>
 
     <div class="progress" id="progress_bar" style="margin-bottom: 0px; height: 4px;">
-      <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
-        <span class="sr-only">70% Complete</span>
+      <!-- <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%"> -->
+      <div class="progress-bar" id="moving_progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
       </div>
     </div>
 
@@ -111,10 +116,10 @@
           // $spaceReplaced[$i] = str_replace(' ', '%20', $lists[$i]->songs->song_audio);
 
             if($i == 0){
-              echo '<li class="current-song"><a href="http://localhost/Aria/public/assets/music/'.$lists[$i]->songs->song_audio.'">'.$lists[$i]->songs->song_audio.'</a><span data-id="'.$lists[$i]->songs->song_id.'" class="remlist btn fa fa-remove pull-right" style="margin-top: -10px;font-size: 18px" title="Remove from playlist"></span></li>';
+              echo '<li class="current-song"><a href="http://localhost/Aria/public/assets/music/'.$lists[$i]->songs->song_audio.'">'.$lists[$i]->songs->song_audio.'</a><span data-id="'.$lists[$i]->songs->song_id.'" class="remlist btn fa fa-remove pull-right" style="margin-top: -7px;font-size: 18px; color: #555555" title="Remove from playlist"></span></li>';
             }
             else{
-              echo '<li><a href="http://localhost/Aria/public/assets/music/'.$lists[$i]->songs->song_audio.'">'.$lists[$i]->songs->song_audio.'</a><span data-id="'.$lists[$i]->songs->song_id.'" class="remlist btn fa fa-remove pull-right" style="margin-top: -10px;font-size: 18px" title="Remove from playlist"></span></li>';
+              echo '<li><a href="http://localhost/Aria/public/assets/music/'.$lists[$i]->songs->song_audio.'">'.$lists[$i]->songs->song_audio.'</a><span data-id="'.$lists[$i]->songs->song_id.'" class="remlist btn fa fa-remove pull-right" style="margin-top: -7px;font-size: 18px; color: #555555" title="Remove from playlist"></span></li>';
             }
       }
 
@@ -347,14 +352,11 @@ $('.list').on('click', '.remlist' , function()
 
       var currentTrack = $('#audioPlayer')[0];
       var fullDuration = $('#fullDuration');
-      var barsize = $("#progress_bar").clientWidth;
-      console.log(barsize);
 
       console.log(currentTrack.duration);
       var minutes = Math.trunc(parseInt(currentTrack.duration)/60);
       var seconds = parseInt(currentTrack.duration)%60;
       fullDuration.html(minutes+':'+seconds);
-
 
     },100);
       
@@ -410,7 +412,7 @@ $('.list').on('click', '.remlist' , function()
     else{
       $('#playPauseImg').attr("src","{{url('/assets/img/pause.png')}}");
       $("#audioPlayer")[0].play();
-      updateTime = setInterval(update, 500);
+      updateTime = setInterval(update, 200);
     }
 
   }
@@ -440,10 +442,20 @@ $('.list').on('click', '.remlist' , function()
       }else{        
         currentTime.html(playedMinutes+':'+playedSeconds)
       }
+
+      var fullDuration = Math.trunc(parseInt(currentTrack.duration));
+      var movingtime = $('#audioPlayer')[0].currentTime;
+
+      var progressSize = movingtime/fullDuration*100;
+      // console.log(progressSize);
+      $('#moving_progressbar').width(progressSize+"%");
+
     }
     else{
       currentTime.html('0.00');
       $('#playPauseImg').attr("src","{{url('/assets/img/play.png')}}");
+      $('#moving_progressbar').width("0%");
+      window.clearInterval(updateTime);
     }
   }
 
