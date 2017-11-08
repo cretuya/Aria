@@ -50,130 +50,26 @@
   <!-- Wrapper for slides -->
   <div class="carousel-inner">
     <div class="item active">
-      
-      <div class="col-xs-3">
-		<a href="#">
+ 
+@if(count($recplaylists) == null)
+@else
+	@foreach($recplaylists as $recplaylist)
+     <div class="col-xs-3">
+		<a href="{{url('discover/'.$recplaylist->genre_id)}}">
 		<div style="background: #222">
 			<img src="https://images.pexels.com/photos/287240/pexels-photo-287240.jpeg?w=940&h=650" class="img-responsive genre-thumbnail">				
-			<div>
-				<h1> </h1>
+			<div align="center">
+				<h1>{{$recplaylist->genre_name}}</h1>
 			</div>
 		</div>
 		<center>
-		<h4>Relax and Unwind</h4>
+		<h4>{{$recplaylist->genre_name}}</h4>
 		<p>by: Aria</p>
 		</center>
 		</a>
 	</div>
-
-	<div class="col-xs-3">
-		<a href="#">
-		<div style="background: #222">
-			<img src="https://images.pexels.com/photos/287240/pexels-photo-287240.jpeg?w=940&h=650" class="img-responsive genre-thumbnail">				
-			<div>
-				<h1> </h1>
-			</div>
-		</div>
-		<center>
-		<h4>Relax and Unwind</h4>
-		<p>by: Aria</p>
-		</center>
-		</a>
-	</div>
-
-	<div class="col-xs-3">
-		<a href="#">
-		<div style="background: #222">
-			<img src="https://images.pexels.com/photos/287240/pexels-photo-287240.jpeg?w=940&h=650" class="img-responsive genre-thumbnail">				
-			<div>
-				<h1> </h1>
-			</div>
-		</div>
-		<center>
-		<h4>Relax and Unwind</h4>
-		<p>by: Aria</p>
-		</center>
-		</a>
-	</div>
-
-	<div class="col-xs-3">
-		<a href="#">
-		<div style="background: #222">
-			<img src="https://images.pexels.com/photos/287240/pexels-photo-287240.jpeg?w=940&h=650" class="img-responsive genre-thumbnail">				
-			<div>
-				<h1> </h1>
-			</div>
-		</div>
-		<center>
-		<h4>Relax and Unwind</h4>
-		<p>by: Aria</p>
-		</center>
-		</a>
-	</div>
-
-
-    </div>
-
-    <div class="item">
-      <div class="col-xs-3">
-		<a href="#">
-		<div style="background: #222">
-			<img src="https://images.pexels.com/photos/287240/pexels-photo-287240.jpeg?w=940&h=650" class="img-responsive genre-thumbnail">				
-			<div>
-				<h1> </h1>
-			</div>
-		</div>
-		<center>
-		<h4>Relax and Unwind</h4>
-		<p>by: Aria</p>
-		</center>
-		</a>
-	</div>
-
-	<div class="col-xs-3">
-		<a href="#">
-		<div style="background: #222">
-			<img src="https://images.pexels.com/photos/287240/pexels-photo-287240.jpeg?w=940&h=650" class="img-responsive genre-thumbnail">				
-			<div>
-				<h1> </h1>
-			</div>
-		</div>
-		<center>
-		<h4>Relax and Unwind</h4>
-		<p>by: Aria</p>
-		</center>
-		</a>
-	</div>
-
-	<div class="col-xs-3">
-		<a href="#">
-		<div style="background: #222">
-			<img src="https://images.pexels.com/photos/287240/pexels-photo-287240.jpeg?w=940&h=650" class="img-responsive genre-thumbnail">				
-			<div>
-				<h1> </h1>
-			</div>
-		</div>
-		<center>
-		<h4>Relax and Unwind</h4>
-		<p>by: Aria</p>
-		</center>
-		</a>
-	</div>
-
-	<div class="col-xs-3">
-		<a href="#">
-		<div style="background: #222">
-			<img src="https://images.pexels.com/photos/287240/pexels-photo-287240.jpeg?w=940&h=650" class="img-responsive genre-thumbnail">				
-			<div>
-				<h1> </h1>
-			</div>
-		</div>
-		<center>
-		<h4>Relax and Unwind</h4>
-		<p>by: Aria</p>
-		</center>
-		</a>
-	</div>
+	@endforeach
+@endif
     </div>
   
     

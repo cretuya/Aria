@@ -17,8 +17,8 @@ class DiscoverPageController extends Controller
     	$allGenres = DB::table('genres')->get();
         $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
         $recplaylists = $this->recommend();
-        dd($recplaylists);
-    	return view('discover', compact('allGenres','usernotifinvite'));
+        // dd($recplaylists);
+    	return view('discover', compact('allGenres','usernotifinvite', 'recplaylists'));
     }
 
     public function showAccordingtoGenre($genreName){
@@ -36,7 +36,6 @@ class DiscoverPageController extends Controller
         $user = Auth::user();
 
         $genres = Genre::all();
-        // $randomSongs = Song::inRandomOrder()->get();
 
         // $songs = Song::all();
         $sorted = Array();
@@ -54,21 +53,21 @@ class DiscoverPageController extends Controller
             $songs = Song::where('genre_id', $genre->genre_id)->get();
             if (count($songs) != null)
             {
-                if (count($songs) > 2)
-                {
-                    foreach($songs as $song)
-                    {
-                        array_push($compact, $song);
-                    }
-                    array_push($sorted, $compact);
-                }
-                else
-                {
-                array_push($sorted, $songs);
-                    
-                }
+                array_push($sorted, $genre);
             }
         } 
         return $sorted;
+    }
+
+    public function showSongsGenre($id)
+    {
+        $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
+
+        $genre = Genre::where('genre_id', $id)->first();
+
+        $songs = Song::where('genre_id', $id)->get();
+
+        return view('view-recommend-playlist', compact('genre', 'songs', 'usernotifinvite'));
+
     }
 }
