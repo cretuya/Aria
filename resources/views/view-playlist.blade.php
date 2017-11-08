@@ -3,7 +3,7 @@
 @section('title')
 @endsection
 
-@include('layouts.navbar')
+<!-- @include('layouts.navbar') -->
 
 @section('content')
 <meta name ="csrf-token" content = "{{csrf_token() }}"/>
@@ -119,7 +119,7 @@ function addtonlist(id)
             $('.nlist h3').remove();
             $('.nlist').append('<div class="row"><div class="col-md-7"><label>'+data.song.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio></div><div class="col-md-2"><button type="button" class="remnlist" data-id="'+data.song.song_id+'">Remove</button></div></div>');
             $('.rsongs').remove();
-            // nrecommend(data.song.song_id);
+            nrecommend(data.song.song_id);
 
           },
           error: function(a,b,c)
@@ -146,6 +146,8 @@ function nrecommend(id)
           },
           success: function(data){
             console.log(data);
+              $('.nrecommend').empty();
+              $('.nrecommend').append('<h4>Recommended Songs</h4>');
               $.each(data, function(key, value)
               {
                 var song = value.song_audio;
@@ -201,7 +203,7 @@ function addtolist(id)
 // // console.log(audio);
             $('.list').append('<div class="row"><div class="col-md-7"><label>'+data.song.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio></div><div class="col-md-2"><button type="button" class="remlist" data-id="'+data.song.song_id+'">Remove</button></div></div>');
             $('.recsongs').remove();
-            // recommend(data.song.song_id);
+            recommend(data.song.song_id);
 
           },
           error: function(a,b,c)
@@ -229,6 +231,8 @@ function recommend(id)
           },
           success: function(data){
             console.log(data);
+              $('.recommend').empty();
+              $('.recommend').append('<h4>Recommended Songs</h4>');
               $.each(data, function(key, value)
               {
                 var song = value.song_audio;

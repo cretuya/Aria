@@ -336,50 +336,50 @@ class UserController extends Controller
       // compute para recommendation
       foreach ($songs as $song)
       {
-        foreach ($lists as $list)
-        {
-          if ($song == $list->songs && $song->genre == $list->songs->genre)
-          {
-            
-          }
-          else if ($song != $list->songs)
-          {
-            if ($song->genre == $list->songs->genre)
-            {
-              array_push($tmp, $song);
-            }
-          }
-        }
-      }
-      $ul = collect($ulists);
-      // $get= Array();
-      foreach ($tmp as $t)
-      {
-        if ($ul->contains('song_id', $t->song_id))
+        if($lists->contains('song_id', $song->song_id))
         {
 
         }
         else
         {
-          array_push($recsongs, $t);
+          array_push($recsongs, $song);
         }
+
       }
-      // if (count($recsongs) == null)
+      // dd($recsongs);
+      // foreach ($songs as $song)
       // {
       //   foreach ($lists as $list)
       //   {
-      //     if ($songs->contains('song_id', $list->songs->song_id))
+      //     if ($song == $list->songs && $song->genre == $list->songs->genre)
       //     {
-      //       array_push($get, $song);
-
+            
       //     }
-      //     else
+      //     else if ($song != $list->songs)
       //     {
+      //       if ($song->genre == $list->songs->genre)
+      //       {
+      //         array_push($tmp, $song);
+      //       }
       //     }
       //   }
-      //   $recsongs = $get;
       // }
-      // dd($get);
+
+      // $ul = collect($lists);
+      // dd($ul);
+      // // $get= Array();
+      // foreach ($tmp as $t)
+      // {
+      //   if ($ul->contains('song_id', $t->song_id))
+      //   {
+
+      //   }
+      //   else
+      //   {
+      //     array_push($recsongs, $t);
+      //   }
+      // }
+
     }
 
     $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
@@ -415,20 +415,29 @@ class UserController extends Controller
     $song = Song::where('song_id', $id)->first();
     $origs = Song::all();
     $recs = Array();
+    $lists = Plist::where('pl_id', $pid)->get();
 
     foreach($origs as $orig)
     {
-      if ($song->song_id == $orig->song_id && $song->genre == $orig->genre)
+      if($lists->contains('song_id', $orig->song_id))
       {
 
       }
       else
       {
-        if ($song->genre == $orig->genre)
-        {
-          array_push($recs, $orig);
-        }
+        array_push($recs, $orig);
       }
+      // if ($song->song_id == $orig->song_id && $song->genre == $orig->genre)
+      // {
+
+      // }
+      // else
+      // {
+      //   if ($song->genre == $orig->genre)
+      //   {
+      //     array_push($recs, $orig);
+      //   }
+      // }
     }
 
     return response ()->json($recs);
@@ -462,21 +471,44 @@ class UserController extends Controller
     $song = Song::where('song_id', $id)->first();
     $origs = Song::all();
     $recs = Array();
+    $lists = Plist::where('pl_id', $pid)->get();
 
     foreach($origs as $orig)
     {
-      if ($song->song_id == $orig->song_id && $song->genre == $orig->genre)
+      if($lists->contains('song_id', $orig->song_id))
       {
 
       }
       else
       {
-        if ($song->genre == $orig->genre)
-        {
-          array_push($recs, $orig);
-        }
+        array_push($recs, $orig);
       }
+      // if ($song->song_id == $orig->song_id && $song->genre == $orig->genre)
+      // {
+
+      // }
+      // else
+      // {
+      //   if ($song->genre == $orig->genre)
+      //   {
+      //     array_push($recs, $orig);
+      //   }
+      // }
     }
+    // foreach($origs as $orig)
+    // {
+    //   if ($song->song_id == $orig->song_id && $song->genre == $orig->genre)
+    //   {
+
+    //   }
+    //   else
+    //   {
+    //     if ($song->genre == $orig->genre)
+    //     {
+    //       array_push($recs, $orig);
+    //     }
+    //   }
+    // }
 
     return response ()->json($recs);
   }
