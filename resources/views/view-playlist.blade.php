@@ -1,55 +1,11 @@
 @extends('layouts.master')
   <script src="{{asset('assets/js/jquery-3.2.1.min.js')}}"></script>
   <script src="{{asset('assets/js/jquery-ui.min.js')}}"></script>
+  <link rel="stylesheet" type="text/css" href="{{asset('assets/css/playlistPlayer.css').'?'.rand()}}">
 
 @section('title')
 @endsection
 
-<style>
-    .list{      
-        background: #212121;
-        border-radius: 5px;
-    }
-    .nlist{        
-        border-radius: 5px;
-    }
-    #playlist{
-        list-style: none;
-        padding-left: 0;
-    }
-    #playlist li{
-        background: #212121;
-        padding: 10px;
-        border-top: 1px solid #555555;
-        margin-left: 10px;
-        margin-right: 10px;
-    }
-    #playlist li a{
-        color:#aaa;
-        text-decoration: none;
-    }
-    #playlist .current-song a{
-        color:#fafafa;
-    }
-    .buttons{
-      padding: 10px;
-    }
-    #playButton{
-      border: none;
-      background: transparent;
-      height: 35px;
-      width: 35px;
-      padding: 4px;
-    }
-    #muteButton{
-      border: none;
-      background: transparent;
-      height: 35px;
-      width: 35px;
-      padding: 4px;
-    }
-
-</style>
 
 @include('layouts.navbar')
 
@@ -68,7 +24,24 @@
   <div class="col-md-9">
     @if(count($lists) == null)
     <div class="nlist">
-      <h3>You have no songs in your playlist yet.</h3>
+      <audio src="{{url('/assets/music/')}}" controls id="audioPlayer" type="audio/mpeg" hidden></audio>
+      <div class="list">      
+
+      <div class="buttons">
+        <span id="playButton" class="btn" onclick="playOrPause();" style="margin-left: 5px;"><img id="playPauseImg" src="{{url('/assets/img/play.png')}}" class="img-responsive"></span>
+        <span id="muteButton" class="btn" onclick="muteOrUnmute();" style="margin-left: -8px;"><img id="muteUnmuteImg" src="{{url('/assets/img/unmute.png')}}" class="img-responsive"></span>
+        <span id="currentTime" style="color: #fafafa; vertical-align: text-top;">0:00</span><span style="color: #fafafa; vertical-align: text-top;">  / </span><span id="fullDuration" style="color: #fafafa; vertical-align: text-top;">0:00</span>
+      </div>
+
+      <div class="progress" id="progress_bar" style="margin-bottom: 0px; height: 4px;">
+        <!-- <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%"> -->
+        <div class="progress-bar" id="moving_progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+        </div>
+      </div>
+
+        <ul id="playlist" class="songsInPlaylist">
+          <li id="noSongsMessage"><center><h5 style="color: #fafafa">There are no songs in this playlist yet.</h5></center></li>
+        </ul>
     </div>
     <hr>
     <div class="rsongs">
@@ -86,20 +59,16 @@
         @endforeach
       </div>
       <div class="nrecommend" hidden>
-      <h4>Recommended Songs</h4>        
+      <h4>Recommended Songs</h4>    
       </div>
     @else
     <div class="list">
-    @foreach($lists as $list)
       <audio src="{{url('/assets/music/')}}" controls id="audioPlayer" type="audio/mpeg" hidden></audio>
-      @break
-    @endforeach
-
     <div class="buttons">
       <span id="playButton" class="btn" onclick="playOrPause();" style="margin-left: 5px;"><img id="playPauseImg" src="{{url('/assets/img/play.png')}}" class="img-responsive"></span>
       <span id="muteButton" class="btn" onclick="muteOrUnmute();" style="margin-left: -8px;"><img id="muteUnmuteImg" src="{{url('/assets/img/unmute.png')}}" class="img-responsive"></span>
       <span id="currentTime" style="color: #fafafa; vertical-align: text-top;">0:00</span><span style="color: #fafafa; vertical-align: text-top;">  / </span><span id="fullDuration" style="color: #fafafa; vertical-align: text-top;">0:00</span>
-      <span class="pull-right" style="color: #fafafa; margin-top: 8px; margin-right: 25px;" >Now playing : <span id="song-name">The Diary of Jane</span> by <span id="song-artist">Breaking Benjamin</span></span>
+      <span class="pull-right" style="color: #fafafa; margin-top: 8px; margin-right: 25px;"><span id="song-name"> </span></span>
     </div>
 
     <div class="progress" id="progress_bar" style="margin-bottom: 0px; height: 4px;">
@@ -108,18 +77,18 @@
       </div>
     </div>
 
-      <ul id="playlist">
+      <ul id="playlist" class="songsInPlaylist">
       <?php
 
       for($i=0; $i < count($lists); $i++){
 
-          // $spaceReplaced[$i] = str_replace(' ', '%20', $lists[$i]->songs->song_audio);
+          $removedmp3[$i] = str_replace('.mp3', '', $lists[$i]->songs->song_audio);
 
             if($i == 0){
-              echo '<li class="current-song"><a href="http://localhost/Aria/public/assets/music/'.$lists[$i]->songs->song_audio.'">'.$lists[$i]->songs->song_audio.'</a><span data-id="'.$lists[$i]->songs->song_id.'" class="remlist btn fa fa-remove pull-right" style="margin-top: -7px;font-size: 18px; color: #555555" title="Remove from playlist"></span></li>';
+              echo '<li class="current-song"><a href="http://localhost/Aria/public/assets/music/'.$lists[$i]->songs->song_audio.'" onclick="playOrPauseFromSongClick();">'.$removedmp3[$i].'</a><span data-id="'.$lists[$i]->songs->song_id.'" class="remlist btn fa fa-remove pull-right" style="margin-top: -7px;font-size: 18px; color: #555555" title="Remove from playlist"></span></li>';
             }
             else{
-              echo '<li><a href="http://localhost/Aria/public/assets/music/'.$lists[$i]->songs->song_audio.'">'.$lists[$i]->songs->song_audio.'</a><span data-id="'.$lists[$i]->songs->song_id.'" class="remlist btn fa fa-remove pull-right" style="margin-top: -7px;font-size: 18px; color: #555555" title="Remove from playlist"></span></li>';
+              echo '<li><a href="http://localhost/Aria/public/assets/music/'.$lists[$i]->songs->song_audio.'" onclick="playOrPauseFromSongClick();">'.$removedmp3[$i].'</a><span data-id="'.$lists[$i]->songs->song_id.'" class="remlist btn fa fa-remove pull-right" style="margin-top: -7px;font-size: 18px; color: #555555" title="Remove from playlist"></span></li>';
             }
       }
 
@@ -148,7 +117,8 @@
           </div>
         @endforeach
       @endif
-      </div>
+    </div>
+
       <div class="recommend" hidden>
       <h4>Recommended Songs</h4>        
       </div>
@@ -192,12 +162,22 @@ function addtonlist(id)
               var song = data.song.song_audio;
               var source = "{{url('/assets/music/')}}";
               var audio = source +'/'+ song;
+              var songname = song.replace('.mp3','');
+
+             if($("#audioPlayer li")[0] === undefined){
+
 // // console.log(audio);
-            $('.nlist h3').remove();
-            $('.nlist').append('<div class="row"><div class="col-md-7"><label>'+data.song.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio></div><div class="col-md-2"><span class="remlist btn fa fa-remove pull-right" style="margin-top: -10px;font-size: 18px" title="Remove from playlist" data-id="'+data.song.song_id+'"></span></div></div>');
-            $('.rsongs').remove();
-            // nrecommend(data.song.song_id);
-            nrecommend(data.song.song_id);
+                var url = "{{url('assets/music/')}}"+'/'+songname;
+                $('.nlist h3').remove();
+                $('.songsInPlaylist').append('<li class="current-song"><a id="onlyoneSong" href="'+url+'">'+songname+'</a><span data-id="'+data.song.song_id+'" class="remlist btn fa fa-remove pull-right" style="margin-top: -7px;font-size: 18px; color: #555555" title="Remove from playlist"></span></li>');
+                $('.rsongs').remove();
+                $('#noSongsMessage').addClass('hidden');
+                var url = $('#onlyoneSong').attr('href');
+                $("#audioPlayer").attr('src',url);
+                // nrecommend(data.song.song_id);
+                nrecommend(data.song.song_id);
+                window.location.reload();
+              }
 
           },
           error: function(a,b,c)
@@ -232,7 +212,7 @@ function nrecommend(id)
                 var source = "{{url('/assets/music/')}}";
                 var audio = source +'/'+ song;
 
-                $('.nrecommend').append('<div class="row"><div class="col-md-7"><label>'+value.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio></div><div class="col-md-2"><button type="button" class="addnlist" data-id="'+value.song_id+'">Add</button></div></div>');
+                $('.nrecommend').append('<div class="well" style="padding: 5px; background: #fafafa"><div class="row"><div class="col-md-12"><label>'+value.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio><span data-id="'+value.song_id+'" class="addlist btn fa fa-plus-square pull-right" style="margin-top: -10px;font-size: 18px" title="Add to playlist"></span></div></div></div>');
 
               });
 
@@ -279,9 +259,13 @@ function addtolist(id)
               var source = "{{url('/assets/music/')}}";
               var audio = source +'/'+ song;
 // // console.log(audio);
-            $('.list').append('<div class="row"><div class="col-md-7"><label>'+data.song.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio></div><div class="col-md-2"><span class="remlist btn fa fa-remove pull-right" style="margin-top: -10px;font-size: 18px" title="Remove from playlist" data-id="'+data.song.song_id+'"></span></div></div>');
+            var url = "{{url('assets/music/')}}"+'/'+songname;
+            var songname = song.replace('.mp3','');
+            // console.log(url);
+            $('.songsInPlaylist').append('<li><a href="'+url+'">'+songname+'</a><span data-id="'+data.song.song_id+'" class="remlist btn fa fa-remove pull-right" style="margin-top: -7px;font-size: 18px; color: #555555" title="Remove from playlist"></span></li>');
             $('.recsongs').remove();
             recommend(data.song.song_id);
+            window.location.reload();
             // recommend(data.song.song_id);
 
           },
@@ -318,7 +302,7 @@ function recommend(id)
                 var source = "{{url('/assets/music/')}}";
                 var audio = source +'/'+ song;
 
-                $('.recommend').append('<div class="row"><div class="col-md-7"><label>'+value.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio></div><div class="col-md-2"><button type="button" class="removenlist" data-id="'+value.song_id+'">Add</button></div></div>');
+                $('.recommend').append('<div class="well" style="padding: 5px; background: #fafafa"><div class="row"><div class="col-md-12"><label>'+value.song_title+'</label><br><audio controls><source src="'+audio+'" type="audio/mpeg"></audio><span data-id="'+value.song_id+'" class="addlist btn fa fa-plus-square pull-right" style="margin-top: -10px;font-size: 18px" title="Add to playlist"></span></div></div></div>');
 
               });
 
@@ -353,10 +337,15 @@ $('.list').on('click', '.remlist' , function()
       var currentTrack = $('#audioPlayer')[0];
       var fullDuration = $('#fullDuration');
 
-      console.log(currentTrack.duration);
+      // console.log(currentTrack.duration);
       var minutes = Math.trunc(parseInt(currentTrack.duration)/60);
       var seconds = parseInt(currentTrack.duration)%60;
-      fullDuration.html(minutes+':'+seconds);
+      
+      if(isNaN(minutes) && isNaN(seconds)){
+        fullDuration.html("0:00");
+      }else{
+        fullDuration.html(minutes+':'+seconds);
+      }
 
     },100);
       
@@ -393,12 +382,25 @@ $('.list').on('click', '.remlist' , function()
           var fullDuration = $('#fullDuration');
           var minutes = Math.trunc(parseInt(currentTrack.duration)/60);
           var seconds = parseInt(currentTrack.duration)%60;
-          fullDuration.html(minutes+':'+seconds);
+          
+          fullDuration.html(minutes+':'+seconds);          
 
           $('#playPauseImg').attr("src","{{url('/assets/img/pause.png')}}");
-        },500); 
+        },500);
 
-      },500); 
+          var url = $('#audioPlayer')[0].src;
+          var url2 = "{{url('/assets/music/')}}";        
+          var songnamedilipa = url.replace(url2+'/',"");
+          // var songnamme = songnamedilipa.replace("%20/g"," ");
+          var songnamedilipajud = songnamedilipa.replace('.mp3','');
+          var songname = decodeURI(songnamedilipajud);
+
+          $('#song-name').html("Now playing: "+songname); 
+
+        },500);
+
+        updateTime = setInterval(update, 200);
+
     });
 }
 
@@ -412,8 +414,45 @@ $('.list').on('click', '.remlist' , function()
     else{
       $('#playPauseImg').attr("src","{{url('/assets/img/pause.png')}}");
       $("#audioPlayer")[0].play();
+      var url = $('#audioPlayer')[0].src;
+      var url2 = "{{url('/assets/music/')}}";        
+      var songnamedilipa = url.replace(url2+'/',"");
+      // var songnamme = songnamedilipa.replace("%20/g"," ");
+      var songnamedilipajud = songnamedilipa.replace('.mp3','');
+      var songname = decodeURI(songnamedilipajud);
+
+      $('#song-name').html("Now playing: "+songname);
       updateTime = setInterval(update, 200);
     }
+
+  }
+
+  function playOrPauseFromSongClick() {
+    
+    setTimeout(function(){
+      if(!$("#audioPlayer")[0].paused && !$("#audioPlayer")[0].ended && 0 < $('#audioPlayer')[0].currentTime){
+        setTimeout(function(){
+          $('#playPauseImg').attr("src","{{url('/assets/img/pause.png')}}");
+        },100);
+        $('#playPauseImg').attr("src","{{url('/assets/img/play.png')}}");
+        updateTime = setInterval(update, 200);
+
+        var url = $('#audioPlayer')[0].src;
+        var url2 = "{{url('/assets/music/')}}";        
+        var songnamedilipa = url.replace(url2+'/',"");
+        // var songnamme = songnamedilipa.replace("%20/g"," ");
+        var songnamedilipajud = songnamedilipa.replace('.mp3','');
+        var songname = decodeURI(songnamedilipajud);
+
+        $('#song-name').html("Now playing: "+songname);
+        // console.log(url);
+        // console.log(url2);
+        // console.log(songnamedilipajud);
+        // console.log(songname);
+
+        // $('#song-name').html(songnamme);
+      }
+    },200);
 
   }
 

@@ -57,13 +57,11 @@
      <div class="col-xs-3">
 		<a href="{{url('discover/'.$recplaylist->genre_id)}}">
 		<div style="background: #222">
-			<img src="https://images.pexels.com/photos/287240/pexels-photo-287240.jpeg?w=940&h=650" class="img-responsive genre-thumbnail">				
-			<div align="center">
-				<h1>{{$recplaylist->genre_name}}</h1>
-			</div>
+			<img src="{{url('assets/img/genre/'.$recplaylist->genre_name.'.jpeg')}}" class="img-responsive genre-thumbnail">
+			<div class="carousel-caption" style="top: -5px; left: 30px;"><img src="{{ url('assets/img/arialogo.png')}}" class="img-responsive" style="width: 35px; padding: 7px 3px;border: 0.1em solid #F6843B; border-radius: 50%;"></div>
 		</div>
 		<center>
-		<h4>{{$recplaylist->genre_name}}</h4>
+		<h4>{{$recplaylist->genre_name}} Playlist</h4>
 		<p>by: Aria</p>
 		</center>
 		</a>
