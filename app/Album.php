@@ -26,7 +26,7 @@ class Album extends Model
 	public $updaterules = [
 	'album_name' => 'required|max:100',
 	'album_desc' => 'required|max:255',
-	'album_pic' => 'required|max:255',
+	// 'album_pic' => 'required|max:255',
 	];
 
 	public function band()
@@ -35,7 +35,7 @@ class Album extends Model
 	}
 	public function songs()
 	{
-		return $this->hasMany('App\Songs','album_id');
+		return $this->hasMany('App\Song','album_id', 'album_id');
 	}
 	public function preferences()
 	{
