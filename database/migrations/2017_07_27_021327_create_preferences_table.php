@@ -15,9 +15,9 @@ class CreatePreferencesTable extends Migration
     {
         Schema::create('preferences', function (Blueprint $table) {
             $table->string('user_id');
-            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');            
             $table->integer('band_id')->unsigned()->nullable();
-            $table->foreign('band_id')->references('band_id')->on('bands');        
+            $table->foreign('band_id')->references('band_id')->on('bands');       
             $table->timestamps();
             //nag usab ko diri
         });
