@@ -1,13 +1,9 @@
-.dropdown-menu li a{
-    padding: 12px;
-}
-
 .dropdown .dropdown-menu {
-    -webkit-transition: max-height 0.7s, opacity 0.2s 0.1s, visibility 0s 0.7s;
-    -moz-transition: max-height 0.7s, opacity 0.2s 0.1s, visibility 0s 0.7s;
-    -ms-transition: max-height 0.7s, opacity 0.2s 0.1s, visibility 0s 0.7s;
-    -o-transition: max-height 0.7s, opacity 0.2s 0.1s, visibility 0s 0.7s;
-    transition: max-height 0.7s, opacity 0.2s 0.1s, visibility 0s 0.7s;
+    -webkit-transition: max-height 2s, opacity 0.2s 0.1s, visibility 0s 2s;
+    -moz-transition: max-height 2s, opacity 0.2s 0.1s, visibility 0s 2s;
+    -ms-transition: max-height 2s, opacity 0.2s 0.1s, visibility 0s 2s;
+    -o-transition: max-height 2s, opacity 0.2s 0.1s, visibility 0s 2s;
+    transition: max-height 2s, opacity 0.2s 0.1s, visibility 0s 2s;
     display: block;
     overflow: hidden;
     opacity: 0;
@@ -15,11 +11,33 @@
 }
 
 .dropdown.open .dropdown-menu {
-    -webkit-transition: max-height 0.7s, opacity 0.2s, visibility 0s;
-    -moz-transition: max-height 0.7s, opacity 0.2s, visibility 0s;
-    -ms-transition: max-height 0.7s, opacity 0.2s, visibility 0s;
-    -o-transition: max-height 0.7s, opacity 0.2s, visibility 0s;
-    transition: max-height 0.7s, opacity 0.2s, visibility 0s;
+    -webkit-transition: max-height 2s, opacity 0.2s, visibility 0s;
+    -moz-transition: max-height 2s, opacity 0.2s, visibility 0s;
+    -ms-transition: max-height 2s, opacity 0.2s, visibility 0s;
+    -o-transition: max-height 2s, opacity 0.2s, visibility 0s;
+    transition: max-height 2s, opacity 0.2s, visibility 0s;
+    opacity: 1;
+    visibility: visible;
+}
+
+.dropup .dropdown-menu {
+    -webkit-transition: max-height 2s, opacity 0.2s 0.1s, visibility 0s 2s;
+    -moz-transition: max-height 2s, opacity 0.2s 0.1s, visibility 0s 2s;
+    -ms-transition: max-height 2s, opacity 0.2s 0.1s, visibility 0s 2s;
+    -o-transition: max-height 2s, opacity 0.2s 0.1s, visibility 0s 2s;
+    transition: max-height 2s, opacity 0.2s 0.1s, visibility 0s 2s;
+    display: block;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.dropup.open .dropdown-menu {
+    -webkit-transition: max-height 2s, opacity 0.2s, visibility 0s;
+    -moz-transition: max-height 2s, opacity 0.2s, visibility 0s;
+    -ms-transition: max-height 2s, opacity 0.2s, visibility 0s;
+    -o-transition: max-height 2s, opacity 0.2s, visibility 0s;
+    transition: max-height 2s, opacity 0.2s, visibility 0s;
     opacity: 1;
     visibility: visible;
 }

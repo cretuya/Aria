@@ -12,7 +12,7 @@
 
 	<ul class="nav nav-pills">
 	  <li class="active"><a data-toggle="tab" href="#bandstab">Bands</a></li>
-	  <li><a data-toggle="tab" href="#playliststab">Playlists</a></li>
+	  <!-- <li><a data-toggle="tab" href="#playliststab">Playlists</a></li> -->
 	</ul>
 
 	<div class="tab-content" style="padding-top: 25px;">
@@ -54,7 +54,7 @@
 	    	@endif		
 	    	</section>
 	  </div>
-	  <div id="playliststab" class="tab-pane fade">
+	  <!-- <div id="playliststab" class="tab-pane fade">
 	    <div class="col-xs-2">
 	    	<a href="#">
 	    	<div style="background: #222">
@@ -69,7 +69,7 @@
 	    	</center>
 	    	</a>
 	    </div>
-	  </div>
+	  </div> -->
 	</div>
 
 	<div id="bandModal" class="modal fade" role="dialog">

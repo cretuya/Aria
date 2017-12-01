@@ -11,7 +11,8 @@ class Video extends Model
     protected $primaryKey = 'video_id';
 
     protected $fillable = [
-    	'video_desc' , 
+        'video_title',
+    	'video_desc' ,
     	'video_content' ,
     ];
     public $rules = [

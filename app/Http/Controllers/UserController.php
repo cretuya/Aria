@@ -45,20 +45,10 @@ class UserController extends Controller
             return redirect('/user/profile');
         }
 
-    public function feedshow(){
+    public function homeshow(){
            // $userRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->first();
            //  return view('user-profile', compact('userRole'));
-        $socialfriends = session('userSocial')['friends']['data'];
-        $friends = Array();
-        foreach ($socialfriends as $socialfriend) {
-            $friend = $socialfriend['id'];
-            $thisuser = User::where('user_id', $friend)->first();
-
-            if(count($thisuser) > 0)
-            {
-                array_push($friends, $thisuser);
-            }
-        }
+        
 
         $user = User::where('user_id',session('userSocial')['id'])->first();
 
@@ -74,7 +64,48 @@ class UserController extends Controller
         $recommend = $this->recommend();
         // dd($recommend);
         // dd($friends);
-        return view('feed', compact('userHasBand','userBandRole','usersBand','user', 'friends','articlesfeed', 'recommend','usernotifinvite'));
+        return view('home', compact('userHasBand','userBandRole','usersBand','user','articlesfeed', 'recommend','usernotifinvite'));
+    }
+
+    public function feedshow(){
+           // $userRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->first();
+           //  return view('user-profile', compact('userRole'));
+        
+
+        $user = User::where('user_id',session('userSocial')['id'])->first();
+
+        $usersBand = Band::join('bandmembers', 'bands.band_id', '=', 'bandmembers.band_id')->select('band_name')->where('user_id', session('userSocial')['id'])->first();
+        $userHasBand = Bandmember::where('user_id',session('userSocial')['id'])->get();
+        $userBandRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->get();
+
+        $articlesfeed = BandArticle::join('preferences','bandarticles.band_id','=','preferences.band_id')->join('bands','preferences.band_id','=','bands.band_id')->join('articles','bandarticles.art_id','=','articles.art_id')->where('user_id',session('userSocial')['id'])->orderBy('created_at','desc')->distinct()->get(['preferences.band_id','art_title','content','band_name','band_pic','articles.created_at']);
+
+        $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
+
+        // dd($articlesfeed);
+        $recommend = $this->recommend();
+        // dd($recommend);
+        // dd($friends);
+        return view('feed', compact('userHasBand','userBandRole','usersBand','user','articlesfeed', 'recommend','usernotifinvite'));
+    }
+
+    public function friends(){
+
+      $socialfriends = session('userSocial')['friends']['data'];
+      $friends = Array();
+      foreach ($socialfriends as $socialfriend) {
+          $friend = $socialfriend['id'];
+          $thisuser = User::where('user_id', $friend)->first();
+
+          if(count($thisuser) > 0)
+          {
+              array_push($friends, $thisuser);
+          }
+      }
+
+        $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
+
+        return view('friends', compact('friends','usernotifinvite'));
     }
 
   public function recommend()
@@ -237,10 +268,12 @@ class UserController extends Controller
         $bandsfollowedNoGenre = Preference::select('band_name','band_pic','num_followers')->join('bands','preferences.band_id','=','bands.band_id')->where('user_id',$uid)->get();
 
         $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
+
+        $playlists = Playlist::join('users','playlists.pl_creator','=','users.user_id')->where('pl_creator', $uid)->get();
         // dd($bandsfollowed);
         // $bandGenre = BandGenre::select('genre_name')->join('genres', 'bandgenres.genre_id', '=', 'genres.genre_id')->join('bands', 'bandgenres.band_id', '=', 'bands.band_id')->get();
         //nag usab ko diri
-        return view('friend-profile', compact('user', 'userHasBand','userBandRole','usersBand','bandsfollowed','bandsfollowedNoGenre','usernotifinvite'));
+        return view('friend-profile', compact('user', 'userHasBand','userBandRole','usersBand','bandsfollowed','bandsfollowedNoGenre','usernotifinvite', 'playlists'));
     }
 
     public function createplaylist(Request $request)
@@ -415,6 +448,7 @@ class UserController extends Controller
     $song = Song::where('song_id', $id)->first();
     $origs = Song::all();
     $recs = Array();
+    $genres = Array();
     $lists = Plist::where('pl_id', $pid)->get();
 
     foreach($origs as $orig)
@@ -425,7 +459,9 @@ class UserController extends Controller
       }
       else
       {
+        $data = array($orig, $orig->genre->genre_name);
         array_push($recs, $orig);
+        // array_push($genres, $orig->genre);
       }
       // if ($song->song_id == $orig->song_id && $song->genre == $orig->genre)
       // {

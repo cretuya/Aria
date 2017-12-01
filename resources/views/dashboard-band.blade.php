@@ -1,17 +1,39 @@
 @extends('layouts.master')
 
-@section('title')
-{{$band->band_name}}
-@endsection
-
 @section('content')
 
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/dashboard-manage-band.css').'?'.rand()}}">
+<link rel="stylesheet" type="text/css" href="{{asset('assets/css/awesome-bootstrap-checkbox.css').'?'.rand()}}">
+<link rel="stylesheet" type="text/css" href="{{asset('assets/css/dropdown-animation.css').'?'.rand()}}">
 
-@include('layouts.navbar')
+<style>
+  .carousel-control.left button, .carousel-control.right button{
+  color: #212121;
+  background: #fafafa;
+  border: 1px solid #bdbdbd;
+  padding: 5px 15px;
+  font-size: 14px;
+}
+
+.carousel-control.left, .carousel-control.right{
+  background: none !important;
+  opacity: 1 !important;
+}
+
+.carousel-control{
+  position: static !important;
+  text-shadow: none !important;
+}
+
+.ellipsisAlbum:hover{
+  color: #E57C1F !important;
+}
+</style>
+
+@include('layouts.sidebar')
 <body>
 <meta name ="csrf-token" content = "{{csrf_token() }}"/>
-<br><br><br>
+<br><br>
 
 @if ($errors->any())
     <div class="alert alert-danger">
@@ -22,285 +44,413 @@
         </ul>
     </div>
 @endif
-<div class="container-fluid" style="padding-left: 30px; padding-right: 30px">
-  
+<div id="bandBanner" class="panel-thumbnail" style="background: url({{asset('assets/img/banner.jpeg')}}) no-repeat center center fixed;">
+  &nbsp;
+</div>
+<div id="bandBannerGradient" class="panel-thumbnail">
+  &nbsp;
+</div>
+<button class="btn btn-default" style="background: transparent; color: #fafafa; position: absolute; top: 25px; right: 25px;">Change cover photo</button>
 <br>
-<div class="container">
+<div class="container" id="main" style="background: #161616; padding-left: 30px; padding-right: 30px;">
 
-  <div class="row" style="margin-left: 0px;">
-    <span class="manage-band-heading">Manage Band</span>
-    <span class="btn btn-default pull-right" onclick="saveBand();">Save changes</span>
-    <a href="{{url('/'.$band->band_name)}}"><span class="btn btn-default pull-right" style="margin-right: 10px;">View Band Profile</span></a>
-    <span class="btn btn-default pull-right" style="margin-right: 10px;" data-toggle="modal" data-target="#invite-modal">Invite</span>
-  </div>
-  <br>
-
-  
-  <input type="text" value="{{$band->band_id}}" name="bandId" hidden>
-  <div class="row">
-    <div class="col-md-3">
-      <div class="container-profile-photo">
-      @if($band->band_pic == null)
-      <center><img src="../assets/img//dummy-pic.jpg" class="img-responsive"></center>
-      @endif
-      <center><img src="{{$band->band_pic}}" class="img-responsive"></center>
-        <div class="overlay"></div>
-        <div class="button">
-          <a href="#" onclick="openfile()"> Change Display Picture </a>
-          <form id = "band-pic-form" method="post" action="{{url('/editbandPic')}}" enctype="multipart/form-data">
-          {{csrf_field()}}
-            <input type="text" value="{{$band->band_id}}" name="bandId"  hidden>
-            <input type="text" value="{{$band->band_name}}" name="bandName" hidden>
-            <input id="anchor-file" type="file" name="bandPic" style="display: none;">
-            <input type="Submit" id = "submitForm" hidden />
-          </form>
-        </div>
-      </div>
-    </div>
-    <form method="post" id="save-band-form" action="{{url('/editband')}}">
-  {{csrf_field()}}
-    <div class="col-md-3">
-      <input type="text" value="{{$band->band_id}}" name="bandId"  hidden>
-      <input id="bandName" class="band-name-title-manage edit-field" name="bandName" value="{{$band->band_name}}">
-      <textarea class="band-description-txtarea" name="bandDesc" style="width: 100%; min-height: 221px; resize: none; margin-top: 5px;" placeholder="About the band">{{$BandDetails->band_desc}}</textarea>
-    </div>
-
-    <?php
-    $checker = 0;
-    $counter = 0;
-    ?>
-
-    <div class="col-md-6" style="max-height: 270px;">
-          <h4>Choose 2 main genres</h4>
-            <div class="row">
-               <div class="col-md-4">
-                @foreach($genres as $genre)
-                <?php 
-                if($counter == 6){
-                  echo "</div>";
-                  echo "<div class='col-md-4'>";
-                  $counter = 0;
-                }
-                ?>
-                  @foreach($bandGenreSelected as $genreSelected)
-                    @if($genre->genre_id == $genreSelected->genre_id)
-                      <div class="checkbox">
-                        <label class="checkbox-form-control">
-                        <input type="checkbox" name="genres[]" class="checkboxGenre" value="{{$genre->genre_id}}" checked>{{$genre->genre_name}}</label>
-                      </div>
-                      <?php $checker = 1; ?>
-                    @endif
-
-                  @endforeach
-
-                     @if($checker == 0 )
-                     <div class="checkbox">
-                       <label class="checkbox-form-control">
-                       <input type="checkbox" name="genres[]" class="checkboxGenre" value="{{$genre->genre_id}}">{{$genre->genre_name}}</label>
-                     </div>
-                     @endif
-                      <?php $checker = 0; ?>
-                      <?php $counter++; ?>
-                 @endforeach
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row" style="margin-left: 0px;">
+            <br><br>
+              <span class="manage-band-heading">Manage Band</span>
+              <span class="btn btn-default pull-right" onclick="saveBand();" style="background: #E57C1F; color: #fafafa; border-color: #E57C1F; margin-right: 12px;">Save changes</span>
+              <a href="{{url('/'.$band->band_name)}}"><span class="btn btn-default pull-right" style="margin-right: 10px; background: transparent; color: #fafafa">View Band Profile</span></a>
+              <span class="btn btn-default pull-right hidden" style="margin-right: 10px;" data-toggle="modal" data-target="#invite-modal">Invite</span>
             </div>
-          </div>
-    </div>
-        
-  </form>
-  </div>
-  <br>
-    
-<div class="row">
- <div class="col-md-12" style="height: 263px;">
- <!-- <div class="col-md-12" style="height: 263px;max-height: 263px;"> -->
-   <h4>Band Members</h4>
+            <br>
 
-   <form method="post" action="{{url('/addmember')}}">
-       {{csrf_field()}}
-   <div class="row" id="band-member-section">
-     <div class="col-sm-5">
-       <label for="add-band-member-name">Add Member</label>
-       <input type="text" class="form-control" id="add-band-member-name" name="add-band-member-name" placeholder="Enter a name">
-       <input type="text" id="add-band-member-id" name="add-band-member-id" hidden>
-       <input type="text" id="add-band-member-band-id" name="add-band-member-band-id" value="{{$band->band_id}}" hidden>
-       <input type="text" id="add-band-member-band-name" name="add-band-member-band-name" value="{{$band->band_name}}" hidden>
-       <div id="dummyContainer"></div>
-     </div>
-     <input type="text" name="member-user-id" hidden>
-     <div class="col-sm-4">      
-       <label for="add-band-member">Role</label>
-       <select id="add-band-member-role" class="form-control" name="add-band-member-role">
-         <option hidden>Select Role</option>
-         <option value="Vocalist">Vocalist</option>
-         <option value="Lead Guitar">Lead Guitar</option>
-         <option value="Rythm Guitar">Rythm Guitar</option>
-         <option value="Keyboardist">Keyboardist</option>
-         <option value="Drummer">Drummer</option>
-         <option value="Bassist">Bassist</option>
-       </select>
-     </div>
-
-     <div class="col-sm-3">
-       <label>&nbsp;</label>
-       
-       <button class="btn btn-default add-member-btn">Add Member</button>
-     </div>
-   </div>
-   </form>
-
-   <table class="table table-hover" style="margin-top: 5px;">
-   
-   @foreach($bandmembers as $members)
-   
-   <form id="bandmemberform" method="post" action="{{url('/deletemember')}}">
-   {{csrf_field()}}
-     <tr>
-       <td class="hidden"><input type="text" name="band-member-id" class="member-id" value="{{$members->user->user_id}}"></td>
-       <td class="hidden"><input type="text" name="band-id" value="{{$band->band_id}}"></td>
-       <td><input type="text" name="band-member-name" class="member-name" style="border: none; background: transparent;" value="{{$members->user->fullname}}" readonly></td>
-       <td><input type="text" name="band-member-role" class="member-role" style="border: none; background: transparent;" value="{{$members->bandrole}}" readonly></td>
-       <input type="text" value="{{$band->band_name}}" name="bandName" hidden>
-       <!-- <td><a href="#"><span class="fa fa-pencil"></span></a></td> -->
-       <td><button type="submit" style="background: transparent; border: none;" class="fa fa-close"></button></td>
-     </tr>
-   </form>
-   @endforeach
-
-     <!-- 
-     <tr>
-       <td><span class="member-name">Chester Bennington</span></td>
-       <td><span class="member-role">Vocalist</span></td>
-       <td><a href="#"><span class="fa fa-pencil"></span></a></td>
-       <td><a href="#"><span class="fa fa-close"></span></a></td>
-     </tr>
-     <tr>
-       <td><span class="member-name">Chester Bennington</span></td>
-       <td><span class="member-role">Vocalist</span></td>
-       <td><a href="#"><span class="fa fa-pencil"></span></a></td>
-       <td><a href="#"><span class="fa fa-close"></span></a></td>
-     </tr>
-     <tr>
-       <td><span class="member-name">Chester Bennington</span></td>
-       <td><span class="member-role">Vocalist</span></td>
-       <td><a href="#"><span class="fa fa-pencil"></span></a></td>
-       <td><a href="#"><span class="fa fa-close"></span></a></td>
-     </tr> -->
-
-     
-   </table>
-
- </div>
- </div>
-
-  <br>
-
-  
-  <div class="row">
-    <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading"><h4>Videos<button class="btn pull-right" data-toggle="modal" data-target="#video-upload-modal">Upload a video</button></h4></div>
-        <div class="panel-body">
-
-        <!-- ari ang foreach-->
-        <div id="showVideos">
-        @if($videos == null)
-        @else
-          @foreach($videos as $video)
             
-              <div class="col-md-4">
-                <video style="background: #000; width: 100%;" class="embed-responsive-item" controls>
-                    <source src="{{asset('assets/video/'.$video->video->video_content)}}">
-                </video>
-                <button type="button" class="edit" data-toggle="modal" data-desc="{{$video->video->video_desc}}" data-id="{{$video->video->video_id}}">Edit Description</button>
-                <button type="button" class="delete" value="{{'../'.$band->band_name.'/deleteVideo/'.$video->video->video_id}}">Delete</button>                    
+            <input type="text" value="{{$band->band_id}}" name="bandId" hidden>
+            <div class="row">
+              <div class="col-md-3">
+              <br>
+                <div class="container-profile-photo">
+                @if($band->band_pic == null)
+                <center>
+                <div class="panel-thumbnail">
+                  <img src="{{asset('assets/img/dummy-pic.jpg')}}" class="img-responsive" style="height: 245px; width: 100%">
+                </div>
+                </center>
+                @endif
+                <center>
+                <div class="panel-thumbnail">
+                  <img src="{{$band->band_pic}}" class="img-responsive" style="height: 245px; width: 100%">
+                </div>
+                </center>
+                  <div class="overlay"></div>
+                  <div class="button">
+                    <a href="#" onclick="openfile()"> Change Display Picture </a>
+                    <form id = "band-pic-form" method="post" action="{{url('/editbandPic')}}" enctype="multipart/form-data">
+                    {{csrf_field()}}
+                      <input type="text" value="{{$band->band_id}}" name="bandId"  hidden>
+                      <input type="text" value="{{$band->band_name}}" name="bandName" hidden>
+                      <input id="anchor-file" type="file" name="bandPic" style="display: none;">
+                      <input type="Submit" id = "submitForm" hidden />
+                    </form>
+                  </div>
+                </div>
               </div>
-          @endforeach
-        @endif
-         </div>
+              <br>
+              <form method="post" id="save-band-form" action="{{url('/editband')}}">
+            {{csrf_field()}}
+              <div class="col-md-3">
+                <input type="text" value="{{$band->band_id}}" name="bandId"  hidden>
+                <input id="bandName" class="band-name-title-manage edit-field" name="bandName" value="{{$band->band_name}}">
+                <textarea class="band-description-txtarea" name="bandDesc" placeholder="About the band">{{$BandDetails->band_desc}}</textarea>
+              </div>
 
-        </div>
-      </div>
-    </div>
+              <?php
+              $checker = 0;
+              $counter = 0;
+              ?>
 
-  </div>
+              <div class="col-md-6" style="max-height: 270px;">
+                    <h4>Choose 2 main genres</h4>
+                      <div class="row">
+                         <div class="col-xs-4">
+                          @foreach($genres as $genre)
+                          <?php 
+                          if($counter == 6){
+                            echo "</div>";
+                            echo "<div class='col-xs-4'>";
+                            $counter = 0;
+                          }
+                          ?>
+                            @foreach($bandGenreSelected as $genreSelected)
+                              @if($genre->genre_id == $genreSelected->genre_id)
+                                <div class="checkbox">
+                                  <label class="checkbox-form-control">                           
+                                  <input type="checkbox" name="genres[]" class="checkboxGenre" value="{{$genre->genre_id}}" checked>
+                                  <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>{{$genre->genre_name}}</label>
+                                </div>
+                                <?php $checker = 1; ?>
+                              @endif
 
-  <br>
-  <div class="row">
-    <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading"><h4>Albums<button class="btn pull-right" data-toggle="modal" data-target="#add-album-modal">Add an album</button></h4></div>
-        <div class="panel-body" style="padding: 0px;">
+                            @endforeach
 
-        <br>
-        <div id="showAlbums">
-          <nav class="nav-sidebar">
-            <ul class="nav tabs">
-             @if ($albums == null)
-             @else
+                               @if($checker == 0 )
+                               <div class="checkbox">
+                                 <label class="checkbox-form-control">
+                                 <input type="checkbox" name="genres[]" class="checkboxGenre" value="{{$genre->genre_id}}">
+                                 <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                                 {{$genre->genre_name}}</label>
+                               </div>
 
-              @foreach ($albums as $album)
+                               @endif
+                                <?php $checker = 0; ?>
+                                <?php $counter++; ?>
+                           @endforeach
+                      </div>
+                    </div>
+              </div>
+                  
+            </form>
+            </div>
+            <br>
+              
+          <div class="row">
+           <div class="col-md-12" style="height: 263px;">
+           <!-- <div class="col-md-12" style="height: 263px;max-height: 263px;"> -->
+             <h4>Band Members</h4>
+             <br>
+
+             <form method="post" action="{{url('/addmember')}}">
+                 {{csrf_field()}}
+             <div class="row" id="band-member-section">
+               <div class="col-sm-5">
+                 <label for="add-band-member-name">Add Member</label>
+                 <input type="text" class="form-control" id="add-band-member-name" name="add-band-member-name" placeholder="Enter a name">
+                 <input type="text" id="add-band-member-id" name="add-band-member-id" hidden>
+                 <input type="text" id="add-band-member-band-id" name="add-band-member-band-id" value="{{$band->band_id}}" hidden>
+                 <input type="text" id="add-band-member-band-name" name="add-band-member-band-name" value="{{$band->band_name}}" hidden>
+                 <div id="dummyContainer"></div>
+               </div>
+               <input type="text" name="member-user-id" hidden>
+               <div class="col-sm-4">      
+                 <label for="add-band-member">Role</label>
+                 <select id="add-band-member-role" class="form-control" name="add-band-member-role">
+                   <option hidden>Select Role</option>
+                   <option value="Vocalist">Vocalist</option>
+                   <option value="Lead Guitar">Lead Guitar</option>
+                   <option value="Rythm Guitar">Rythm Guitar</option>
+                   <option value="Keyboardist">Keyboardist</option>
+                   <option value="Drummer">Drummer</option>
+                   <option value="Bassist">Bassist</option>
+                 </select>
+               </div>
+
+               <div class="col-sm-3">
+                 <label>&nbsp;</label>
+                 
+                 <button class="btn btn-default add-member-btn">Add Member</button>
+               </div>
+             </div>
+             </form>
+
+             <table class="table table-hover" style="margin-top: 5px;">
+             
+             @foreach($bandmembers as $members)
+             
+             <form id="bandmemberform" method="post" action="{{url('/deletemember')}}">
+             <span style="margin-top: 20px;">&nbsp;</span>
+             {{csrf_field()}}
+               <tr>
+                 <td class="hidden"><input type="text" name="band-member-id" class="member-id" value="{{$members->user->user_id}}"></td>
+                 <td class="hidden"><input type="text" name="band-id" value="{{$band->band_id}}"></td>
+                 <td><input type="text" name="band-member-name" class="member-name" style="border: none; background: transparent;" value="{{$members->user->fullname}}" readonly></td>
+                 <td><input type="text" name="band-member-role" class="member-role" style="border: none; background: transparent;" value="{{$members->bandrole}}" readonly></td>
+                 <input type="text" value="{{$band->band_name}}" name="bandName" hidden>
+                 <!-- <td><a href="#"><span class="fa fa-pencil"></span></a></td> -->
+                 <td><button type="submit" style="background: transparent; border: none;" class="fa fa-close"></button></td>
+               </tr>
+             </form>
+             @endforeach
+
+               <!-- 
+               <tr>
+                 <td><span class="member-name">Chester Bennington</span></td>
+                 <td><span class="member-role">Vocalist</span></td>
+                 <td><a href="#"><span class="fa fa-pencil"></span></a></td>
+                 <td><a href="#"><span class="fa fa-close"></span></a></td>
+               </tr>
+               <tr>
+                 <td><span class="member-name">Chester Bennington</span></td>
+                 <td><span class="member-role">Vocalist</span></td>
+                 <td><a href="#"><span class="fa fa-pencil"></span></a></td>
+                 <td><a href="#"><span class="fa fa-close"></span></a></td>
+               </tr>
+               <tr>
+                 <td><span class="member-name">Chester Bennington</span></td>
+                 <td><span class="member-role">Vocalist</span></td>
+                 <td><a href="#"><span class="fa fa-pencil"></span></a></td>
+                 <td><a href="#"><span class="fa fa-close"></span></a></td>
+               </tr> -->
+
+               
+             </table>
+
+           </div>
+           </div>
+
+            <br>
+
+            
+            <div class="row">
+              <div class="col-md-12">
+                <div class="panel" style="background: transparent;">
+                  <div class="panel-heading"><h4>Videos<button class="btn pull-right" style="margin-top: -5px; background: #E57C1F;" data-toggle="modal" data-target="#video-upload-modal">Upload a video</button></h4></div>
+                  <div class="panel-body" style="margin-left: -15px">
+
+                  <!-- ari ang foreach-->
+                  <div id="showVideos">
+                  @if($videos == null)
+                  @else
+                    @foreach($videos as $video)
+                      
+                  <div class="col-md-3">
+                    <video style="background: #000; width: 100%;" class="embed-responsive-item" controls>
+                        <source src="{{asset('assets/video/'.$video->video->video_content)}}">
+                    </video>
+                    <span style="font-size: 15px">{{$video->video->video_title}} (Vlog #1 Manila Tour)</span>
+                    <div class="dropdown pull-right" style="position: absolute; top: 5px; right: 20px">
+                      <button class="dropdown-toggle" type="button" data-toggle="dropdown" style="background: transparent; border: none;"><span class="fa fa-ellipsis-h ellipsisProfile pull-right" style="font-size: 14px;"></span></button>
+                      <ul class="dropdown-menu">
+                        <a href="#" class="edit actions" data-toggle="modal" data-desc="{{$video->video->video_desc}}" data-id="{{$video->video->video_id}}"><li>Edit Video Details</li></a>
+                        <a href="#" class="delete actions" value="{{'../'.$band->band_name.'/deleteVideo/'.$video->video->video_id}}"><li>Delete Video</li></a>
+                      </ul>
+                    </div>
+                    <br>
+                    <span style="font-size: 12px">{{$band->band_name}}</span>
+                    <p style="font-size: 11px">32 Views</p>
+                    
+                  </div>
+                    @endforeach
+                  @endif
+                   </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <br>
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="panel" style="background: transparent;">
+                  <div class="panel-heading"><h4>Albums<button class="btn pull-right" style="margin-top: -10px; background: #E57C1F" data-toggle="modal" data-target="#add-album-modal">Add an album</button></h4></div>
+                  <div class="panel-body" style="margin-left: -30px; margin-right: -15px;">
+                    <div class="col-xs-12">
+
+                      <div id="myCarousel" class="carousel slide" data-ride="carousel" style="margin-right: -15px">
+                        <!-- Indicators -->
+                        <ol class="carousel-indicators hidden">
+                          <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                          <li data-target="#myCarousel" data-slide-to="1"></li>
+                          <li data-target="#myCarousel" data-slide-to="2"></li>
+                        </ol>
+
+                        <!-- Wrapper for slides -->
+                        <div class="carousel-inner">
+                          <div class="item active">
+
+
+                          @if(count($albums) == null)
+                            <h5>No albums yet</h5>
+                            @else
+                                <?php 
+                                $count=0;
+                                for($i=0; $i < count($albums) ; $i++) {  
+
+                                if($count == 6){
+                                    echo "</div>";
+                                    echo "<div class='item'>";
+                                    $count=0;
+                                } 
+
+                                ?>
+                                    
+                                <div class="col-xs-2">
+                                  @if($albums[$i]->album_pic == null)
+                                  <a href="{{url($band->band_name.'/albums/'.$albums[$i]->album_id)}}"><img src="{{asset('assets/img/dummy-pic.jpg')}}" class="img-responsive">
+                                  </a>
+                                  @else
+                                  <a href="{{url($band->band_name.'/albums/'.$albums[$i]->album_id)}}"><img src="{{$albums[$i]->album_pic}}" class="img-responsive">
+                                  </a>
+                                  @endif
+                                  <a href="{{url($band->band_name.'/albums/'.$albums[$i]->album_id)}}"><p style="text-align: center; margin-top: 5px;">{{$albums[$i]->album_name}}</p>
+                                  </a>
+                                  <p style="font-size: 11px; text-align: center; margin-top: -10px;">Released: 23 Aug 2008</p>
+
+                                  
+                                  <center>
+                                  <div class="dropup">
+                                    <button class="dropdown-toggle" type="button" data-toggle="dropdown" style="background: transparent; border: none;"><span class="fa fa-ellipsis-h ellipsisAlbum pull-right" style="font-size: 16px;"></span></button>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                      <li class="editprofActions2"><span class="btn">Add song to album</span></li>
+                                      <li class="editprofActions2"><span class="btn">Edit album</span></li>
+                                      <li class="editprofActions2"><span class="btn">Delete album</span></li>
+                                    </ul>
+                                  </div>
+                                  </center>                               
+
+                                </div>
+
+
+                                <?php $count++;} ?>
+                          @endif
+
+                          </div>
+                        </div>
+
+                        <div style="margin-left: 15px">
+                        <!-- Left and right controls -->
+                            <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                              <button class="fa fa-chevron-left"></button>
+                              <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                              <button class="fa fa-chevron-right"></button>
+                              <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+                        
+                      </div>
+
+                      
+                    </div>
+                </div>
+                </div>
+              </div>
+            </div>
+
+            <br>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="panel">
+                  <div class="panel-heading"><h4>Albums<button class="btn pull-right" data-toggle="modal" data-target="#add-album-modal">Add an album</button></h4></div>
+                  <div class="panel-body" style="padding: 0px;">
+
+                  <br>
+                    <div id="showAlbums">
+                      <nav class="nav-sidebar">
+                        <ul class="nav tabs">
+                         @if ($albums == null)
+                         @else
+
+                          @foreach ($albums as $album)
 
 
 
-              <li class="active">
-              <a href="#" data-toggle="tab" class="viewSongs" data-id= "{{$album->album_id}}">  {{$album->album_name}}
-                <button class="btn pull-right addSong" style="margin-top: -7px;" data-id="{{$album->album_id}}"><span class="fa fa-plus"></span></button>
-                <button class="btn pull-right delete" style="margin-top: -7px;" value="{{$album->album_id}}"><span class="fa fa-close"></span></button>
-                <button class="btn pull-right edit" style="margin-top: -7px;" data-name="{{$album->album_name}}" data-id="{{$album->album_id}}" data-desc="{{$album->album_desc}}"><span class="fa fa-pencil"></span>
-                </button>
+                          <li class="active">
+                          <a href="#" data-toggle="tab" class="viewSongs" data-id= "{{$album->album_id}}">  {{$album->album_name}}
+                            <button class="btn pull-right addSong" style="margin-top: -7px;" data-id="{{$album->album_id}}"><span class="fa fa-plus"></span></button>
+                            <button class="btn pull-right delete" style="margin-top: -7px;" value="{{$album->album_id}}"><span class="fa fa-close"></span></button>
+                            <button class="btn pull-right edit" style="margin-top: -7px;" data-name="{{$album->album_name}}" data-id="{{$album->album_id}}" data-desc="{{$album->album_desc}}"><span class="fa fa-pencil"></span>
+                            </button>
 
-              </a></li>
-
-
-
-              @endforeach
-           @endif
-          </ul>
-        </nav>
-       </div>               
+                          </a></li>
 
 
-       <div id="showSongs">
-        <div class="tab-content">
-          <div class="tab-pane active song-pane">
-          <h4 class="tabtitle"></h4>
-             <ul class="list-group tablist">
-             </ul>
+
+                          @endforeach
+                       @endif
+                      </ul>
+                    </nav>
+                   </div>               
+
+
+                   <div id="showSongs">
+                    <div class="tab-content">
+                      <div class="tab-pane active song-pane">
+                      <h4 class="tabtitle"></h4>
+                         <ul class="list-group tablist">
+                         </ul>
+                      </div>
+                    </div>
+                   </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default">
+          <div class="panel-heading"><h4>Articles<button class="btn btn-default pull-right" data-toggle="modal" data-target="#add-article-modal">Add new article</button></h4></div>
+          <div class="panel-body">
+
+          <div id="showArticles">
+          @if ($articles == null)
+          @else
+           @foreach ($articles as $article)
+
+           <a href="{{'../'.$band->band_name.'/viewArticle/'.$article->art_id}}">{{$article->article->art_title}}</a> <button class="btn pull-right delete" value="{{$article->art_id}}"><span class="fa fa-close"></span></button><button class="btn pull-right edit" data-toggle="modal" data-content="{{$article->article->content}}" data-title="{{$article->article->art_title}}" data-id="{{$article->art_id}}"><span class="fa fa-pencil"></span></button>
+           <br><br>
+
+           @endforeach
+          @endif
+          </div>
+
+
           </div>
         </div>
-        </div>
-
-        </div>          
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      <div class="panel panel-default">
-      <div class="panel-heading"><h4>Articles<button class="btn btn-default pull-right" data-toggle="modal" data-target="#add-article-modal">Add new article</button></h4></div>
-      <div class="panel-body">
-
-      <div id="showArticles">
-      @if ($articles == null)
-      @else
-       @foreach ($articles as $article)
-
-       <a href="{{'../'.$band->band_name.'/viewArticle/'.$article->art_id}}">{{$article->article->art_title}}</a> <button class="btn pull-right delete" value="{{$article->art_id}}"><span class="fa fa-close"></span></button><button class="btn pull-right edit" data-toggle="modal" data-content="{{$article->article->content}}" data-title="{{$article->article->art_title}}" data-id="{{$article->art_id}}"><span class="fa fa-pencil"></span></button>
-       <br><br>
-
-       @endforeach
-      @endif
       </div>
 
+      <br><br>
 
       </div>
     </div>
   </div>
-
-  <br><br>
-
-
 </div>
 
 <!-- Video Modals -->
@@ -318,7 +468,8 @@
         <h4 class="modal-title">Add Video</h4>
       </div>
       <div class="modal-body">
-        
+            Video Title
+            <input type="text" name="video_title" class="form-control">
             Video Description:<br>
             <textarea name='video_desc' class='form-control' required></textarea> <br>            
             Add Video:<br>
@@ -826,5 +977,10 @@ $(document).ready(function()
   // }
 
  });
+</script>
+<script>
+    $('.carousel').carousel({
+        interval: false
+    }); 
 </script>
 @endsection

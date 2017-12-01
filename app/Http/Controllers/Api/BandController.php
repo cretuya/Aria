@@ -48,6 +48,8 @@ class BandController extends Controller
                 'band_desc' => $request->input('bandDescr'),
                 'num_followers' => $zero,
                 'visit_counts' => $zero,
+                'weekly_score' => $zero,
+                'band_score' => $zero,
                 'scored_updated_date' => $dateToday
             ]);
 

@@ -193,4 +193,19 @@ class UserController extends Controller
         'pl_id' => $playlistId,
       ]);
     }
+
+    public function getAllPlist(Request $request){
+        $plist = Plist::all();
+        return response() ->json($plist);
+    }
+
+    public function removeSongFromPlaylist(Request $request) {
+        $id = $request->input('pl_id');
+        $song = $request->input('song_id');
+
+        $delete = Plist::where([
+            ['song_id',$song],
+            ['pl_id',$id],
+        ])->delete();
+    }
 }

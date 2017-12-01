@@ -23,6 +23,7 @@ class VideoController extends Controller
     {
     	$band = Band::where('band_name' , $bname)->first();
 
+        $title = $request->input('video_title');
         $desc = $request->input('video_desc');
         $videos = $request->file('video_content');
         
@@ -39,6 +40,7 @@ class VideoController extends Controller
                 $videoPath = $this->addPathforVideos($video);
 
                 $create = Video::create([
+                   'video_title' => $title,
                    'video_desc' => $desc,
                     'video_content' => $videoPath,
                 ]);

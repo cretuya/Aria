@@ -32,7 +32,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/feed';
+    protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.
@@ -99,7 +99,7 @@ class LoginController extends Controller
 
             if ($findUser) {
                 Auth::login($findUser);
-                return redirect('/feed');
+                return redirect('/home');
             }
             else
             {
@@ -124,7 +124,7 @@ class LoginController extends Controller
 
                 // return 'done';
                 $_SESSION= '';
-                return redirect('/feed');
+                return redirect('/home');
             }
 
         }

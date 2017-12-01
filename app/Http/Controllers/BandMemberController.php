@@ -26,7 +26,7 @@ class BandMemberController extends Controller
 		$findMembertoAdd = User::Where('user_id',$request->input('add-band-member-id'))->first();
 		// dd($findMembertoAdd);
 
-		$usertobeaddednotification = UserNotification::where('user_id',$findMembertoAdd->user_id)->get();
+		$usertobeaddednotification = UserNotification::where('user_id',$findMembertoAdd->user_id)->where('band_id',$request->input('add-band-member-band-id'))->get();
 		// dd($usertobeaddednotification);
 
 		$invitor = session('userSocial')['first_name']." ".session('userSocial')['last_name'];

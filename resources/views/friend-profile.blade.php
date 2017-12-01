@@ -5,129 +5,151 @@
 
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/user-profile.css').'?'.rand()}}">
 
-@include('layouts.navbar')
+@include('layouts.sidebar')
 
-<br><br><br><br>
-<div class="container">
-
+<div class="container" id="main" style="background: #161616; padding-left: 30px; padding-right: 30px;">
   <div class="row">
-    <div class="col-md-3">
-      <div class="panel panel-default">
-          <div class="panel-thumbnail">
-              <img src="{{$user->profile_pic}}" class="img-responsive" style="height: 350px; width: 100%;">                
+    <div class="col-md-12">
+
+      <br><br>
+        <div class="row">
+          <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-thumbnail">
+                    <img src="{{$user->profile_pic}}" class="img-responsive" style="height: 250px; width: 100%;">                
+                </div>
+            </div>
           </div>
-      </div>
-    </div>
 
-    <div class="col-md-1">
-    </div>
+          <div class="col-md-9" style="padding-left: 40px;">
+            <!-- <a href="#" data-toggle="modal" data-target="#edit-profile-modal" class="editprof-btn pull-right"><span class="fa fa-pencil"></span></a> -->
+            <div class="row prfcntnt">
+              <h2 style="margin-left: -2px;" class="profile-name">{{$user->fullname}}</h2>
+              @if(count($userHasBand) > 0)
+              <h5>{{$userBandRole[0]->bandrole}} at {{$userBandRole[0]->band_name}}</h5>
+              @else
+              <h5>{{$user->fname}} has no band role yet</h5>
+              @endif
+              <br>
+              <ul class="list-group">
+              @if($user->address == '')
+                <li class="user-info" style="display: inline"><span class="fa fa-map-marker"> </span> <span style="font-size: 12px;">N/A</span></li>
+              @else
+                <li class="user-info" style="display: inline"><span class="fa fa-map-marker"> </span> <span style="font-size: 12px;">{{$user->address}}</span></li>
+              @endif
+                <li class="user-info" style="display: inline; padding-left: 10px;"><span class="fa fa-envelope"> </span> <span style="font-size: 12px;">{{$user->email}}</span></li>
+                @if($user->contact == '')
+                <li class="user-info" style="display: inline; padding-left: 10px;"><span class="fa fa-phone"> </span> <span style="font-size: 12px;">N/A</span></li>
+                @else
+                <li class="user-info" style="display: inline; padding-left: 10px;"><span class="fa fa-phone"> </span> <span style="font-size: 12px;">{{$user->contact}}</span></li>
+                @endif
+              </ul>
 
-    <div class="col-md-8">
-      <!-- <a href="#" data-toggle="modal" data-target="#edit-profile-modal" class="editprof-btn pull-right"><span class="fa fa-pencil"></span></a> -->
-      <div class="row prfcntnt">
-        <h1 class="profile-name">{{$user->fullname}}</h1>
-        @if(count($userHasBand) > 0)
-        <h3>{{$userBandRole[0]->bandrole}} at {{$userBandRole[0]->band_name}}</h3>
-        @else
-        <h4>{{$user->fname}} has no band role yet</h4>
-        @endif
+              <hr style="margin-top: 35px; margin-right: 15px; border-color: #d9d9d9">
+
+              <label>Bio</label>
+              @if($user->bio == '')
+              <p style="text-align: justify; font-size: 12px;">N/A</p>
+              @else
+              <p style="text-align: justify; font-size: 12px;">{{$user->bio}}</p>
+
+              @endif
+            </div>
+             
+          </div>
+
+        </div>
+
         <br>
-        <ul class="list-group">
-        @if($user->address == '')
-          <li class="user-info" style="display: inline"><span class="fa fa-map-marker"> </span> <span>N/A</span></li>
-        @else
-          <li class="user-info" style="display: inline"><span class="fa fa-map-marker"> </span> <span>{{$user->address}}</span></li>
-        @endif
-          <li class="user-info" style="display: inline; padding-left: 10px;"><span class="fa fa-envelope"> </span> <span>{{$user->email}}</span></li>
-          @if($user->contact == '')
-          <li class="user-info" style="display: inline; padding-left: 10px;"><span class="fa fa-phone"> </span> <span>N/A</span></li>
+        <h3 style="font-size: 18px;">Playlists</h3>
+
+        <div class="row">
+          @if(count($playlists) == null)
+          <p style="text-align:center; color: #a4a4a4; font-size: 14px;">{{$user->fname}} has not created any playlists yet.</p>
           @else
-          <li class="user-info" style="display: inline; padding-left: 10px;"><span class="fa fa-phone"> </span> <span>{{$user->contact}}</span></li>
-          @endif
-        </ul>
+            @foreach ($playlists as $playlist)
+              <center>
+              <div class="col-xs-3">
+                <div class="panel" style="background: none; border: none;">
+                  <div class="panel-body">
+                    <a href="{{url('playlist/'.$playlist->pl_id)}}"><img src="{{$playlist->image}}" class="img-responsive" style="height: 100%; max-height: 180px; border: 2px solid #dddddd; margin-bottom: 10px;"><span style="font-size: 14px;">{{$playlist->pl_title}}</span></a>
+                    <br>
+                    <p style="font-size: 12px; color: #999; font-family: Arial; font-weight: 600;">{{$playlist->fullname}}</p>
 
-        <hr style="margin-top: 35px; border-color: #d9d9d9">
+                    <div class="dropup">
+                      <button class="dropdown-toggle" type="button" data-toggle="dropdown" style="background: transparent; border: none;"><span class="fa fa-ellipsis-h ellipsisPlaylist pull-right" style="font-size: 16px;"></span></button>
+                      <ul class="dropdown-menu dropdown-menu-right">
+                      </ul>
+                    </div>
 
-        <label>Bio</label>
-        @if($user->bio == '')
-          <p style="text-align: justify;">N/A</p>
-        @else
-        <p style="text-align: justify;">{{$user->bio}}</p>
+                  </div>
+                </div>
+              </div>
+              </center>
+              @endforeach
+            @endif
+        </div>
 
-        @endif
-        
-
-      </div>
-       
-    </div>
-
-  </div>
-
-  <br><br>
-
-
-  <h3>Bands Followed</h3>
-
-  <div class="container" style="padding: 0;">
+        <br>
+        <h3 style="font-size: 18px;">Bands Followed</h3>
 
             <div class="row">
-      @if(count($bandsfollowedNoGenre) == 0)
-      <p style="text-align:center; color: #a4a4a4; font-size: 16px;">{{$user->fname}} has not followed any bands yet</p>
-      @else
-        @if(count($bandsfollowed) == 0)
-          <?php
-          $i = 0;          
-          $j = $i;
-          for ($i=0; $i < count($bandsfollowedNoGenre)/2; $i++) {
-            if ($i % 3 == 0) {
-              echo "</div><br>";
-              echo "<div class='row'>";
-            }
-          ?>
-          <div class="col-xs-4">
-            <div class="media">
-              <div class="media-left">
-                <a href="{{url('/'.$bandsfollowedNoGenre[$j]->band_name)}}"><img src="{{$bandsfollowedNoGenre[$j]->band_pic}}" class="media-object" style="max-width:200px; height: 100%; max-height: 180px;"></a>
-              </div>
-              <div class="media-body" style="padding-top: 25px;">
-                <a href="{{url('/'.$bandsfollowedNoGenre[$j]->band_name)}}"><h4 class="media-heading">{{$bandsfollowedNoGenre[$j]->band_name}}</h4></a>
-                <p>{{$bandsfollowedNoGenre[$i]->num_followers}} Followers</p>
-              </div>
+            @if(count($bandsfollowedNoGenre) == 0)
+            <p style="text-align:center; color: #a4a4a4; font-size: 14px;">{{$user->fname}} has not followed any bands yet</p>
+            @else
+              @if(count($bandsfollowed) == 0)
+                <?php
+                $i = 0;          
+                $j = $i;
+                for ($i=0; $i < count($bandsfollowedNoGenre)/2; $i++) {
+                  if ($i % 4 == 0) {
+                    echo "</div><br>";
+                    echo "<div class='row'>";
+                  }
+                ?>
+                <div class="col-xs-3">
+                  <center>
+                  <div class="panel" style="background: none; margin-bottom: 0px;">
+                    <div class="panel-body" style="padding-bottom: 0px;">
+                      <a href="{{url('/'.$bandsfollowedNoGenre[$j]->band_name)}}"><img src="{{$bandsfollowedNoGenre[$j]->band_pic}}" class="img-responsive img-circle" style="width: 84%; min-width:199px; max-width: 200px height: 100%; min-height: 179px; max-height: 180px;"></a>
+                      <a href="{{url('/'.$bandsfollowedNoGenre[$j]->band_name)}}"><h5 style="font-size: 14px;">{{$bandsfollowedNoGenre[$j]->band_name}}</h5></a>
+                      <p style="font-size: 12px;">{{$bandsfollowedNoGenre[$i]->num_followers}} Followers</p>
+                    </div>
+                  </div>
+                  </center>
+                </div>
+                <?php $j+=2;}?>
+              @else
+                <?php
+                $i = 0;
+                $j = $i;
+                for ($i=0; $i < count($bandsfollowed)/2; $i++) {
+                  if ($i % 4 == 0) {
+                    echo "</div><br>";
+                    echo "<div class='row'>";
+                  }
+                ?>
+                <div class="col-xs-3">
+                  <center>
+                  <div class="panel" style="background: none; margin-bottom: 0px;">
+                    <div class="panel-body" style="padding-bottom: 0px;">
+                      <a href="{{url('/'.$bandsfollowed[$j]->band_name)}}"><img src="{{$bandsfollowed[$j]->band_pic}}" class="img-responsive img-circle" style="width: 84%; max-width:199px; max-width: 200px height: 100%; min-height: 179px; max-height: 180px;"></a>
+                      <a href="{{url('/'.$bandsfollowed[$j]->band_name)}}"><h5 style="font-size: 14px;">{{$bandsfollowed[$j]->band_name}}</h5></a>
+                      <p style="font-size: 12px;">{{$bandsfollowed[$j]->genre_name}} | {{$bandsfollowed[$j+1]->genre_name}}</p>
+                      <p style="font-size: 12px;">{{$bandsfollowed[$i]->num_followers}} Followers</p>
+                    </div>
+                  </div>
+                  </center>
+                </div>
+                <?php $j+=2;}?>
+              @endif        
+            @endif
+
             </div>
-          </div>
-          <?php $j+=2;}?>
-        @else
-          <?php
-          $i = 0;
-          $j = $i;
-          for ($i=0; $i < count($bandsfollowed)/2; $i++) {
-            if ($i % 3 == 0) {
-              echo "</div><br>";
-              echo "<div class='row'>";
-            }
-          ?>
-          <div class="col-xs-4">
-            <div class="media">
-              <div class="media-left">
-                <a href="{{url('/'.$bandsfollowed[$j]->band_name)}}"><img src="{{$bandsfollowed[$j]->band_pic}}" class="media-object" style="max-width:200px; height: 100%; max-height: 180px;"></a>
-              </div>
-              <div class="media-body" style="padding-top: 25px;">
-                <a href="{{url('/'.$bandsfollowed[$j]->band_name)}}"><h4 class="media-heading">{{$bandsfollowed[$j]->band_name}}</h4></a>
-                <p>{{$bandsfollowed[$j]->genre_name}} | {{$bandsfollowed[$j+1]->genre_name}}</p>
-                <p>{{$bandsfollowed[$i]->num_followers}} Followers</p>
-              </div>
-            </div>
-          </div>
-          <?php $j+=2;}?>
-        @endif        
-      @endif
 
-      </div>
-
-      <br>
-  </div>      
-
-
+            <br>
+    </div>
+  </div>
 </div>
 
     <div id="create-band-modal" class="modal fade" role="dialog">

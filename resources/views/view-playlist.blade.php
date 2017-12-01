@@ -3,130 +3,131 @@
   <script src="{{asset('assets/js/jquery-ui.min.js')}}"></script>
   <link rel="stylesheet" type="text/css" href="{{asset('assets/css/playlistPlayer.css').'?'.rand()}}">
 
-@section('title')
-@endsection
-
-
-@include('layouts.navbar')
-
 @section('content')
+@include('layouts.sidebar')
+
 <meta name ="csrf-token" content = "{{csrf_token() }}"/>
 <input type="text" value="{{$pl->pl_id}}" id="pid" hidden>
 
-<br><br><br><br><br>
-<div class="container">
-  <div class="col-md-3">
-    <img src="{{$pl->image}}" class="img-responsive">
-    <h3 class="text-center">{{$pl->pl_title}}</h3>
-    <p class="text-center">by: {{$pl->fullname}}</p>
-    <img src="{{url('/assets/img/play.png')}})">
-  </div>
-  <div class="col-md-9">
-    @if(count($lists) == null)
-    <div class="nlist">
-      <audio src="{{url('/assets/music/')}}" controls id="audioPlayer" type="audio/mpeg" hidden></audio>
-      <div class="list">      
-
-      <div class="buttons">
-        <span id="playButton" class="btn" onclick="playOrPause();" style="margin-left: 5px;"><img id="playPauseImg" src="{{url('/assets/img/play.png')}}" class="img-responsive"></span>
-        <span id="muteButton" class="btn" onclick="muteOrUnmute();" style="margin-left: -8px;"><img id="muteUnmuteImg" src="{{url('/assets/img/unmute.png')}}" class="img-responsive"></span>
-        <span id="currentTime" style="color: #fafafa; vertical-align: text-top;">0:00</span><span style="color: #fafafa; vertical-align: text-top;">  / </span><span id="fullDuration" style="color: #fafafa; vertical-align: text-top;">0:00</span>
-      </div>
-
-      <div class="progress" id="progress_bar" style="margin-bottom: 0px; height: 4px;">
-        <!-- <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%"> -->
-        <div class="progress-bar" id="moving_progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-        </div>
-      </div>
-
-        <ul id="playlist" class="songsInPlaylist">
-          <li id="noSongsMessage"><center><h5 style="color: #fafafa">There are no songs in this playlist yet.</h5></center></li>
-        </ul>
-    </div>
-    <hr>
-    <div class="rsongs">
-      <h4>Recommended Songs</h4>        
-        @foreach($rsongs as $rsong)
-          <div class="well" style="padding: 5px; background: #fafafa">
-          <div class="row">
-            <div class="col-md-12">
-              <label>{{$rsong->song_title}}</label><br>
-              <audio controls><source src="{{url('/assets/music/'.$rsong->song_audio)}}" type="audio/mpeg"></audio>
-              <span data-id="{{$rsong->song_id}}" class="addnlist btn fa fa-plus-square pull-right" style="margin-top: -10px;font-size: 18px" title="Add to playlist"></span>
+<br><br>
+<div class="container" id="main" style="background: #161616; padding-left: 30px; padding-right: 30px;">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-3">
+              <img src="{{$pl->image}}" class="img-responsive">
+              <h3 class="text-center">{{$pl->pl_title}}</h3>
+              <p class="text-center">by: {{$pl->fullname}}</p>
+              <img src="{{url('/assets/img/play.png')}})">
             </div>
-          </div>
-          </div>
-        @endforeach
-      </div>
-      <div class="nrecommend" hidden>
-      <h4>Recommended Songs</h4>    
-      </div>
-    @else
-    <div class="list">
-      <audio src="{{url('/assets/music/')}}" controls id="audioPlayer" type="audio/mpeg" hidden></audio>
-    <div class="buttons">
-      <span id="playButton" class="btn" onclick="playOrPause();" style="margin-left: 5px;"><img id="playPauseImg" src="{{url('/assets/img/play.png')}}" class="img-responsive"></span>
-      <span id="muteButton" class="btn" onclick="muteOrUnmute();" style="margin-left: -8px;"><img id="muteUnmuteImg" src="{{url('/assets/img/unmute.png')}}" class="img-responsive"></span>
-      <span id="currentTime" style="color: #fafafa; vertical-align: text-top;">0:00</span><span style="color: #fafafa; vertical-align: text-top;">  / </span><span id="fullDuration" style="color: #fafafa; vertical-align: text-top;">0:00</span>
-      <span class="pull-right" style="color: #fafafa; margin-top: 8px; margin-right: 25px;"><span id="song-name"> </span></span>
-    </div>
+            <div class="col-md-9">
+              @if(count($lists) == null)
+              <div class="nlist">
+                <audio src="{{url('/assets/music/')}}" controls id="audioPlayer" type="audio/mpeg" hidden></audio>
+                <div class="list">      
 
-    <div class="progress" id="progress_bar" style="margin-bottom: 0px; height: 4px;">
-      <!-- <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%"> -->
-      <div class="progress-bar" id="moving_progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-      </div>
-    </div>
+                <div class="buttons">
+                  <span id="playButton" class="btn" onclick="playOrPause();" style="margin-left: 5px;"><img id="playPauseImg" src="{{url('/assets/img/play.png')}}" class="img-responsive" draggable="false" /></span>
+                  <span id="muteButton" class="btn" onclick="muteOrUnmute();" style="margin-left: -8px;"><img id="muteUnmuteImg" src="{{url('/assets/img/unmute.png')}}" class="img-responsive" draggable="false" /></span>
+                  <span id="currentTime" style="color: #fafafa; vertical-align: text-top;">0:00</span><span style="color: #fafafa; vertical-align: text-top;">  / </span><span id="fullDuration" style="color: #fafafa; vertical-align: text-top;">0:00</span>
+                </div>
 
-      <ul id="playlist" class="songsInPlaylist">
-      <?php
+                <div class="progress" id="progress_bar" style="margin-bottom: 0px; height: 4px;">
+                  <!-- <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%"> -->
+                  <div class="progress-bar" id="moving_progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                  </div>
+                </div>
 
-      for($i=0; $i < count($lists); $i++){
+                  <ul id="playlist" class="songsInPlaylist">
+                    <li id="noSongsMessage"><center><h5 style="color: #fafafa">There are no songs in this playlist yet.</h5></center></li>
+                  </ul>
+              </div>
+              <hr>
+              <div class="rsongs">
+                <h4>Recommended Songs</h4>        
+                  @foreach($rsongs as $rsong)
+                    <div class="well" style="padding: 5px; background: #fafafa">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <label>{{$rsong->song_title}}</label><br>
+                        <audio controls><source src="{{url('/assets/music/'.$rsong->song_audio)}}" type="audio/mpeg"></audio>
+                        <span data-id="{{$rsong->song_id}}" class="addnlist btn fa fa-plus-square pull-right" style="margin-top: -10px;font-size: 18px" title="Add to playlist"></span>
+                        <span class="pull-right" style="font-size: 12px; margin-right: -40px; margin-top: -23px;">Genre:{{$rsong->genre->genre_name}}</span>
+                      </div>
+                    </div>
+                    </div>
+                  @endforeach
+                </div>
+                <div class="nrecommend" hidden>
+                <h4>Recommended Songs</h4>    
+                </div>
+              @else
+              <div class="list">
+                <audio src="{{url('/assets/music/')}}" controls id="audioPlayer" type="audio/mpeg" hidden></audio>
+              <div class="buttons">
+                <span id="playButton" class="btn" onclick="playOrPause();" style="margin-left: 5px;"><img id="playPauseImg" src="{{url('/assets/img/play.png')}}" class="img-responsive"></span>
+                <span id="muteButton" class="btn" onclick="muteOrUnmute();" style="margin-left: -8px;"><img id="muteUnmuteImg" src="{{url('/assets/img/unmute.png')}}" class="img-responsive"></span>
+                <span id="currentTime" style="color: #fafafa; vertical-align: text-top;">0:00</span><span style="color: #fafafa; vertical-align: text-top;">  / </span><span id="fullDuration" style="color: #fafafa; vertical-align: text-top;">0:00</span>
+                <span class="pull-right" style="color: #fafafa; margin-top: 8px; margin-right: 25px;"><span id="song-name"> </span></span>
+              </div>
 
-          $removedmp3[$i] = str_replace('.mp3', '', $lists[$i]->songs->song_audio);
+              <div class="progress" id="progress_bar" style="margin-bottom: 0px; height: 4px;">
+                <!-- <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%"> -->
+                <div class="progress-bar" id="moving_progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                </div>
+              </div>
 
-            if($i == 0){
-              echo '<li class="current-song"><a href="http://localhost/Aria/public/assets/music/'.$lists[$i]->songs->song_audio.'" onclick="playOrPauseFromSongClick();">'.$removedmp3[$i].'</a><span data-id="'.$lists[$i]->songs->song_id.'" class="remlist btn fa fa-remove pull-right" style="margin-top: -7px;font-size: 18px; color: #555555" title="Remove from playlist"></span></li>';
-            }
-            else{
-              echo '<li><a href="http://localhost/Aria/public/assets/music/'.$lists[$i]->songs->song_audio.'" onclick="playOrPauseFromSongClick();">'.$removedmp3[$i].'</a><span data-id="'.$lists[$i]->songs->song_id.'" class="remlist btn fa fa-remove pull-right" style="margin-top: -7px;font-size: 18px; color: #555555" title="Remove from playlist"></span></li>';
-            }
-      }
+                <ul id="playlist" class="songsInPlaylist">
+                <?php
 
-      ?>
+                for($i=0; $i < count($lists); $i++){
 
-      </ul>
+                    $removedmp3[$i] = str_replace('.mp3', '', $lists[$i]->songs->song_audio);
 
-        
+                      if($i == 0){
+                        echo '<li class="current-song"><a href="http://localhost/Aria/public/assets/music/'.$lists[$i]->songs->song_audio.'" onclick="playOrPauseFromSongClick();">'.$removedmp3[$i].'</a><span data-id="'.$lists[$i]->songs->song_id.'" class="remlist btn fa fa-remove pull-right" style="margin-top: -7px;font-size: 18px; color: #555555" title="Remove from playlist"></span></li>';
+                      }
+                      else{
+                        echo '<li><a href="http://localhost/Aria/public/assets/music/'.$lists[$i]->songs->song_audio.'" onclick="playOrPauseFromSongClick();">'.$removedmp3[$i].'</a><span data-id="'.$lists[$i]->songs->song_id.'" class="remlist btn fa fa-remove pull-right" style="margin-top: -7px;font-size: 18px; color: #555555" title="Remove from playlist"></span></li>';
+                      }
+                }
 
-    </div>
-    <hr>
-    <div class="recsongs">
-      <h4>Recommended Songs</h4>
-      @if(count($recsongs) == null)
-      <h6>No available songs at the moment.</h6>
-      @else        
-        @foreach($recsongs as $recsong)
-          <div class="well" style="padding: 5px; background: #fafafa">
-          <div class="row">
-            <div class="col-md-12">
-              <label>{{$recsong->song_title}}</label><br>
-              <audio controls><source src="{{url('/assets/music/'.$recsong->song_audio)}}" type="audio/mpeg"></audio>
-              <span data-id="{{$recsong->song_id}}" class="addlist btn fa fa-plus-square pull-right" style="margin-top: -10px;font-size: 18px" title="Add to playlist"></span>
+                ?>
+
+                </ul>
+
+                  
+
+              </div>
+              <hr>
+              <div class="recsongs">
+                <h4>Recommended Songs</h4>
+                @if(count($recsongs) == null)
+                <h6>No available songs at the moment.</h6>
+                @else        
+                  @foreach($recsongs as $recsong)
+                    <div class="well" style="padding: 5px; background: #fafafa">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <label>{{$recsong->song_title}}</label><br>
+                        <audio controls><source src="{{url('/assets/music/'.$recsong->song_audio)}}" type="audio/mpeg"></audio>
+                        <span data-id="{{$recsong->song_id}}" class="addlist btn fa fa-plus-square pull-right" style="margin-top: -10px;font-size: 18px" title="Add to playlist"></span>
+                        <span class="pull-right" style="font-size: 12px; margin-right: -40px; margin-top: -23px;">Genre:{{$recsong->genre->genre_name}}</span>
+                      </div>
+                    </div>
+                    </div>
+                  @endforeach
+                @endif
+              </div>
+
+                <div class="recommend" hidden>
+                <h4>Recommended Songs</h4>        
+                </div>
+              @endif
+              </div>
             </div>
-          </div>
-          </div>
-        @endforeach
-      @endif
     </div>
-
-      <div class="recommend" hidden>
-      <h4>Recommended Songs</h4>        
-      </div>
-    @endif
   </div>
 </div>
-
-
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -206,7 +207,7 @@ function nrecommend(id)
             console.log(data);
             $('.nrecommend').empty();
             $('.nrecommend').append('<h4>Recommended Songs</h4>');
-              $.each(data, function(key, value)
+              $.each(data.recs, function(key, value)
               {
                 var song = value.song_audio;
                 var source = "{{url('/assets/music/')}}";

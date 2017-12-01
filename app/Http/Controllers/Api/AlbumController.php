@@ -101,4 +101,8 @@ class AlbumController extends Controller
             return response() ->json(['message' => 'No genres found in the table.']);   
         }
     }
+    public function AllAlbums(Request $request){
+        $albums = Album::all();
+        return response()->json($albums);
+    }
 }

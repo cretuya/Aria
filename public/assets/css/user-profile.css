@@ -41,6 +41,52 @@
 @media (max-width: 320px){
 }
 
+html,body{
+  background: #161616;
+}
+
+.dropdown-menu{
+  border: 1px solid #212121;
+  background: #232323;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.editprofActions{
+  color: #212121;
+}
+
+.editprofActions li{
+  padding: 5px 5px 5px 20px;
+  color: #fafafa;
+  border-radius: 4px;
+}
+
+.editprofActions:hover li{
+  background: #e57c1f !important;
+  color: #fafafa !important;
+}
+
+.editprofActions2{
+  padding: 0px;
+  color: #fafafa;
+  border-radius: 4px;
+}
+
+.editprofActions2 .btn{
+  background: transparent;
+  border: none;
+  color: #fafafa;
+  width: 100%;
+  text-align: left;
+  padding-left: 20px;
+}
+
+.editprofActions2 span:hover{
+  background: #e57c1f !important;
+  color: #fafafa !important;
+}
+
 .panel-thumbnail img{
     display: block;
     margin: auto;
@@ -54,12 +100,12 @@
 
 .profile-name{
   font-family: Montserrat;
-  font-size: 38px;
+  font-size: 32px;
 }
 
 .editprof-btn{
-  background: #F9A825;
-  border-color: #F9A825;
+  background: #e57c1f;
+  border-color: #e57c1f;
   padding: 7px 12px;
   border-radius: 3px;
   color: #fff;
@@ -72,20 +118,19 @@
 }
 
 .user-info{
-  border-color: #F9A825;
+  border-color: #e57c1f;
   background: transparent;
   text-align: left;
 }
 
 .user-info .fa{
-  color: #F9A825;
-  font-size: 18px;
+  color: #e57c1f;
+  font-size: 14px;
 }
 
 .media{
-  border: 1px solid #e4e4e4;
-  border-radius: 3px;
-  border-bottom: 3px solid #F9A825;
+  border: 2px solid #bdbdbd;
+  border-radius: 4px;
 }
 
 .media-body{
@@ -94,8 +139,4 @@
 
 .media-left{
   padding-right: 0px;  
-}
-
-.media-body h4, .media-body p{
-  text-indent: 10px;
 }

@@ -15,6 +15,8 @@ class Band extends Model
         'band_desc' ,
         'num_followers' ,
         'visit_counts' ,
+        'weekly_score' ,
+        'band_score' ,
         'scored_updated_date',
     ];
 

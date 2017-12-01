@@ -11,6 +11,7 @@
 
 .carousel-control{
 	width: 0 !important;
+	display: none;
 }
 
 .carousel-control .fa-chevron-circle-left, .carousel-control .fa-chevron-circle-right{
@@ -52,10 +53,11 @@
     <div class="item active">
  
 @if(count($recplaylists) == null)
+<h5>No playlists available yet</h5>
 @else
 	@foreach($recplaylists as $recplaylist)
      <div class="col-xs-3">
-		<a href="{{url('discover/'.$recplaylist->genre_id)}}">
+		<a href="{{url('discover/playlist/'.$recplaylist->genre_id)}}">
 		<div style="background: #222">
 			<img src="{{url('assets/img/genre/'.$recplaylist->genre_name.'.jpeg')}}" class="img-responsive genre-thumbnail">
 			<div class="carousel-caption" style="top: -5px; left: 30px;"><img src="{{ url('assets/img/arialogo.png')}}" class="img-responsive" style="width: 35px; padding: 7px 3px;border: 0.1em solid #F6843B; border-radius: 50%;"></div>

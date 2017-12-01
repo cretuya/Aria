@@ -1,3 +1,21 @@
+.carousel-control.left button, .carousel-control.right button{
+  color: #212121;
+  background: #fafafa;
+  border: 1px solid #bdbdbd;
+  padding: 5px 15px;
+  font-size: 14px;
+}
+
+.carousel-control.left, .carousel-control.right{
+  background: none !important;
+  opacity: 1 !important;
+}
+
+.carousel-control{
+  position: static !important;
+  text-shadow: none !important;
+}
+
 .genre-thumbnail{
 	border: 1px solid #d9d9d9;
 	overflow: hidden;

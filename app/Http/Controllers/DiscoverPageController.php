@@ -18,7 +18,7 @@ class DiscoverPageController extends Controller
         $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
         $recplaylists = $this->recommend();
         // dd($recplaylists);
-    	return view('discover', compact('allGenres','usernotifinvite', 'recplaylists'));
+    	return view('home', compact('allGenres','usernotifinvite', 'recplaylists'));
     }
 
     public function showAccordingtoGenre($genreName){

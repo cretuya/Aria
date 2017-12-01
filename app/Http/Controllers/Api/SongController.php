@@ -88,10 +88,12 @@ class SongController extends Controller
         $id = Song::find($request->input('song_id'));
     	$album = Album::where('album_id', $id->album_id)->first();
     	$band = Band::where('band_id', $album->band_id)->first();
+        $title = $request->input('song_title');
     	$desc = $request->input('song_desc');
     	$genre = $request->input('genre_id');
 
     	$update = $id->update([
+            'song_title' => $title,
     		'song_desc' => $desc,
     		'genre_id' => $genre,
             'album_id' => $album->album_id,

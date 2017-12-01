@@ -24,7 +24,9 @@ Route::middleware(['auth'])->group(function(){
 	    return view('index');
 	});
 
+	Route::get('home', 'UserController@homeshow');
 	Route::get('feed', 'UserController@feedshow');
+	Route::get('friends', 'UserController@friends');
 	Route::get('profile/{user_id}', 'UserController@friendprofile');
 
 	Route::get('charts', 'ChartsController@show');
@@ -33,9 +35,9 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::get('user/profile', 'UserController@profileshow');
 	Route::post('edit/profile', 'UserController@updateUser');
-	Route::get('discover', 'DiscoverPageController@showAllGenres');
-	Route::get('discover/{genre_id}', 'DiscoverPageController@showSongsGenre');
-	Route::get('discover/{genre_name}', 'DiscoverPageController@showAccordingtoGenre');\
+	Route::get('home', 'DiscoverPageController@showAllGenres');
+	Route::get('discover/playlist/{genre_id}', 'DiscoverPageController@showSongsGenre');
+	Route::get('discover/{genre_name}', 'DiscoverPageController@showAccordingtoGenre');
 
 	Route::post('createband', 'BandController@createBand');
 	Route::get('{band_name}/manage', 'BandController@index');
