@@ -28,6 +28,24 @@
 .ellipsisAlbum:hover{
   color: #E57C1F !important;
 }
+
+input[type='range']{
+  -webkit-appearance: none !important;
+  background: #E57C1F;
+  cursor: pointer;
+  height: 5px;
+  outline: none !important;
+}
+
+input[type='range']::-webkit-slider-thumb{
+  -webkit-appearance: none !important;
+  background: #e4e4e4;
+  height: 12px;
+  width: 12px;
+  border-radius: 100%;
+  cursor: pointer;
+}
+
 </style>
 
 @include('layouts.sidebar')
@@ -77,12 +95,13 @@
                   <img src="{{asset('assets/img/dummy-pic.jpg')}}" class="img-responsive" style="height: 245px; width: 100%">
                 </div>
                 </center>
-                @endif
+                @else
                 <center>
                 <div class="panel-thumbnail">
                   <img src="{{$band->band_pic}}" class="img-responsive" style="height: 245px; width: 100%">
                 </div>
                 </center>
+                @endif
                   <div class="overlay"></div>
                   <div class="button">
                     <a href="#" onclick="openfile()"> Change Display Picture </a>
@@ -253,21 +272,33 @@
                   @else
                     @foreach($videos as $video)
                       
-                  <div class="col-md-3">
-                    <video style="background: #000; width: 100%;" class="embed-responsive-item" controls>
+                  <div class="col-md-3 video-controller-box">
+
+                    <video id="{{$video->video->video_id}}" style="background: #000; width: 100%; height: inherit;" class="embed-responsive-item">
                         <source src="{{asset('assets/video/'.$video->video->video_content)}}">
-                    </video>
-                    <span style="font-size: 15px">{{$video->video->video_title}} (Vlog #1 Manila Tour)</span>
+                    </video> 
+
+                    <div id="controllerBox{{$video->video->video_id}}" class="video-controls-box" style="background: #000; position: absolute; bottom: 73px; width: calc(100% - 30px); display: none; opacity: 0.7;">
+                      <input id="seeksliderVid{{$video->video->video_id}}" type="range" min="0" max="100" value="0" step="1">
+                      <div style="padding-top: 5px; padding-bottom: 4px;">
+                        <span><img id="playPauseBottomOfVid{{$video->video->video_id}}" src="{{asset('assets/img/play.png')}}" onclick="playPauseVid(this,'{{$video->video->video_id}}')" style="cursor:pointer; width: 25px; padding-left: 5px; margin-top: -2px;"></span>
+                        <span id="curtimeText{{$video->video->video_id}}" style="color:#fafafa; margin-left: 5px;">0:00</span> / <span id="durtimeText{{$video->video->video_id}}" style="color:#fafafa;">0:00</span>
+                      </div>
+                    </div>
+
+                    <img id="controllOfVid{{$video->video->video_id}}" src="{{asset('assets/img/play.png')}}" onclick="playPauseVid(this,'{{$video->video->video_id}}')" style="cursor: pointer; position: absolute; top: 62px; left: 157px; width: 90px;"/>                    
+                    <span style="font-size: 12px">{{$video->video->video_title}}</span>
+
                     <div class="dropdown pull-right" style="position: absolute; top: 5px; right: 20px">
-                      <button class="dropdown-toggle" type="button" data-toggle="dropdown" style="background: transparent; border: none;"><span class="fa fa-ellipsis-h ellipsisProfile pull-right" style="font-size: 14px;"></span></button>
+                      <button class="dropdown-toggle" type="button" data-toggle="dropdown" style="background: #444; border: none;"><span class="fa fa-ellipsis-h ellipsisProfile pull-right" style="font-size: 14px; margin-left: 0px;"></span></button>
                       <ul class="dropdown-menu">
-                        <a href="#" class="edit actions" data-toggle="modal" data-desc="{{$video->video->video_desc}}" data-id="{{$video->video->video_id}}"><li>Edit Video Details</li></a>
+                        <a href="#" class="edit actions" data-toggle="modal" data-title="{{$video->video->video_title}}" data-desc="{{$video->video->video_desc}}" data-id="{{$video->video->video_id}}"><li>Edit Video Details</li></a>
                         <a href="#" class="delete actions" value="{{'../'.$band->band_name.'/deleteVideo/'.$video->video->video_id}}"><li>Delete Video</li></a>
                       </ul>
                     </div>
                     <br>
                     <span style="font-size: 12px">{{$band->band_name}}</span>
-                    <p style="font-size: 11px">32 Views</p>
+                    <!-- <p style="font-size: 11px">32 Views</p> -->
                     
                   </div>
                     @endforeach
@@ -471,7 +502,7 @@
             Video Title
             <input type="text" name="video_title" class="form-control">
             Video Description:<br>
-            <textarea name='video_desc' class='form-control' required></textarea> <br>            
+            <textarea name='video_desc' class='form-control' rows="6" required></textarea> <br>            
             Add Video:<br>
             <input type='file' name='video_content[]' class="btn btn-default" accept="video/*" multiple required><br><br>
       
@@ -499,9 +530,11 @@
         <h4 class="modal-title">Edit Video</h4>
       </div>
       <div class="modal-body">
-        
+            
+            Video Title
+            <input type="text" id="video_title" name="video_title" class="form-control">
             Video Description:<br>
-            <textarea name='video_desc' id='video_desc' class='form-control'></textarea> <br><br> 
+            <textarea name='video_desc' id='video_desc' class='form-control' rows="6"></textarea> <br><br> 
             <input type="text" id="video_id" name="video_id" hidden>
       
       </div>
@@ -785,6 +818,93 @@ function saveBand(){
   document.getElementById('save-band-form').submit();
 }
 
+function playPauseVid(btn,vId){
+    // console.log(vId.id);
+    var vId = document.getElementById(vId);
+    var controller_vId = "controllOfVid"+vId.id;
+    var vidForSlider = "seeksliderVid"+vId.id;
+    var seekslider = document.getElementById(vidForSlider);
+    var playPauseBottom = "playPauseBottomOfVid"+vId.id;
+    var controlBox = "controllerBox"+vId.id;
+
+    // console.log(controller_vId);
+    var playBtn = "{{asset('assets/img/play.png')}}";
+    var pauseBtn = "{{asset('assets/img/pause.png')}}";
+
+    var controllerVid = document.getElementById(controller_vId);
+    var controllerVidBottom = document.getElementById(playPauseBottom);
+    var controllerBox = document.getElementById(controlBox);
+    
+    if (vId.paused) {
+      vId.play();
+      controllerVid.src = pauseBtn;
+      controllerVidBottom.src = pauseBtn;
+      $(controllerVid).fadeOut();
+
+      setTimeout(function(){
+        $(controllerBox).fadeIn();
+      }, 100);
+      
+      // setTimeout(function(){
+      //   $(controllerBox).fadeOut();
+      // }, 2000);
+
+      // $(vId).mouseover(function(event) {
+      //   $(controllerBox).fadeIn();
+      //   setTimeout(function(){
+      //     $(controllerBox).fadeOut();
+      //   }, 2000);
+      // });
+      
+
+    }else{
+      vId.pause();
+      controllerVid.src = playBtn;
+      controllerVidBottom.src = playBtn;
+      $(controllerVid).fadeIn();
+      $(controllerBox).fadeOut();
+    }
+    
+    // console.log(vidForSlider);
+    seekslider.addEventListener("change", function(){
+        var seekTo = vId.duration * (seekslider.value/100);
+        vId.currentTime = seekTo;
+    });
+
+    vId.addEventListener("timeupdate", function(){
+        var newtime = vId.currentTime * (100/vId.duration);
+        seekslider.value = newtime;
+
+        var curtimeId = "curtimeText"+vId.id;
+        var durtimeId = "durtimeText"+vId.id;
+        var curtimeText = document.getElementById(curtimeId);
+        var durtimeText = document.getElementById(durtimeId);
+
+        var curmins = Math.floor(vId.currentTime/60);
+        var cursecs = Math.floor(vId.currentTime-curmins*60);
+        var durmins = Math.floor(vId.duration/60);
+        var dursecs = Math.round(vId.duration-durmins*60);
+        if (cursecs<10) {
+          cursecs = "0"+cursecs;
+        }
+        if (dursecs<10) {          
+          dursecs = "0"+dursecs;
+        }
+        curtimeText.innerHTML = curmins+":"+cursecs;
+        durtimeText.innerHTML = durmins+":"+dursecs;
+
+    });
+
+    vId.addEventListener("ended", function(){
+        vId.currentTime = 0;
+        controllerVid.src = playBtn;
+        $(controllerBox).fadeOut();
+        $(controllerVid).fadeIn();
+
+    });
+}
+
+
 $(document).ready(function()
 {
      $("#showVideos").on('click', '.delete' ,function(){
@@ -797,9 +917,13 @@ $(document).ready(function()
      });
 
      $('#showVideos').on('click', '.edit', function(){
+          var title = $(this).data('title');
           var desc = $(this).data('desc');
           var id = $(this).data('id');
 
+          console.log(title);
+
+          $('.modal-body #video_title').val(title);
           $('.modal-body #video_desc').val(desc);
           $('.modal-body #video_id').val(id);
           $('#video-edit-modal').modal('show');

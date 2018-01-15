@@ -7,6 +7,16 @@
 	.panel-body{
 		padding-bottom: 0px !important;
 	}
+
+	.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover, .nav>li>a:focus, .nav>li>a:hover{
+		background: none !important;
+		border-top: none !important;
+		border-left: none !important;
+		border-right: none !important;
+		border-bottom: 2px solid #E57C1F;
+		border-radius: 0px;
+		color: #fafafa;
+	}
 </style>
 
 @include('layouts.sidebar')
