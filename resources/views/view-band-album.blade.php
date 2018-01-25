@@ -1,13 +1,13 @@
 @extends('layouts.master')
 
-@section('title')
-{{$band->band_name}}
-@endsection
-
-@include('layouts.navbar')
-@include('layouts.band-materials-navigation')
 @section('content')
-<div class="container">
+
+@include('layouts.sidebar')
+
+<br><br>
+<div class="container" id="main" style="background: #161616; padding-left: 30px; padding-right: 30px;">
+  <div class="row">
+    <div class="col-md-12">
 
 <br><br>
 <center><h3>Albums</h3></center>
@@ -25,23 +25,23 @@
       <div class="row">
         <div class="col-md-9">
           <div class='albums'>
-          <a href="#" class="showSongs" data-id='{{$album->album_id}}' style="text-decoration: none;">
-            <div class="panel panel-default" style="margin-top: -20px;">
+          <a href="#" class="showSongs" data-id='{{$albums->album_id}}' style="text-decoration: none;">
+            <div class="panel panel-default" style="margin-top: -20px; background:none">
               <div class="panel-body">
-              <img class="friends-in-aria-pic img-circle" src="{{$album->album_pic}}">
-              {{$album->album_name}}
+              <img class="friends-in-aria-pic img-circle" src="{{$albums->album_pic}}">
+              {{$albums->album_name}}
               </div>
             </div>
           </a>
         </div>
         </div>
-        <div class="col-md-2 likeAlbum">
-        @if (in_array($album->album_id, $likers))
-        <button type="button" class="likeButton liked" data-id='{{$album->album_id}}'>Unlike</button>
+        {{--<div class="col-md-2 likeAlbum">
+        @if (in_array($albums->album_id, $likers))
+        <button type="button" class="likeButton liked" data-id='{{$albums->album_id}}'>Unlike</button>
         @else
-        <button type="button" class="likeButton" data-id='{{$album->album_id}}'>Like</button>
+        <button type="button" class="likeButton" data-id='{{$albums->album_id}}'>Like</button>
         @endif
-        </div>
+        </div>--}}
       </div>
       @endforeach
     @endif
@@ -81,7 +81,8 @@
 		
 	</div>
 </div>
-
+</div>
+</div>
 </div>
 
 

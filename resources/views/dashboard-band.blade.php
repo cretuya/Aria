@@ -272,22 +272,11 @@ input[type='range']::-webkit-slider-thumb{
                   @else
                     @foreach($videos as $video)
                       
-                  <div class="col-md-3 video-controller-box">
+                  <div class="col-md-3" id="video-content{{$video->video->video_id}}" onclick="videoOpen({{$video->video->video_id}});">
 
-                    <video id="{{$video->video->video_id}}" style="background: #000; width: 100%; height: inherit;" class="embed-responsive-item">
+                    <video style="background: #000; width: 100%; height: inherit; cursor:pointer;" class="embed-responsive-item vidContent{{$video->video->video_id}}" data-content="{{asset('assets/video/'.$video->video->video_content)}}">
                         <source src="{{asset('assets/video/'.$video->video->video_content)}}">
-                    </video> 
-
-                    <div id="controllerBox{{$video->video->video_id}}" class="video-controls-box" style="background: #000; position: absolute; bottom: 73px; width: calc(100% - 30px); display: none; opacity: 0.7;">
-                      <input id="seeksliderVid{{$video->video->video_id}}" type="range" min="0" max="100" value="0" step="1">
-                      <div style="padding-top: 5px; padding-bottom: 4px;">
-                        <span><img id="playPauseBottomOfVid{{$video->video->video_id}}" src="{{asset('assets/img/play.png')}}" onclick="playPauseVid(this,'{{$video->video->video_id}}')" style="cursor:pointer; width: 25px; padding-left: 5px; margin-top: -2px;"></span>
-                        <span id="curtimeText{{$video->video->video_id}}" style="color:#fafafa; margin-left: 5px;">0:00</span> / <span id="durtimeText{{$video->video->video_id}}" style="color:#fafafa;">0:00</span>
-                      </div>
-                    </div>
-
-                    <img id="controllOfVid{{$video->video->video_id}}" src="{{asset('assets/img/play.png')}}" onclick="playPauseVid(this,'{{$video->video->video_id}}')" style="cursor: pointer; position: absolute; top: 62px; left: 157px; width: 90px;"/>                    
-                    <span style="font-size: 12px">{{$video->video->video_title}}</span>
+                    </video>
 
                     <div class="dropdown pull-right" style="position: absolute; top: 5px; right: 20px">
                       <button class="dropdown-toggle" type="button" data-toggle="dropdown" style="background: #444; border: none;"><span class="fa fa-ellipsis-h ellipsisProfile pull-right" style="font-size: 14px; margin-left: 0px;"></span></button>
@@ -297,7 +286,12 @@ input[type='range']::-webkit-slider-thumb{
                       </ul>
                     </div>
                     <br>
-                    <span style="font-size: 12px">{{$band->band_name}}</span>
+                    <div>
+                      <span style="font-size: 12px">{{$video->video->video_title}}</span>
+                      <br>
+                      <span style="font-size: 12px">{{$band->band_name}}</span>
+                    </div>
+                    
                     <!-- <p style="font-size: 11px">32 Views</p> -->
                     
                   </div>
@@ -365,9 +359,9 @@ input[type='range']::-webkit-slider-thumb{
                                   <div class="dropup">
                                     <button class="dropdown-toggle" type="button" data-toggle="dropdown" style="background: transparent; border: none;"><span class="fa fa-ellipsis-h ellipsisAlbum pull-right" style="font-size: 16px;"></span></button>
                                     <ul class="dropdown-menu dropdown-menu-right">
-                                      <li class="editprofActions2"><span class="btn">Add song to album</span></li>
-                                      <li class="editprofActions2"><span class="btn">Edit album</span></li>
-                                      <li class="editprofActions2"><span class="btn">Delete album</span></li>
+                                      <li class="editprofActions2"><span class="btn addSong" data-toggle="modal" data-target="">Add song to album</span></li>
+                                      <li class="editprofActions2"><span class="btn editAlbum" data-name="{{$albums[$i]->album_name}}" data-id="{{$albums[$i]->album_id}}" data-desc="{{$albums[$i]->album_desc}}" data-toggle="modal" data-target="#edit-album-modal">Edit album</span></li>
+                                      <li class="editprofActions2"><span class="btn deleteAlbum" data-toggle="modal" data-target="">Delete album</span></li>
                                     </ul>
                                   </div>
                                   </center>                               
@@ -402,62 +396,10 @@ input[type='range']::-webkit-slider-thumb{
               </div>
             </div>
 
-            <br>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="panel">
-                  <div class="panel-heading"><h4>Albums<button class="btn pull-right" data-toggle="modal" data-target="#add-album-modal">Add an album</button></h4></div>
-                  <div class="panel-body" style="padding: 0px;">
-
-                  <br>
-                    <div id="showAlbums">
-                      <nav class="nav-sidebar">
-                        <ul class="nav tabs">
-                         @if ($albums == null)
-                         @else
-
-                          @foreach ($albums as $album)
-
-
-
-                          <li class="active">
-                          <a href="#" data-toggle="tab" class="viewSongs" data-id= "{{$album->album_id}}">  {{$album->album_name}}
-                            <button class="btn pull-right addSong" style="margin-top: -7px;" data-id="{{$album->album_id}}"><span class="fa fa-plus"></span></button>
-                            <button class="btn pull-right delete" style="margin-top: -7px;" value="{{$album->album_id}}"><span class="fa fa-close"></span></button>
-                            <button class="btn pull-right edit" style="margin-top: -7px;" data-name="{{$album->album_name}}" data-id="{{$album->album_id}}" data-desc="{{$album->album_desc}}"><span class="fa fa-pencil"></span>
-                            </button>
-
-                          </a></li>
-
-
-
-                          @endforeach
-                       @endif
-                      </ul>
-                    </nav>
-                   </div>               
-
-
-                   <div id="showSongs">
-                    <div class="tab-content">
-                      <div class="tab-pane active song-pane">
-                      <h4 class="tabtitle"></h4>
-                         <ul class="list-group tablist">
-                         </ul>
-                      </div>
-                    </div>
-                   </div>
-
-                  </div>
-
-                </div>
-              </div>
-            </div>
-
       <div class="row">
         <div class="col-md-12">
-          <div class="panel panel-default">
-          <div class="panel-heading"><h4>Articles<button class="btn btn-default pull-right" data-toggle="modal" data-target="#add-article-modal">Add new article</button></h4></div>
+          <div class="panel panel-default" style="background: transparent; border: none;">
+          <div class="panel-heading" style="background: transparent; border: none;"><h4 style="color: #fafafa">Articles<button class="btn btn-default pull-right" data-toggle="modal" data-target="#add-article-modal" style="background: #E57C1F; color: #fafafa; border: 1px solid #E57C1F">Add new article</button></h4></div>
           <div class="panel-body">
 
           <div id="showArticles">
@@ -465,7 +407,7 @@ input[type='range']::-webkit-slider-thumb{
           @else
            @foreach ($articles as $article)
 
-           <a href="{{'../'.$band->band_name.'/viewArticle/'.$article->art_id}}">{{$article->article->art_title}}</a> <button class="btn pull-right delete" value="{{$article->art_id}}"><span class="fa fa-close"></span></button><button class="btn pull-right edit" data-toggle="modal" data-content="{{$article->article->content}}" data-title="{{$article->article->art_title}}" data-id="{{$article->art_id}}"><span class="fa fa-pencil"></span></button>
+           <a href="{{'../'.$band->band_name.'/viewArticle/'.$article->art_id}}">{{$article->article->art_title}}</a> <button class="btn pull-right delete" style="background: none;" value="{{$article->art_id}}"><span class="fa fa-close"></span></button><button class="btn pull-right edit" style="background: none;" data-toggle="modal" data-content="{{$article->article->content}}" data-title="{{$article->article->art_title}}" data-id="{{$article->art_id}}"><span class="fa fa-pencil"></span></button>
            <br><br>
 
            @endforeach
@@ -594,7 +536,7 @@ input[type='range']::-webkit-slider-thumb{
         {{csrf_field()}}
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Edit Video</h4>
+        <h4 class="modal-title">Edit Album</h4>
       </div>
       <div class="modal-body">
         
@@ -695,11 +637,13 @@ input[type='range']::-webkit-slider-thumb{
       </div>
       <div class="modal-body">
         Song Title:<br>
-        <input type="text" name="song_title"  class='form-control' required><br><br>
+        <input type="text" name="song_title"  class='form-control' required>
         Song Description:<br>
-        <input type="text" name="song_desc"  class='form-control' required><br><br>
-        <input type="file" name="song_audio[]" class='form-control' accept="audio/*" multiple required><br>
-        <input type="text" name="album_id" id="album_id" hidden><br>
+        <input type="text" name="song_desc"  class='form-control' required>
+        Song File
+        <input type="file" name="song_audio[]" class='form-control' accept="audio/*" multiple required>
+        <input type="text" name="album_id" id="album_id" hidden>
+        Song Genre
         <select name="genre_id" class='form-control'>
             @foreach($genres as $genre)
             <option value="{{$genre->genre_id}}">{{$genre->genre_name}}</option>
@@ -778,6 +722,36 @@ input[type='range']::-webkit-slider-thumb{
 
   </div>
 </div>
+
+<!-- Video modal -->
+
+<div class="modal fade" id="modal-video" tabindex="-1" role="dialog" aria-labelledby="modal-video-label" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="resetVid();">
+          <span aria-hidden="true" onclick="resetVid();">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-video">
+          <div class="embed-responsive embed-responsive-16by9" id="vidcontainer">
+
+            <div id="controllerBox{{$video->video->video_id}}" class="video-controls-box" style="position: absolute;bottom: 0px;width: 100%;">
+              <input id="seeksliderVid{{$video->video->video_id}}" type="range" min="0" max="100" value="0" step="1">
+              <div style="padding-top: 5px; padding-bottom: 4px;">
+                <span><img id="playPauseBottomOfVid{{$video->video->video_id}}" src="{{asset('assets/img/play.png')}}" onclick="playPauseVid(this,'{{$video->video->video_id}}')" style="cursor:pointer; width: 25px; padding-left: 5px; margin-top: -2px;"></span>
+                <span id="curtimeText{{$video->video->video_id}}" style="color:#fafafa; margin-left: 5px;">0:00</span> / <span id="durtimeText{{$video->video->video_id}}" style="color:#fafafa;">0:00</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 
 <script src="/vendor/unisharp/laravel-ckeditor/ckeditor.js"></script>
@@ -801,6 +775,29 @@ $( function() {
 
 });
 
+function resetVid(){
+  // $('#actualVideo').children().filter("video").each(function(){
+  //     this.pause(); // can't hurt
+  //     delete this; // @sparkey reports that this did the trick (even though it makes no sense!)
+  //     $(this).remove(); // this is probably what actually does the trick
+  // });
+  // $('#actualVideo').empty();
+  var vid1 = document.getElementById('actualVideo');
+  var vid2 = $('#actualVideo').html();
+  vid1.pause();
+  vid2.remove();
+  console.log(vid, 'bago na source');
+}
+function videoOpen(id){
+
+    var vid = document.getElementById('vidcontainer');
+    var content = $('.vidContent'+id).data('content');
+
+    console.log(content);
+    vid.append ='<video id="actualVideo" class="embed-responsive-item" autoplay><source id="vidsrc" src="'+content+'" type="video/mp4"></source></video>';
+    $('#modal-video').modal('show');
+}
+
 function openfile(){
   $('#anchor-file').click();
 }
@@ -821,7 +818,7 @@ function saveBand(){
 function playPauseVid(btn,vId){
     // console.log(vId.id);
     var vId = document.getElementById(vId);
-    var controller_vId = "controllOfVid"+vId.id;
+    // var controller_vId = "controllOfVid"+vId.id;
     var vidForSlider = "seeksliderVid"+vId.id;
     var seekslider = document.getElementById(vidForSlider);
     var playPauseBottom = "playPauseBottomOfVid"+vId.id;
@@ -831,15 +828,15 @@ function playPauseVid(btn,vId){
     var playBtn = "{{asset('assets/img/play.png')}}";
     var pauseBtn = "{{asset('assets/img/pause.png')}}";
 
-    var controllerVid = document.getElementById(controller_vId);
+    // var controllerVid = document.getElementById(controller_vId);
     var controllerVidBottom = document.getElementById(playPauseBottom);
     var controllerBox = document.getElementById(controlBox);
     
     if (vId.paused) {
       vId.play();
-      controllerVid.src = pauseBtn;
+      // controllerVid.src = pauseBtn;
       controllerVidBottom.src = pauseBtn;
-      $(controllerVid).fadeOut();
+      // $(controllerVid).fadeOut();
 
       setTimeout(function(){
         $(controllerBox).fadeIn();
@@ -859,10 +856,10 @@ function playPauseVid(btn,vId){
 
     }else{
       vId.pause();
-      controllerVid.src = playBtn;
+      // controllerVid.src = playBtn;
       controllerVidBottom.src = playBtn;
-      $(controllerVid).fadeIn();
-      $(controllerBox).fadeOut();
+      // $(controllerVid).fadeIn();
+      // $(controllerBox).fadeOut();
     }
     
     // console.log(vidForSlider);
@@ -907,6 +904,7 @@ function playPauseVid(btn,vId){
 
 $(document).ready(function()
 {
+
      $("#showVideos").on('click', '.delete' ,function(){
         
         var val = $(this).val();
@@ -950,7 +948,7 @@ $(document).ready(function()
           $('#edit-article-modal').modal('show');
      });
 
-     $("#showAlbums").on('click', '.delete' ,function(){
+     $(".deleteAlbum").on('click',function(){
         
         var val = $(this).val();
         if(confirm('Do you want to delete this album?'))
@@ -959,7 +957,7 @@ $(document).ready(function()
         }
      });
 
-     $('#showAlbums').on('click', '.edit', function(){
+     $('.editAlbum').on('click', function(){
           var desc = $(this).data('desc');
           var id = $(this).data('id');
           var name = $(this).data('name');
@@ -967,10 +965,9 @@ $(document).ready(function()
           $('.modal-body #album_desc').val(desc);
           $('.modal-body #album_id').val(id);
           $('.modal-body #album_name').val(name);
-          $('#edit-album-modal').modal('show');
      });
 
-     $('#showAlbums').on('click', '.addSong', function(){
+     $('.addSong').on('click', function(){
           var id = $(this).data('id');
 
           $('.modal-body #album_id').val(id);

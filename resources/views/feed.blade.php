@@ -37,8 +37,8 @@
                   <!-- <span class="feed-timestamp-date pull-right">Oct 30</span> -->
                 </div>
                 <div class="panel-body feed-content">
-                <h3 style="margin-top: 0">{{$articles->art_title}}</h3>
-                <p style="padding-top: 5px;">{{$articles->content}}</p>
+                <p style="margin-top: 0px; font-size: 16px;">{{$articles->art_title}}</p>
+                <p style="padding-top: 5px; font-size: 12px">{{$articles->content}}</p>
                 </div>
               </div>
             @endforeach

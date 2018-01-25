@@ -17,7 +17,7 @@
               <img src="{{$pl->image}}" class="img-responsive">
               <h3 class="text-center">{{$pl->pl_title}}</h3>
               <p class="text-center">by: {{$pl->fullname}}</p>
-              <img src="{{url('/assets/img/play.png')}})">
+              {{--<img src="{{url('/assets/img/play.png')}}">--}}
             </div>
             <div class="col-md-9">
               @if(count($lists) == null)

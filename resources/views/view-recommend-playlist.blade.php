@@ -20,7 +20,7 @@
     <div class="carousel-caption" style="top: -5px; left: 30px;"><img src="{{ url('assets/img/arialogo.png')}}" class="img-responsive" style="width: 35px; padding: 7px 3px;border: 0.1em solid #F6843B; border-radius: 50%;"></div>
     <h3 class="text-center">{{$genre->genre_name}}</h3>
     <p class="text-center">by: Aria</p>
-    <img src="{{url('/assets/img/play.png')}})">
+    {{--<img src="{{url('/assets/img/play.png')}})">--}}
   </div>
   <div class="col-md-9">
     @if(count($songs) == null)
