@@ -272,11 +272,13 @@ input[type='range']::-webkit-slider-thumb{
                   @else
                     @foreach($videos as $video)
                       
-                  <div class="col-md-3" id="video-content{{$video->video->video_id}}" onclick="videoOpen({{$video->video->video_id}});">
+                  <div class="col-md-3">
 
+                    <div id="video-content{{$video->video->video_id}}" onclick="videoOpen({{$video->video->video_id}});">
                     <video style="background: #000; width: 100%; height: inherit; cursor:pointer;" class="embed-responsive-item vidContent{{$video->video->video_id}}" data-content="{{asset('assets/video/'.$video->video->video_content)}}">
                         <source src="{{asset('assets/video/'.$video->video->video_content)}}">
                     </video>
+                    </div>
 
                     <div class="dropdown pull-right" style="position: absolute; top: 5px; right: 20px">
                       <button class="dropdown-toggle" type="button" data-toggle="dropdown" style="background: #444; border: none;"><span class="fa fa-ellipsis-h ellipsisProfile pull-right" style="font-size: 14px; margin-left: 0px;"></span></button>
@@ -785,16 +787,15 @@ function resetVid(){
   var vid1 = document.getElementById('actualVideo');
   var vid2 = $('#actualVideo').html();
   vid1.pause();
-  vid2.remove();
-  console.log(vid, 'bago na source');
+  // vid2.remove();
 }
 function videoOpen(id){
 
     var vid = document.getElementById('vidcontainer');
     var content = $('.vidContent'+id).data('content');
 
-    console.log(content);
-    vid.append ='<video id="actualVideo" class="embed-responsive-item" autoplay><source id="vidsrc" src="'+content+'" type="video/mp4"></source></video>';
+    // console.log(content);
+    vid.innerHTML ='<video id="actualVideo" class="embed-responsive-item" autoplay><source id="vidsrc" src="'+content+'" type="video/mp4"></source></video>';
     $('#modal-video').modal('show');
 }
 
