@@ -35,7 +35,7 @@ class Band extends Model
     }
 	public function members()
 	{
-		return $this->hasMany('App\Bandmembers', 'band_id');
+		return $this->hasMany('App\Bandmember', 'band_id','band_id');//model,foreign key, local key
 	}
 	public function bandvids()
 	{

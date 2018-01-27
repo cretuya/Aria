@@ -45,6 +45,7 @@ Route::middleware(['auth'])->group(function(){
 
 	Route::post('editband', 'BandController@editBand');
 	Route::post('editbandPic', 'BandController@editBandPic');
+	Route::post('editbandCoverPic', 'BandController@editBandCoverPic');
 	Route::get('{band_name}/manage/search', 'BandController@search');
 	Route::post('addmember', 'BandMemberController@addBandMember');
 	Route::post('deletemember', 'BandMemberController@deleteBandMember');

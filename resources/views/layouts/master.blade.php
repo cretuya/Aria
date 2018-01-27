@@ -16,7 +16,7 @@
   <link rel="stylesheet" type="text/css" href="{{asset('assets/fonts/font-awesome/css/font-awesome.min.css')}}">
   <link rel="stylesheet" type="text/css" href="{{asset('assets/css/fonts.css')}}">
 
-  <link rel="stylesheet" type="text/css" href="{{asset('assets/css/scrollbar-style.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{asset('assets/css/scrollbar-style.css').'?'.rand()}}">
   <link rel="stylesheet" type="text/css" href="{{asset('assets/css/user-profile.css').'?'.rand()}}">
   <link rel="stylesheet" type="text/css" href="{{asset('assets/css/band-profile.css').'?'.rand()}}">
   <link rel="stylesheet" type="text/css" href="{{asset('assets/css/style.css').'?'.rand()}}">

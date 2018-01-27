@@ -1,19 +1,133 @@
 @extends('layouts.master')
 
-@section('title')
-{{$band->band_name}}
-@endsection
-
-@include('layouts.navbar')
-
 @section('content')
+<style type="text/css">
+@media (min-width: 768px){
+  #bandBanner{
+    opacity: 0.8;
+    height: 300px;
+    width: calc(100% - 240px);
+    position: absolute;
+    top: 0px;
+    -webkit-background-size: cover !important;
+    -moz-background-size: cover !important;
+    -o-background-size: cover !important;
+    background-size: cover !important;
+  }
+
+  #bandBannerGradient{
+    opacity: 1;
+    height: 300px;
+    width: calc(100% - 240px);
+    position: absolute;
+    top: 0px;
+
+    background: -webkit-linear-gradient(bottom, rgba(23,23,23,0), rgba(23,23,23,1)); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(bottom, rgba(23,23,23,0), rgba(23,23,23,1)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(bottom, rgba(23,23,23,0), rgba(23,23,23,1)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to bottom, rgba(23,23,23,0), rgba(23,23,23,1)); /* Standard syntax (must be last) */
+
+    -webkit-background-size: cover !important;
+    -moz-background-size: cover !important;
+    -o-background-size: cover !important;
+    background-size: cover !important;
+  }
+}
+
+.bandpicstyle{
+	height: 180px;
+	width: 180px;
+	position: relative;
+	top: 145px;
+	border: 2px solid #fafafa;
+}
+
+</style>
+
 <meta name ="csrf-token" content = "{{csrf_token() }}"/>
-<br><br><br>
 
-<div class="container" style="padding-left: 0px; padding-right: 0px;">
+@include('layouts.sidebar')
 
-	<br>
-    <div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">
+<div class="container" id="main" style="background: #161616;">
+  <div class="row">
+
+    @if($band->band_coverpic == null)
+    <div id="bandBanner" class="panel-thumbnail" style="background: url({{asset('assets/img/banner.jpeg')}}) no-repeat center center fixed;">
+      &nbsp;
+    </div>
+    <div id="bandBannerGradient" class="panel-thumbnail">
+      &nbsp;
+    </div>
+    @else
+    <div id="bandBanner" class="panel-thumbnail" style="background: url({{$band->band_coverpic}}) no-repeat center center fixed;">
+      &nbsp;
+    </div>
+    <div id="bandBannerGradient" class="panel-thumbnail">
+      &nbsp;
+    </div>
+    @endif
+
+	<div class="container-fluid" style="padding: 0px;">
+
+	@if($band->band_pic == null)
+	<div class="panel-thumbnail">
+	  <img src="{{asset('assets/img/dummy-pic.jpg')}}" class="img-responsive bandpicstyle">
+	</div>
+	@else
+	<div class="panel-thumbnail">
+	  <img src="{{$band->band_pic}}" class="img-responsive bandpicstyle">
+	</div>
+	@endif
+
+	<center>
+	<div style="position: relative; top: 150px;">
+		<h4 style="text-transform: uppercase; letter-spacing: 2px;">{{$band->band_name}}</h4>
+		@if ($band->num_followers == null)
+		<p class="followers" style="margin-top: -5px; font-size: 12px; color: #9e9e9e">0 Followers</p>
+		@else
+		<p class="followers" style="margin-top: -5px; font-size: 12px; color: #9e9e9e">{{$followers}} Followers</p>
+		@endif
+
+		<input type="text" value="{{$band->band_id}}" id="bid" hidden>
+		@if ($follower == null)
+		<button class="btn-follow followButton" rel="6">Follow</button>
+		@else
+		<button class="btn-follow followButton following" rel="6">UnFollow</button>
+		<input type="text" value="{{$follower->user_id}}" id="uid" hidden>
+		@endif
+	</div>
+	</center>
+	</div>
+
+	<br><br><br><br><br><br><br><br><br>
+
+	<div class="container-fluid">
+		<div class="col-md-8">
+			<div class="panel" style="border-radius: 0px;">
+				<div class="panel-body">
+					<h6 style="color: #212121; letter-spacing: 1px; line-height: 16px;">{{$band->band_desc}}</h6>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="panel" style="border-radius: 0px;">
+			  <div class="panel-heading" style="background: #232323">
+			  	<center><h6 style="color: #fafafa; text-transform: uppercase; letter-spacing: 1px;">We Are</h6></center>
+			  </div>
+				<div class="panel-body">
+				<center>
+				@forelse($band->members as $member)
+					<span style="color: #212121; letter-spacing: 1px; line-height: 16px; text-transform: uppercase; font-size: 13px;">{{$member->user->fullname}} - {{$member->bandrole}}</span>
+				@empty
+					<span style="color: #212121; letter-spacing: 1px; line-height: 16px; text-transform: uppercase; font-size: 13px;">No members yet</span>
+				@endforelse
+				</center>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    {{--
         <!-- content -->                      
       	<div class="row">
           
@@ -62,105 +176,9 @@
                 	</div>
               	</div>
 
+              	--}}
 
-              <div class="panel panel-default">
-                <div class="panel-heading"><h4>About the Band</h4></div>
-                  <div class="panel-body" style="padding: 30px">
-                    <p style="text-indent: 20px; text-align: justify;">{{$band->band_desc}}
-                  </div>
-              </div>
-           
-<!--               <div class="panel panel-default">
-                 <div class="panel-heading"><h4>Heading Text Here</h4></div>
-                  <div class="panel-body">
-                    
-                  </div>
-              </div> -->
-            <div class="panel panel-default">
-		        <div class="panel-heading"><h4>Articles</h4></div>
-	               	<div class="panel-body">
-            @if ($articles == null)
-           	@else
-           			@foreach ($articles as $article)
-			            <a href="{{url('/'.$band->band_name.'/viewArticle/'.$article->article->art_id)}}"><div class="well">{{$article->article->art_title}}</div></a>           
-			                         			
-           			@endforeach
-           	@endif
-           			</div>
-           	</div>
-
-              <div id="addArticle">
-              <button type="button" class='add' value="{{$band->band_name.'/articles'}}">View More Articles</button>
-              </div>
-           		
-           
-          </div>
-          
-          <!-- main col right -->
-          <div class="col-md-7">
-                     
-          		<div class="panel panel-default">
-                <div class="panel-heading"><a href="{{$band->band_name.'/videos'}}" class="pull-right">See all Videos</a><h4>Featured Video</h4></div>
-                  <div class="panel-body" style="padding: 0px;">
-                    <div align="center" class="embed-responsive embed-responsive-16by9">
-					    <video style="background: #000" class="embed-responsive-item" controls autoplay>
-					        <source src="videos/Linkin Park-Talking To Myself.mp4" type="video/mp4">
-					    </video>
-					</div>
-                  </div>
-               </div>
-
-               <div class="panel panel-default">
-                 <div class="panel-heading"><a href="{{$band->band_name.'/albums'}}" class="pull-right">See all Albums</a><h4>Latest Released Albums</h4></div>
-                  <div class="panel-body" style="padding: 0;">
-                    <div class="container-fluid" style="padding: 0;">
-					    <!-- <div class="column center">
-					    </div>
-					    <div class="column add-bottom">
-					        <div id="mainwrap">
-					            <div id="nowPlay">
-					                <span class="left" id="npAction">Paused...</span>
-					                <span class="right" id="npTitle"></span>
-					            </div>
-					            <div id="audiowrap">
-					                <div id="audio0">
-					                    <audio class="audio-player" preload id="audio1" controls="controls">Your browser does not support HTML5 Audio!</audio>
-					                </div>
-					                <div id="tracks">
-					                    <a id="btnPrev">&laquo; Previous</a>
-					                    <a id="btnNext">&raquo; Next</a>
-					                </div>
-					            </div>
-					            <div id="plwrap">
-					                <ul style="padding-left: 0px;" id="plList"></ul>
-					            </div>
-					        </div>
-					    </div> -->
-
-					</div>
-                  </div>
-               </div>
-
-<!--                <div class="panel panel-default">
-                 <div class="panel-heading"><h4>Heading Text Here</h4></div>
-                  <div class="panel-body">
-                    
-                  </div>
-               </div>
-            
-               <div class="panel panel-default">
-                 <div class="panel-heading"><h4>Heading Text Here</h4></div>
-                  <div class="panel-body">
-                    
-                  </div>
-               </div> -->
-            
-          </div>
-       </div><!--/row-->
-
-</div>
-
-
+	</div>
 </div>
 
 <script type="text/javascript">

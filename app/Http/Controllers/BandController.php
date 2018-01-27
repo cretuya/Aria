@@ -276,6 +276,23 @@ class BandController extends Controller
         return redirect('/'.$bandName.'/manage');
     }
 
+    public function editBandCoverPic(Request $request)
+    {
+
+
+        $bandName = $request->input('bandName');
+        $bandcoverpic = $request->file('bandCoverPic');
+        $bandID = $request->input('bandId');
+        \Cloudder::upload($bandcoverpic);
+        $cloudder=\Cloudder::getResult();
+
+        Band::where('band_id', $bandID)->update([
+            "band_coverpic" => $cloudder['url'],
+            ]);
+
+        return redirect('/'.$bandName.'/manage');
+    }
+
     public function show($name)
     {
         $band = Band::where('band_name', $name)->first();
@@ -306,7 +323,7 @@ class BandController extends Controller
 
         $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
         // dd($usernotifinvite);
-
+        // dd($band->members);
             return view('band-profile', compact('band', 'genres', 'articles', 'follower', 'followers','usernotifinvite'));
         // }
 

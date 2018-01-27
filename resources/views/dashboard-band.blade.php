@@ -46,6 +46,12 @@ input[type='range']::-webkit-slider-thumb{
   cursor: pointer;
 }
 
+.band-description-txtarea::-webkit-scrollbar
+{
+  width: 0px;
+  background-color: #F5F5F5;
+}
+
 </style>
 
 @include('layouts.sidebar')
@@ -62,13 +68,33 @@ input[type='range']::-webkit-slider-thumb{
         </ul>
     </div>
 @endif
+
+@if($band->band_coverpic == null)
 <div id="bandBanner" class="panel-thumbnail" style="background: url({{asset('assets/img/banner.jpeg')}}) no-repeat center center fixed;">
   &nbsp;
 </div>
 <div id="bandBannerGradient" class="panel-thumbnail">
   &nbsp;
 </div>
-<button class="btn btn-default" style="background: transparent; color: #fafafa; position: absolute; top: 25px; right: 25px;">Change cover photo</button>
+@else
+<div id="bandBanner" class="panel-thumbnail" style="background: url({{$band->band_coverpic}}) no-repeat center center fixed;">
+  &nbsp;
+</div>
+<div id="bandBannerGradient" class="panel-thumbnail">
+  &nbsp;
+</div>
+@endif
+
+<br><br><br><br><br><br><br>
+
+<button class="btn btn-default" style="background: transparent; color: #fafafa; position: absolute; right: 25px;" onclick="openfile2();">Change cover photo</button>
+<form id = "band-coverpic-form" method="post" action="{{url('/editbandCoverPic')}}" enctype="multipart/form-data">
+{{csrf_field()}}
+  <input type="text" value="{{$band->band_id}}" name="bandId"  hidden>
+  <input type="text" value="{{$band->band_name}}" name="bandName" hidden>
+  <input id="anchor-file-2" type="file" name="bandCoverPic" style="display: none;">
+  <input type="Submit" id ="submitForm2" hidden />
+</form>
 <br>
 <div class="container" id="main" style="background: #161616; padding-left: 30px; padding-right: 30px;">
 
@@ -81,7 +107,6 @@ input[type='range']::-webkit-slider-thumb{
               <a href="{{url('/'.$band->band_name)}}"><span class="btn btn-default pull-right" style="margin-right: 10px; background: transparent; color: #fafafa">View Band Profile</span></a>
               <span class="btn btn-default pull-right hidden" style="margin-right: 10px;" data-toggle="modal" data-target="#invite-modal">Invite</span>
             </div>
-            <br>
 
             
             <input type="text" value="{{$band->band_id}}" name="bandId" hidden>
@@ -92,19 +117,19 @@ input[type='range']::-webkit-slider-thumb{
                 @if($band->band_pic == null)
                 <center>
                 <div class="panel-thumbnail">
-                  <img src="{{asset('assets/img/dummy-pic.jpg')}}" class="img-responsive" style="height: 245px; width: 100%">
+                  <img src="{{asset('assets/img/dummy-pic.jpg')}}" class="img-responsive" style="height: 245px; width: 100%; border: 2px solid #fafafa;">
                 </div>
                 </center>
                 @else
                 <center>
                 <div class="panel-thumbnail">
-                  <img src="{{$band->band_pic}}" class="img-responsive" style="height: 245px; width: 100%">
+                  <img src="{{$band->band_pic}}" class="img-responsive" style="height: 245px; width: 100%; border: 2px solid #fafafa;">
                 </div>
                 </center>
                 @endif
                   <div class="overlay"></div>
-                  <div class="button">
-                    <a href="#" onclick="openfile()"> Change Display Picture </a>
+                  <div class="button" style="padding-top: 3px; padding-bottom: 3px; background: #E57C1F;">
+                    <a href="#" onclick="openfile()" style="font-size: 12px; letter-spacing: 1px;"> Change Display Picture </a>
                     <form id = "band-pic-form" method="post" action="{{url('/editbandPic')}}" enctype="multipart/form-data">
                     {{csrf_field()}}
                       <input type="text" value="{{$band->band_id}}" name="bandId"  hidden>
@@ -268,7 +293,8 @@ input[type='range']::-webkit-slider-thumb{
 
                   <!-- ari ang foreach-->
                   <div id="showVideos">
-                  @if($videos == null)
+                  @if(count($videos) == 0)
+                  <center><p>No videos were found</p></center>
                   @else
                     @foreach($videos as $video)
                       
@@ -284,7 +310,7 @@ input[type='range']::-webkit-slider-thumb{
                       <button class="dropdown-toggle" type="button" data-toggle="dropdown" style="background: #444; border: none;"><span class="fa fa-ellipsis-h ellipsisProfile pull-right" style="font-size: 14px; margin-left: 0px;"></span></button>
                       <ul class="dropdown-menu">
                         <a href="#" class="edit actions" data-toggle="modal" data-title="{{$video->video->video_title}}" data-desc="{{$video->video->video_desc}}" data-id="{{$video->video->video_id}}"><li>Edit Video Details</li></a>
-                        <a href="#" class="delete actions" value="{{'../'.$band->band_name.'/deleteVideo/'.$video->video->video_id}}"><li>Delete Video</li></a>
+                        <a href="{{'../'.$band->band_name.'/deleteVideo/'.$video->video->video_id}}" class="delete actions"><li>Delete Video</li></a>
                       </ul>
                     </div>
                     <br>
@@ -329,9 +355,9 @@ input[type='range']::-webkit-slider-thumb{
                           <div class="item active">
 
 
-                          @if(count($albums) == null)
-                            <h5>No albums yet</h5>
-                            @else
+                          @if(count($albums) == 0)
+                          <center><p>No albums were found</p></center>
+                          @else
                                 <?php 
                                 $count=0;
                                 for($i=0; $i < count($albums) ; $i++) {  
@@ -398,6 +424,7 @@ input[type='range']::-webkit-slider-thumb{
               </div>
             </div>
 
+      {{--
       <div class="row">
         <div class="col-md-12">
           <div class="panel panel-default" style="background: transparent; border: none;">
@@ -424,6 +451,8 @@ input[type='range']::-webkit-slider-thumb{
       <br><br>
 
       </div>
+      --}}
+
     </div>
   </div>
 </div>
@@ -739,14 +768,6 @@ input[type='range']::-webkit-slider-thumb{
         <div class="modal-video">
           <div class="embed-responsive embed-responsive-16by9" id="vidcontainer">
 
-            <div id="controllerBox{{$video->video->video_id}}" class="video-controls-box" style="position: absolute;bottom: 0px;width: 100%;">
-              <input id="seeksliderVid{{$video->video->video_id}}" type="range" min="0" max="100" value="0" step="1">
-              <div style="padding-top: 5px; padding-bottom: 4px;">
-                <span><img id="playPauseBottomOfVid{{$video->video->video_id}}" src="{{asset('assets/img/play.png')}}" onclick="playPauseVid(this,'{{$video->video->video_id}}')" style="cursor:pointer; width: 25px; padding-left: 5px; margin-top: -2px;"></span>
-                <span id="curtimeText{{$video->video->video_id}}" style="color:#fafafa; margin-left: 5px;">0:00</span> / <span id="durtimeText{{$video->video->video_id}}" style="color:#fafafa;">0:00</span>
-              </div>
-            </div>
-
           </div>
         </div>
       </div>
@@ -793,10 +814,13 @@ function videoOpen(id){
 
     var vid = document.getElementById('vidcontainer');
     var content = $('.vidContent'+id).data('content');
+    var playIcon = "{{asset('assets/img/play.png')}}";
 
     // console.log(content);
-    vid.innerHTML ='<video id="actualVideo" class="embed-responsive-item" autoplay><source id="vidsrc" src="'+content+'" type="video/mp4"></source></video>';
+    vid.innerHTML ='<video id="actualVideo" class="embed-responsive-item" autoplay><source id="vidsrc" src="'+content+'" type="video/mp4"></source></video><div id="controllerBox" class="video-controls-box" style="position: absolute;bottom: 0px;width: 100%;"><input id="seeksliderVid" type="range" min="0" max="100" value="0" step="1"><div style="padding-top: 5px; padding-bottom: 4px;"><span><img id="playPauseBottomOfVid" src="'+playIcon+'" onclick="playPauseVid()" style="cursor:pointer; width: 25px; padding-left: 5px; margin-top: -2px;"></span><span id="curtimeText" style="color:#fafafa; margin-left: 5px;">0:00</span> / <span id="durtimeText" style="color:#fafafa;">0:00</span></div></div>';
+
     $('#modal-video').modal('show');
+    playPauseVid();
 }
 
 function openfile(){
@@ -808,6 +832,15 @@ $("#anchor-file").on("change",function()
   $("#submitForm").click();
 });
 
+function openfile2(){
+  $('#anchor-file-2').click();
+}
+$("#anchor-file-2").on("change",function()
+{
+  console.log("niagi-here");
+  $("#submitForm2").click();
+});
+
 // function changeBandPic(){
 //   $('#band-pic-form').submit();
 // }
@@ -816,14 +849,14 @@ function saveBand(){
   document.getElementById('save-band-form').submit();
 }
 
-function playPauseVid(btn,vId){
-    // console.log(vId.id);
-    var vId = document.getElementById(vId);
-    // var controller_vId = "controllOfVid"+vId.id;
-    var vidForSlider = "seeksliderVid"+vId.id;
+function playPauseVid(){
+    // console.log(vid.id);
+    var vid = document.getElementById('actualVideo');
+    // var controller_vId = "controllOfVid"+vid.id;
+    var vidForSlider = "seeksliderVid";
     var seekslider = document.getElementById(vidForSlider);
-    var playPauseBottom = "playPauseBottomOfVid"+vId.id;
-    var controlBox = "controllerBox"+vId.id;
+    var playPauseBottom = "playPauseBottomOfVid";
+    var controlBox = "controllerBox";
 
     // console.log(controller_vId);
     var playBtn = "{{asset('assets/img/play.png')}}";
@@ -833,8 +866,8 @@ function playPauseVid(btn,vId){
     var controllerVidBottom = document.getElementById(playPauseBottom);
     var controllerBox = document.getElementById(controlBox);
     
-    if (vId.paused) {
-      vId.play();
+    if (vid.paused) {
+      vid.play();
       // controllerVid.src = pauseBtn;
       controllerVidBottom.src = pauseBtn;
       // $(controllerVid).fadeOut();
@@ -856,7 +889,7 @@ function playPauseVid(btn,vId){
       
 
     }else{
-      vId.pause();
+      vid.pause();
       // controllerVid.src = playBtn;
       controllerVidBottom.src = playBtn;
       // $(controllerVid).fadeIn();
@@ -865,23 +898,23 @@ function playPauseVid(btn,vId){
     
     // console.log(vidForSlider);
     seekslider.addEventListener("change", function(){
-        var seekTo = vId.duration * (seekslider.value/100);
-        vId.currentTime = seekTo;
+        var seekTo = vid.duration * (seekslider.value/100);
+        vid.currentTime = seekTo;
     });
 
-    vId.addEventListener("timeupdate", function(){
-        var newtime = vId.currentTime * (100/vId.duration);
+    vid.addEventListener("timeupdate", function(){
+        var newtime = vid.currentTime * (100/vid.duration);
         seekslider.value = newtime;
 
-        var curtimeId = "curtimeText"+vId.id;
-        var durtimeId = "durtimeText"+vId.id;
+        var curtimeId = "curtimeText";
+        var durtimeId = "durtimeText";
         var curtimeText = document.getElementById(curtimeId);
         var durtimeText = document.getElementById(durtimeId);
 
-        var curmins = Math.floor(vId.currentTime/60);
-        var cursecs = Math.floor(vId.currentTime-curmins*60);
-        var durmins = Math.floor(vId.duration/60);
-        var dursecs = Math.round(vId.duration-durmins*60);
+        var curmins = Math.floor(vid.currentTime/60);
+        var cursecs = Math.floor(vid.currentTime-curmins*60);
+        var durmins = Math.floor(vid.duration/60);
+        var dursecs = Math.round(vid.duration-durmins*60);
         if (cursecs<10) {
           cursecs = "0"+cursecs;
         }
@@ -893,8 +926,8 @@ function playPauseVid(btn,vId){
 
     });
 
-    vId.addEventListener("ended", function(){
-        vId.currentTime = 0;
+    vid.addEventListener("ended", function(){
+        vid.currentTime = 0;
         controllerVid.src = playBtn;
         $(controllerBox).fadeOut();
         $(controllerVid).fadeIn();
