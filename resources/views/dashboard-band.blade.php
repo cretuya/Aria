@@ -49,7 +49,10 @@ input[type='range']::-webkit-slider-thumb{
 .band-description-txtarea::-webkit-scrollbar
 {
   width: 0px;
-  background-color: #F5F5F5;
+}
+
+.dashboard-tablesection::-webkit-scrollbar{
+  width: 2px;
 }
 
 </style>
@@ -57,7 +60,7 @@ input[type='range']::-webkit-slider-thumb{
 @include('layouts.sidebar')
 <body>
 <meta name ="csrf-token" content = "{{csrf_token() }}"/>
-<br><br>
+<br><br><br><br><br><br>
 
 @if ($errors->any())
     <div class="alert alert-danger">
@@ -70,14 +73,14 @@ input[type='range']::-webkit-slider-thumb{
 @endif
 
 @if($band->band_coverpic == null)
-<div id="bandBanner" class="panel-thumbnail" style="background: url({{asset('assets/img/banner.jpeg')}}) no-repeat center center fixed;">
+<div id="bandBanner" class="panel-thumbnail" style="background: url({{asset('assets/img/banner.jpeg')}}) no-repeat center;">
   &nbsp;
 </div>
 <div id="bandBannerGradient" class="panel-thumbnail">
   &nbsp;
 </div>
 @else
-<div id="bandBanner" class="panel-thumbnail" style="background: url({{$band->band_coverpic}}) no-repeat center center fixed;">
+<div id="bandBanner" class="panel-thumbnail" style="background: url({{$band->band_coverpic}}) no-repeat center;">
   &nbsp;
 </div>
 <div id="bandBannerGradient" class="panel-thumbnail">
@@ -192,14 +195,55 @@ input[type='range']::-webkit-slider-thumb{
                            @endforeach
                       </div>
                     </div>
-              </div>
-                  
+              </div>                  
             </form>
+
             </div>
             <br>
               
           <div class="row">
-           <div class="col-md-12" style="height: 263px;">
+           <div class="col-md-7 dashboard-tablesection" style="max-height: 450px; overflow-y: scroll;">
+               <table class="table">
+                <thead><h4>Events</h4></thead>
+                 <tr>
+                   <td>Mar 08</td>
+                   <td>Slim's</td>
+                   <td>4:00 PM</td>
+                   <td>San Francisco, CA</td>
+                 </tr>
+                 <tr>
+                   <td>Mar 10</td>
+                   <td>Hawthrone Theatre</td>
+                   <td>5:00 PM</td>
+                   <td>Portland, OR</td>
+                 </tr>
+                 <tr>
+                   <td>Mar 08</td>
+                   <td>Slim's</td>
+                   <td>4:00 PM</td>
+                   <td>San Francisco, CA</td>
+                 </tr>
+                 <tr>
+                   <td>Mar 10</td>
+                   <td>Hawthrone Theatre</td>
+                   <td>5:00 PM</td>
+                   <td>Portland, OR</td>
+                 </tr>
+                 <tr>
+                   <td>Mar 08</td>
+                   <td>Slim's</td>
+                   <td>4:00 PM</td>
+                   <td>San Francisco, CA</td>
+                 </tr>
+                 <tr>
+                   <td>Mar 10</td>
+                   <td>Hawthrone Theatre</td>
+                   <td>5:00 PM</td>
+                   <td>Portland, OR</td>
+                 </tr>
+               </table>
+           </div>
+           <div class="col-md-5 dashboard-tablesection" style="max-height: 450px; overflow-y: scroll;">
            <!-- <div class="col-md-12" style="height: 263px;max-height: 263px;"> -->
              <h4>Band Members</h4>
              <br>
@@ -207,7 +251,7 @@ input[type='range']::-webkit-slider-thumb{
              <form method="post" action="{{url('/addmember')}}">
                  {{csrf_field()}}
              <div class="row" id="band-member-section">
-               <div class="col-sm-5">
+               <div class="col-xs-4">
                  <label for="add-band-member-name">Add Member</label>
                  <input type="text" class="form-control" id="add-band-member-name" name="add-band-member-name" placeholder="Enter a name">
                  <input type="text" id="add-band-member-id" name="add-band-member-id" hidden>
@@ -216,7 +260,7 @@ input[type='range']::-webkit-slider-thumb{
                  <div id="dummyContainer"></div>
                </div>
                <input type="text" name="member-user-id" hidden>
-               <div class="col-sm-4">      
+               <div class="col-xs-4">      
                  <label for="add-band-member">Role</label>
                  <select id="add-band-member-role" class="form-control" name="add-band-member-role">
                    <option hidden>Select Role</option>
@@ -229,9 +273,8 @@ input[type='range']::-webkit-slider-thumb{
                  </select>
                </div>
 
-               <div class="col-sm-3">
-                 <label>&nbsp;</label>
-                 
+               <div class="col-xs-4">
+                 <label>&nbsp;</label>                 
                  <button class="btn btn-default add-member-btn">Add Member</button>
                </div>
              </div>
@@ -279,7 +322,7 @@ input[type='range']::-webkit-slider-thumb{
                
              </table>
 
-           </div>
+            </div>
            </div>
 
             <br>
@@ -298,7 +341,7 @@ input[type='range']::-webkit-slider-thumb{
                   @else
                     @foreach($videos as $video)
                       
-                  <div class="col-md-3">
+                  <div class="col-md-2">
 
                     <div id="video-content{{$video->video->video_id}}" onclick="videoOpen({{$video->video->video_id}});">
                     <video style="background: #000; width: 100%; height: inherit; cursor:pointer;" class="embed-responsive-item vidContent{{$video->video->video_id}}" data-content="{{asset('assets/video/'.$video->video->video_content)}}">
@@ -313,9 +356,8 @@ input[type='range']::-webkit-slider-thumb{
                         <a href="{{'../'.$band->band_name.'/deleteVideo/'.$video->video->video_id}}" class="delete actions"><li>Delete Video</li></a>
                       </ul>
                     </div>
-                    <br>
                     <div>
-                      <span style="font-size: 12px">{{$video->video->video_title}}</span>
+                      <a href="#" style="font-size: 12px;" onclick="videoOpen({{$video->video->video_id}});">{{$video->video->video_title}}</a>
                       <br>
                       <span style="font-size: 12px">{{$band->band_name}}</span>
                     </div>

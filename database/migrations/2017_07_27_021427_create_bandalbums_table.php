@@ -16,7 +16,7 @@ class CreateBandalbumsTable extends Migration
         Schema::create('bandalbums', function (Blueprint $table) {
             $table->increments('album_id');
             $table->string('album_name');
-            $table->string('album_desc');
+            $table->text('album_desc');
             $table->integer('num_likes')->nullable();
             $table->integer('band_id')->unsigned();
             $table->foreign('band_id')->references('band_id')->on('bands')->onDelete('cascade');

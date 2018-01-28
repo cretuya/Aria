@@ -1,116 +1,130 @@
 @extends('layouts.master')
 
 @section('content')
-<style type="text/css">
-@media (min-width: 768px){
-  #bandBanner{
-    opacity: 0.8;
-    height: 300px;
-    width: calc(100% - 240px);
-    position: absolute;
-    top: 0px;
-    -webkit-background-size: cover !important;
-    -moz-background-size: cover !important;
-    -o-background-size: cover !important;
-    background-size: cover !important;
-  }
-
-  #bandBannerGradient{
-    opacity: 1;
-    height: 300px;
-    width: calc(100% - 240px);
-    position: absolute;
-    top: 0px;
-
-    background: -webkit-linear-gradient(bottom, rgba(23,23,23,0), rgba(23,23,23,1)); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(bottom, rgba(23,23,23,0), rgba(23,23,23,1)); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(bottom, rgba(23,23,23,0), rgba(23,23,23,1)); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(to bottom, rgba(23,23,23,0), rgba(23,23,23,1)); /* Standard syntax (must be last) */
-
-    -webkit-background-size: cover !important;
-    -moz-background-size: cover !important;
-    -o-background-size: cover !important;
-    background-size: cover !important;
-  }
-}
-
-.bandpicstyle{
-	height: 180px;
-	width: 180px;
-	position: relative;
-	top: 145px;
-	border: 2px solid #fafafa;
-}
-
-</style>
 
 <meta name ="csrf-token" content = "{{csrf_token() }}"/>
+
+<style type="text/css">
+	input[type='range']{
+	  -webkit-appearance: none !important;
+	  background: #E57C1F;
+	  cursor: pointer;
+	  height: 5px;
+	  outline: none !important;
+	}
+
+	input[type='range']::-webkit-slider-thumb{
+	  -webkit-appearance: none !important;
+	  background: #e4e4e4;
+	  height: 12px;
+	  width: 12px;
+	  border-radius: 100%;
+	  cursor: pointer;
+	}
+</style>
 
 @include('layouts.sidebar')
 
 <div class="container" id="main" style="background: #161616;">
-  <div class="row">
-
-    @if($band->band_coverpic == null)
-    <div id="bandBanner" class="panel-thumbnail" style="background: url({{asset('assets/img/banner.jpeg')}}) no-repeat center center fixed;">
-      &nbsp;
-    </div>
-    <div id="bandBannerGradient" class="panel-thumbnail">
-      &nbsp;
-    </div>
-    @else
-    <div id="bandBanner" class="panel-thumbnail" style="background: url({{$band->band_coverpic}}) no-repeat center center fixed;">
-      &nbsp;
-    </div>
-    <div id="bandBannerGradient" class="panel-thumbnail">
-      &nbsp;
-    </div>
-    @endif
-
-	<div class="container-fluid" style="padding: 0px;">
-
-	@if($band->band_pic == null)
-	<div class="panel-thumbnail">
-	  <img src="{{asset('assets/img/dummy-pic.jpg')}}" class="img-responsive bandpicstyle">
+	<div class="row">
+	    @if($band->band_coverpic == null)
+	    <div id="bandBanner" class="panel-thumbnail" style="background: url({{asset('assets/img/banner.jpeg')}}) no-repeat center center;">
+	      &nbsp;
+	    </div>
+	    <div id="bandBannerGradient" class="panel-thumbnail">
+	      &nbsp;
+	    </div>
+	    @else
+	    <div id="bandBanner" class="panel-thumbnail" style="background: url({{$band->band_coverpic}}) no-repeat center center;">
+	      &nbsp;
+	    </div>
+	    <div id="bandBannerGradient" class="panel-thumbnail">
+	      &nbsp;
+	    </div>
+	    @endif
 	</div>
-	@else
-	<div class="panel-thumbnail">
-	  <img src="{{$band->band_pic}}" class="img-responsive bandpicstyle">
-	</div>
-	@endif
 
-	<center>
-	<div style="position: relative; top: 150px;">
-		<h4 style="text-transform: uppercase; letter-spacing: 2px;">{{$band->band_name}}</h4>
-		@if ($band->num_followers == null)
-		<p class="followers" style="margin-top: -5px; font-size: 12px; color: #9e9e9e">0 Followers</p>
+	<br><br><br><br><br><br><br><br>
+
+	<div class="row bandpicfollower-section">
+		@if($band->band_pic == null)
+		<div class="panel-thumbnail" style="background: transparent;">
+		  <img src="{{asset('assets/img/dummy-pic.jpg')}}" class="img-responsive bandpicstyle">
+		</div>
 		@else
-		<p class="followers" style="margin-top: -5px; font-size: 12px; color: #9e9e9e">{{$followers}} Followers</p>
+		<div class="panel-thumbnail" style="background: transparent;">
+		  <img src="{{$band->band_pic}}" class="img-responsive bandpicstyle">
+		</div>
 		@endif
 
-		<input type="text" value="{{$band->band_id}}" id="bid" hidden>
-		@if ($follower == null)
-		<button class="btn-follow followButton" rel="6">Follow</button>
-		@else
-		<button class="btn-follow followButton following" rel="6">UnFollow</button>
-		<input type="text" value="{{$follower->user_id}}" id="uid" hidden>
-		@endif
-	</div>
-	</center>
-	</div>
+		<center>
+			<h4 style="text-transform: uppercase; letter-spacing: 2px;">{{$band->band_name}}</h4>
+			@if ($band->num_followers == null)
+			<p class="followers" style="margin-top: -5px; font-size: 12px; color: #9e9e9e">0 Followers</p>
+			@else
+			<p class="followers" style="margin-top: -5px; font-size: 12px; color: #9e9e9e">{{$followers}} Followers</p>
+			@endif
 
-	<br><br><br><br><br><br><br><br><br>
+			<input type="text" value="{{$band->band_id}}" id="bid" hidden>
+			@if ($follower == null)
+			<button class="btn-follow followButton" rel="6">Follow</button>
+			@else
+			<button class="btn-follow followButton following" rel="6">UnFollow</button>
+			<input type="text" value="{{$follower->user_id}}" id="uid" hidden>
+			@endif
 
-	<div class="container-fluid">
-		<div class="col-md-8">
-			<div class="panel" style="border-radius: 0px;">
-				<div class="panel-body">
-					<h6 style="color: #212121; letter-spacing: 1px; line-height: 16px;">{{$band->band_desc}}</h6>
+			<br>
+			<div style="width: 53%; margin-top: 35px;">
+				<span style="font-size: 13px; letter-spacing: 0.5px;">{{$band->band_desc}}</span>
+			</div>
+
+		</center>
+	</div>
+	<br><br><br>
+	<div class="row">
+		<div class="col-md-8" style="padding-left: 30px;">
+			<div class="panel" style="border-radius: 0px; background: #EEEEEE">
+			  <div class="panel-heading" style="padding-bottom: 0px; padding-top: 15px;">
+			  	<center><h6 style="color: #212121; text-transform: uppercase; letter-spacing: 1px;">Upcoming Events</h6></center>
+			  </div>
+				<div class="panel-body" style=" background: transparent;">
+					<table class="table">
+					  <tr>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Mar 08</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Slim's</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">4:00 PM</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">San Francisco, CA</td>
+					  </tr>
+					  <tr>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Mar 10</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Hawthrone Theatre</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">5:00 PM</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Portland, OR</td>
+					  </tr>
+					  <tr>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Mar 08</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Slim's</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">4:00 PM</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">San Francisco, CA</td>
+					  </tr>
+					  <tr>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Mar 10</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Hawthrone Theatre</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">5:00 PM</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Portland, OR</td>
+					  </tr>
+					  <tr>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Mar 10</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Hawthrone Theatre</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">5:00 PM</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Portland, OR</td>
+					  </tr>
+					</table>
 				</div>
 			</div>
 		</div>
-		<div class="col-md-4">
-			<div class="panel" style="border-radius: 0px;">
+		<div class="col-md-4" style="padding-right: 30px;">
+			<div class="panel" style="border-radius: 0px; background: #F5F5F5">
 			  <div class="panel-heading" style="background: #232323">
 			  	<center><h6 style="color: #fafafa; text-transform: uppercase; letter-spacing: 1px;">We Are</h6></center>
 			  </div>
@@ -127,61 +141,196 @@
 		</div>
 	</div>
 
-    {{--
-        <!-- content -->                      
-      	<div class="row">
-          
-         <!-- main col left --> 
-         <div class="col-md-5">
-           
-              <div class="panel panel-default">
-
-                <div class="panel-thumbnail"><img src="{{$band->band_pic}}" class="img-responsive" style="max-height: 406px; width: 100%;"></div>
-	                <div class="panel-body">
-		                <div class="row">
-			                <div class="col-md-8">
-			                  <p class="band-name-title">{{$band->band_name}}</p>
-			                  <h4>
-			                  @if($genres == null)
-			                  @else
-			                  @foreach ($genres as $genre)
-			                  {{$genre->genre->genre_name}} |
-			                  @endforeach
-			                  @endif
-			                  </h4>
-								<!-- <ul class="social-icons-ul" style="padding-left: 0">
-									<li><span class="fa fa-facebook-square social-icons" style="color: #3C5B9A"></span></li>
-									<li><span class="fa fa-twitter-square social-icons" style="color: #0FB5EE"></span></li>
-									<li><span class="fa fa-youtube-square social-icons" style="color: #CD201F"></span></li>
-								</ul> -->
-			                  <!-- <p>Established on 1996</p> -->
-			                  @if ($band->num_followers == null)
-			                  <p class="followers">0 Followers</p>
-			                  @else
-			                  <p class="followers">{{$followers}} Followers</p>
-			                  @endif
-			                </div>
-			                <div class="col-md-4">
-			                	<div class="row" style="padding-right: 15px">
-			                		<input type="text" value="{{$band->band_id}}" id="bid" hidden>
-			                		@if ($follower == null)
-			                		<button class="btn-follow followButton pull-right" rel="6">Follow</button>
-			                		@else
-			                		<button class="btn-follow followButton pull-right following" rel="6">UnFollow</button>
-			                		<input type="text" value="{{$follower->user_id}}" id="uid" hidden>
-			                		@endif
-		                		</div>
-			                </div>
-		                </div>
-                	</div>
-              	</div>
-
-              	--}}
-
+	<div class="row">
+		<div class="col-md-12">
+			<br>
+			<center><h6 style="color: #fafafa; text-transform: uppercase; letter-spacing: 1px;">Uploads from {{$band->band_name}}</h6></center>
+			<hr style="width: 5%;">
+			<br>
+			@foreach($videos as $video)
+				<div class="col-md-2">
+					<div id="video-content{{$video->video->video_id}}" onclick="videoOpen({{$video->video->video_id}});">
+						<video style="background: #000; width: 100%; height: inherit; cursor:pointer;" class="embed-responsive-item vidContent{{$video->video->video_id}}" data-content="{{asset('assets/video/'.$video->video->video_content)}}">
+						    <source src="{{asset('assets/video/'.$video->video->video_content)}}">
+						</video>
+					</div>
+					<div>
+					  <a href="#" style="font-size: 12px;" onclick="videoOpen({{$video->video->video_id}});">{{$video->video->video_title}}</a>
+					  <br>
+					  <span style="font-size: 12px">{{$band->band_name}}</span>
+					</div>
+				</div>
+			@endforeach
+		</div>
 	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<br><br>
+			<center><h6 style="color: #fafafa; text-transform: uppercase; letter-spacing: 1px;">Released Albums</h6></center>
+			<hr style="width: 5%;">
+			<br><br>
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="table-responsive">
+						  <table class="table">
+						    {{--@foreach($albums as $album)
+						    	<tr>
+						    		<td>{{$album->album_name}}</td>
+						    	</tr>
+						    @endforeach--}}
+						    <tr>
+						    	<td style="padding-top: 25px; padding-bottom: 25px;">Younger Dreams</td>
+						    </tr>
+						    <tr>
+						    	<td style="padding-top: 25px; padding-bottom: 25px;">Younger Dreams</td>
+						    </tr>
+						    <tr>
+						    	<td style="padding-top: 25px; padding-bottom: 25px;">Younger Dreams</td>
+						    </tr>
+						    <tr>
+						    	<td style="padding-top: 25px; padding-bottom: 25px;">Younger Dreams</td>
+						    </tr>
+						    <tr>
+						    	<td style="padding-top: 25px; padding-bottom: 25px;">Younger Dreams</td>
+						    </tr>
+						    <tr>
+						    	<td style="padding-top: 25px; padding-bottom: 25px;">Younger Dreams</td>
+						    </tr>
+						  </table>
+						</div>
+					</div>
+					<div class="col-md-6" style="display: flex;">
+						<div class="col-md-6" style="padding-right: 0px;">
+							<img src="{{asset('assets/img/banner.jpeg')}}" class="img-responsive panel-thumbnail">
+						</div>
+						<div class="col-md-6" style="padding-left: 0px;">
+							<div class="panel" style="border-radius: 0px; height: 100%;">
+								<div class="panel-body">
+									<h5 style="color: #212121;">Album name : Younger Dreams</h5>
+									<h6 style="color: #212121;">Release Date: Jan 20, 2018</h6>
+									<p style="color: #212121; font-size: 13px;">Our Last Night’s fourth full-length studio album Younger Dreams emerges via the expected trajectory their covers stint set them on, into a more pop-rock based album than metalcore. The album sees the band stepping into a different direction as they’re more drawn to melodies than the screams from their harsh metalcore roots.</p>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<br><br><br><br><br><br><br><br><br>
+
+</div>
+
+<!-- Video modal -->
+
+<div class="modal fade" id="modal-video" tabindex="-1" role="dialog" aria-labelledby="modal-video-label" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="resetVid();">
+          <span aria-hidden="true" onclick="resetVid();">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-video">
+          <div class="embed-responsive embed-responsive-16by9" id="vidcontainer">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script type="text/javascript">
+
+	function resetVid(){
+	  var vid1 = document.getElementById('actualVideo');
+	  var vid2 = $('#actualVideo').html();
+	  vid1.pause();
+	}
+
+	function videoOpen(id){
+
+	    var vid = document.getElementById('vidcontainer');
+	    var content = $('.vidContent'+id).data('content');
+	    var playIcon = "{{asset('assets/img/play.png')}}";
+
+	    // console.log(content);
+	    vid.innerHTML ='<video id="actualVideo" class="embed-responsive-item" autoplay><source id="vidsrc" src="'+content+'" type="video/mp4"></source></video><div id="controllerBox" class="video-controls-box" style="position: absolute;bottom: 0px;width: 100%;"><input id="seeksliderVid" type="range" min="0" max="100" value="0" step="1"><div style="padding-top: 5px; padding-bottom: 4px;"><span><img id="playPauseBottomOfVid" src="'+playIcon+'" onclick="playPauseVid()" style="cursor:pointer; width: 25px; padding-left: 5px; margin-top: -2px;"></span><span id="curtimeText" style="color:#fafafa; margin-left: 5px;">0:00</span> / <span id="durtimeText" style="color:#fafafa;">0:00</span></div></div>';
+
+	    $('#modal-video').modal('show');
+	    playPauseVid();
+	}
+
+	function playPauseVid(){
+	    var vid = document.getElementById('actualVideo');
+	    var vidForSlider = "seeksliderVid";
+	    var seekslider = document.getElementById(vidForSlider);
+	    var playPauseBottom = "playPauseBottomOfVid";
+	    var controlBox = "controllerBox";
+
+	    var playBtn = "{{asset('assets/img/play.png')}}";
+	    var pauseBtn = "{{asset('assets/img/pause.png')}}";
+
+	    var controllerVidBottom = document.getElementById(playPauseBottom);
+	    var controllerBox = document.getElementById(controlBox);
+	    
+	    if (vid.paused) {
+	      vid.play();
+	      controllerVidBottom.src = pauseBtn;
+
+	      setTimeout(function(){
+	        $(controllerBox).fadeIn();
+	      }, 100);
+	      
+
+	    }else{
+	      vid.pause();
+	      controllerVidBottom.src = playBtn;
+	    }
+	    
+	    seekslider.addEventListener("change", function(){
+	        var seekTo = vid.duration * (seekslider.value/100);
+	        vid.currentTime = seekTo;
+	    });
+
+	    vid.addEventListener("timeupdate", function(){
+	        var newtime = vid.currentTime * (100/vid.duration);
+	        seekslider.value = newtime;
+
+	        var curtimeId = "curtimeText";
+	        var durtimeId = "durtimeText";
+	        var curtimeText = document.getElementById(curtimeId);
+	        var durtimeText = document.getElementById(durtimeId);
+
+	        var curmins = Math.floor(vid.currentTime/60);
+	        var cursecs = Math.floor(vid.currentTime-curmins*60);
+	        var durmins = Math.floor(vid.duration/60);
+	        var dursecs = Math.round(vid.duration-durmins*60);
+	        if (cursecs<10) {
+	          cursecs = "0"+cursecs;
+	        }
+	        if (dursecs<10) {          
+	          dursecs = "0"+dursecs;
+	        }
+	        curtimeText.innerHTML = curmins+":"+cursecs;
+	        durtimeText.innerHTML = durmins+":"+dursecs;
+
+	    });
+
+	    vid.addEventListener("ended", function(){
+	        vid.currentTime = 0;
+	        controllerVid.src = playBtn;
+	        $(controllerBox).fadeOut();
+	        $(controllerVid).fadeIn();
+
+	    });
+	}
 
 	// The rel attribute is the userID you would want to follow
 
