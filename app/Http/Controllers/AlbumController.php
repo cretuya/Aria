@@ -88,10 +88,11 @@ class AlbumController extends Controller
 
     public function editAlbum($bname, $aid)
     {
-        $album = Album::where('album_id', $aid)->first();
+        $albums = Album::where('album_id', $aid)->first();
         $band = Band::where('band_name', $bname)->first();
+        $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
 
-        return view('edit-band-album', compact('album', 'band'));
+        return view('edit-band-album', compact('albums', 'band', 'usernotifinvite'));
     }
 
     public function updateAlbum(Request $request, $bname)

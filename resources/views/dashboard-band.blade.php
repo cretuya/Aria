@@ -341,7 +341,7 @@ input[type='range']::-webkit-slider-thumb{
                   @else
                     @foreach($videos as $video)
                       
-                  <div class="col-md-2">
+                  <div class="col-md-3">
 
                     <div id="video-content{{$video->video->video_id}}" onclick="videoOpen({{$video->video->video_id}});">
                     <video style="background: #000; width: 100%; height: inherit; cursor:pointer;" class="embed-responsive-item vidContent{{$video->video->video_id}}" data-content="{{asset('assets/video/'.$video->video->video_content)}}">
@@ -417,10 +417,10 @@ input[type='range']::-webkit-slider-thumb{
                                   <a href="{{url($band->band_name.'/albums/'.$albums[$i]->album_id)}}"><img src="{{asset('assets/img/dummy-pic.jpg')}}" class="img-responsive">
                                   </a>
                                   @else
-                                  <a href="{{url($band->band_name.'/albums/'.$albums[$i]->album_id)}}"><img src="{{$albums[$i]->album_pic}}" class="img-responsive">
+                                  <a href="{{url($band->band_name.'/editAlbum/'.$albums[$i]->album_id)}}"><img src="{{$albums[$i]->album_pic}}" class="img-responsive">
                                   </a>
                                   @endif
-                                  <a href="{{url($band->band_name.'/albums/'.$albums[$i]->album_id)}}"><p style="text-align: center; margin-top: 5px;">{{$albums[$i]->album_name}}</p>
+                                  <a href="{{url($band->band_name.'/editAlbum/'.$albums[$i]->album_id)}}"><p style="text-align: center; margin-top: 5px;">{{$albums[$i]->album_name}}</p>
                                   </a>
                                   <p style="font-size: 11px; text-align: center; margin-top: -10px;">Released: 23 Aug 2008</p>
 
@@ -969,11 +969,9 @@ function playPauseVid(){
     });
 
     vid.addEventListener("ended", function(){
+        var controllerVidBottom = document.getElementById(playPauseBottom);
         vid.currentTime = 0;
-        controllerVid.src = playBtn;
-        $(controllerBox).fadeOut();
-        $(controllerVid).fadeIn();
-
+        controllerVidBottom.src = playBtn;
     });
 }
 

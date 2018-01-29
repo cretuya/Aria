@@ -2,91 +2,88 @@
 
 @section('content')
 
-<style type="text/css">
-  #albumPicTop{
-    position: absolute;
-    top: 25px;
-    width: calc(100% - 240px);
-  }
-  #albumPicTop img{
-    border: 2px solid #fafafa;
-  }
-
-  #albumBanner, #albumBannerFilter{
-    height: 300px;
-  }
-
-  #albumPicTop img{
-    height: 255px;
-  }
-
-  
-</style>
-
 @include('layouts.sidebar')
 
 <br><br>
-<div class="container" id="main" style="background: #161616;">
-
+<div class="container" id="main" style="background: #161616; padding-left: 30px; padding-right: 30px;">
   <div class="row">
-      <div id="albumBanner" class="panel-thumbnail" style="background: url({{$albums->album_pic}}) no-repeat center center;">
-        &nbsp;
-      </div>
-      <div id="albumBannerFilter" class="panel-thumbnail">
-        &nbsp;
-      </div>
-      <div id="albumPicTop" class="panel-thumbnail" style="background: transparent;">
-          <div class="media" style="border: none; padding-left: 80px;">
-            <div class="media-left">
-              <img src="{{$albums->album_pic}}" class="media-object">
-            </div>
-            <div class="media-body" style="background: transparent; padding-left: 30px; padding-top: 15px;">
-              <p style="color: #E57C1F; font-size: 12px;">ALBUM</p>
-              <h2 style="letter-spacing: 1px;">{{$albums->album_name}}</h2>  
-              <h4>{{$band->band_name}}</h4>
-              <h6 style="margin-top: 20px;">Released on 10 Mar 2018</h6>
-              <p style="margin-top: 20px; font-size: 12px; text-align: justify; word-wrap: break-word; width: 75%">{{$albums->album_desc}}</p>
-            </div>
-          </div>
-      </div>
+    <div class="col-md-12">
 
-  </div>
-  <br>
-  <div class="row">
-    <div class="col-md-1">&nbsp;</div>
-    <div class="col-md-8">
-      <div class="panel" style="border-radius: 0px; background: transparent;">
-        <div class="panel-body" style="padding: 0;">
-          <div class="media" style="border: 0; border-radius: 0px;">
-            <div class="media-left">
-              <img src="{{$albums->album_pic}}" class="media-object" style="width: 110px;">
-            </div>
-            <div class="media-body" style="padding-left: 10px; padding-top: 10px;">
-              <h4 class="media-heading" style="color: #212121">Song Name</h4>
-              <p style="color: #212121; font-size: 12px">Band / Artist</p>
-              <br>
-              <input type="range">
-            </div>
-            <div class="panel">
+<br><br>
+<center><h3>Albums</h3></center>
+<meta name ="csrf-token" content = "{{csrf_token() }}"/>
+
+<br><br><br><br>
+
+
+<input type="text" value="{{$band->band_name}}" id="bandName" hidden>
+
+{{--
+    @if($albums == null)
+    @else
+      @foreach($albums as $album)
+      <div class="row">
+        <div class="col-md-9">
+          <div class='albums'>
+          <a href="#" class="showSongs" data-id='{{$album->album_id}}' style="text-decoration: none;">
+            <div class="panel panel-default" style="margin-top: -20px; background:none">
               <div class="panel-body">
-                <table class="table">
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                </table>
+              <img class="friends-in-aria-pic img-circle" src="{{$album->album_pic}}">
+              {{$album->album_name}}
               </div>
             </div>
-          </div>
+          </a>
+        </div>
+        </div>
+        <div class="col-md-2 likeAlbum">
+        @if (in_array($album->album_id, $likers))
+        <button type="button" class="likeButton liked" data-id='{{$album->album_id}}'>Unlike</button>
+        @else
+        <button type="button" class="likeButton" data-id='{{$album->album_id}}'>Like</button>
+        @endif
         </div>
       </div>
-    </div>
-    <div class="col-md-3">
-      
-    </div>
-  </div>
+      @endforeach
+    @endif
+  
+  --}}
 
+<!--   {{-- @if($albums == null)
+    @else
+      @foreach($albums as $album)
+      <div class='albums'>
+
+      <a href="#" data-toggle="collapse" data-target="#{{$album->album_id}}" style="text-decoration: none;">
+        <div class="panel panel-default" style="margin-top: -20px;">
+          <div class="panel-body">
+            {{$album->album_name}}
+          </div>
+        </div>
+      </a>
+
+      @foreach($songs as $song)
+      <div id="{{$album->album_id}}" class="collapse">
+        <label>{{$song->song_audio}}</label>
+        <audio controls>
+          <source src="{{url('/assets/music/')}} {{$song->song_audio}}" type="audio/mpeg">
+        </audio>
+      </div>
+      @endforeach
+
+      
+      </div>
+      @endforeach
+    @endif --}} -->
+
+
+<div class="songs">
+<br>
+	<div class="list" align="center">
+		
+	</div>
+</div>
+</div>
+</div>
 </div>
 
 

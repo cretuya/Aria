@@ -12,7 +12,7 @@ class Playlist extends Model
 
 	protected $fillable = [
 		'pl_title' , 
-		'pl_desc' , 
+		// 'pl_desc' , 
 		'pl_creator' , 
 		'image',
 		'followers',
@@ -20,14 +20,14 @@ class Playlist extends Model
 
 	public $rules = [
 		'pl_title'  =>'required|max:200|unique:playlists', 
-		'pl_desc'   =>'required', 
+		// 'pl_desc'   =>'required', 
 		// 'pl_creator'=>'required', 
 		'followers' =>'numeric',
 	];
 
 	public $updaterules = [
 		'pl_title'  =>'required|max:200|unique:playlists', 
-		'pl_desc'   =>'required', 
+		// 'pl_desc'   =>'required', 
 		// 'pl_creator'=>'required', 
 		'followers' =>'numeric',
 	];

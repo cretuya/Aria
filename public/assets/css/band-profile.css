@@ -151,12 +151,30 @@ button.followButton.unfollow{
     background-size: cover !important;
   }
 
-@media (min-width: 768px){
-  #bandBanner{
-    height: 300px;
-  }
+  #albumBanner{
+      opacity: 0.5;
+      width: calc(100% - 240px);
+      position: absolute;
+      top: 0px;
+      -webkit-background-size: cover !important;
+      -moz-background-size: cover !important;
+      -o-background-size: cover !important;
+      background-size: cover !important;
+    }
 
-  #bandBannerGradient{
+    #albumBannerFilter{
+      opacity: 0.6;
+      width: calc(100% - 240px);
+      margin: 0 auto;
+      margin-top: -40px;
+      -webkit-background-size: cover !important;
+      -moz-background-size: cover !important;
+      -o-background-size: cover !important;
+      background-size: cover !important;
+    }
+
+@media (min-width: 768px){
+  #bandBanner, #bandBannerGradient{
     height: 300px;
   }
   .bandpicstyle{
@@ -166,11 +184,7 @@ button.followButton.unfollow{
 }
 
 @media (min-width: 1920px){
-  #bandBanner{
-    height: 430px;
-  }
-
-  #bandBannerGradient{
+  #bandBanner, #bandBannerGradient{
     height: 430px;
   }
   .bandpicstyle{

@@ -23,7 +23,7 @@
               @if(count($lists) == null)
               <div class="nlist">
                 <audio src="{{url('/assets/music/')}}" controls id="audioPlayer" type="audio/mpeg" hidden></audio>
-                <div class="list">      
+                <div class="list">
 
                 <div class="buttons">
                   <span id="playButton" class="btn" onclick="playOrPause();" style="margin-left: 5px;"><img id="playPauseImg" src="{{url('/assets/img/play.png')}}" class="img-responsive" draggable="false" /></span>

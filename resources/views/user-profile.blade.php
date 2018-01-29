@@ -15,11 +15,6 @@
   color: #E57C1F !important;
 }
 
-#addplistpanel:hover{
-  zoom: 105%;
-  margin-top: 12px !important;
-}
-
 </style>
 
 <meta name ="csrf-token" content = "{{csrf_token() }}"/>
@@ -266,8 +261,8 @@
         <div class="modal-body" style="padding-left: 25px;padding-right: 25px;">
           <label>Title</label><br>
           <input type="text" name="pl_title" class="form-control" required>
-          <label>Description</label><br>
-          <input type="text" name="pl_desc" class="form-control" required>
+          <!-- <label>Description</label><br>
+          <input type="text" name="pl_desc" class="form-control" required> -->
           <label>Add Image</label><br>
           <input type="file" name="pl_image"  class="form-control" accept="image/*" required><br><br> 
         </div>

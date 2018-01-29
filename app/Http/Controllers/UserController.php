@@ -280,7 +280,7 @@ class UserController extends Controller
     {
       $uid = Auth::user()->user_id;
       $title = $request->input('pl_title');
-      $desc = $request->input('pl_desc');
+      // $desc = $request->input('pl_desc');
       $image = $request->file('pl_image');
 
       \Cloudder::upload($image);
@@ -301,7 +301,7 @@ class UserController extends Controller
         {
           $create = Playlist::create([
             'pl_title' => $title,
-            'pl_desc' => $desc,
+            // 'pl_desc' => $desc,
             'pl_creator' => $uid,
           ]);
         }
@@ -309,7 +309,7 @@ class UserController extends Controller
         {
           $create = Playlist::create([
             'pl_title' => $title,
-            'pl_desc' => $desc,
+            // 'pl_desc' => $desc,
             'pl_creator' => $uid,
             'image' => $cloudder['url'],
           ]);
@@ -346,7 +346,7 @@ class UserController extends Controller
     
       $update = Playlist::where('pl_id', $id->pl_id)->update([
         'pl_title' => $title,
-        'pl_desc' => $desc,
+        // 'pl_desc' => $desc,
         'image' => $cloudder['url'],
       ]);
       // dd($update);

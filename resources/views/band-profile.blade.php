@@ -21,6 +21,11 @@
 	  border-radius: 100%;
 	  cursor: pointer;
 	}
+	.bandmemberslist{
+		columns: 2;
+		-webkit-columns: 2;
+		-moz-columns: 2;
+	}
 </style>
 
 @include('layouts.sidebar')
@@ -129,13 +134,18 @@
 			  	<center><h6 style="color: #fafafa; text-transform: uppercase; letter-spacing: 1px;">We Are</h6></center>
 			  </div>
 				<div class="panel-body">
-				<center>
-				@forelse($band->members as $member)
-					<span style="color: #212121; letter-spacing: 1px; line-height: 16px; text-transform: uppercase; font-size: 13px;">{{$member->user->fullname}} - {{$member->bandrole}}</span>
-				@empty
-					<span style="color: #212121; letter-spacing: 1px; line-height: 16px; text-transform: uppercase; font-size: 13px;">No members yet</span>
-				@endforelse
-				</center>
+				<ul class="bandmemberslist" style="padding-left: 35px; list-style-type: none">
+				@if(count($band)==0)
+					<li style="color: #212121; letter-spacing: 0.5px; line-height: 16px; font-size: 13px;">No members yet</li>
+				@else
+				@foreach($band->members as $member)
+					<li style="color: #212121; letter-spacing: 0.5px; line-height: 16px; font-size: 13px; padding-top: 15px; padding-bottom: 15px;">{{$member->user->fullname}}</li>					
+				@endforeach
+				@foreach($band->members as $memberrole)
+						<li style="color: #212121; letter-spacing: 0.5px; line-height: 16px; font-size: 13px; padding-top: 15px; padding-bottom: 15px;">{{$memberrole->bandrole}}</li>
+					@endforeach
+				@endif
+				</ul>
 				</div>
 			</div>
 		</div>
@@ -148,7 +158,7 @@
 			<hr style="width: 5%;">
 			<br>
 			@foreach($videos as $video)
-				<div class="col-md-2">
+				<div class="col-md-3">
 					<div id="video-content{{$video->video->video_id}}" onclick="videoOpen({{$video->video->video_id}});">
 						<video style="background: #000; width: 100%; height: inherit; cursor:pointer;" class="embed-responsive-item vidContent{{$video->video->video_id}}" data-content="{{asset('assets/video/'.$video->video->video_content)}}">
 						    <source src="{{asset('assets/video/'.$video->video->video_content)}}">
@@ -172,50 +182,23 @@
 			<br><br>
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col-md-6">
-						<div class="table-responsive">
-						  <table class="table">
-						    {{--@foreach($albums as $album)
-						    	<tr>
-						    		<td>{{$album->album_name}}</td>
-						    	</tr>
-						    @endforeach--}}
-						    <tr>
-						    	<td style="padding-top: 25px; padding-bottom: 25px;">Younger Dreams</td>
-						    </tr>
-						    <tr>
-						    	<td style="padding-top: 25px; padding-bottom: 25px;">Younger Dreams</td>
-						    </tr>
-						    <tr>
-						    	<td style="padding-top: 25px; padding-bottom: 25px;">Younger Dreams</td>
-						    </tr>
-						    <tr>
-						    	<td style="padding-top: 25px; padding-bottom: 25px;">Younger Dreams</td>
-						    </tr>
-						    <tr>
-						    	<td style="padding-top: 25px; padding-bottom: 25px;">Younger Dreams</td>
-						    </tr>
-						    <tr>
-						    	<td style="padding-top: 25px; padding-bottom: 25px;">Younger Dreams</td>
-						    </tr>
-						  </table>
-						</div>
+				@forelse($albums as $album)
+					<div class="col-md-2">
+						<a href="{{url($band->band_name.'/albums/'.$album->album_id)}}"><img src="{{$album->album_pic}}" class="img-responsive">
+						</a>
+						<a href="{{url($band->band_name.'/albums/'.$album->album_id)}}"><p style="text-align: center; margin-top: 10px;">{{$album->album_name}}</p>
+						</a>
+						<center><p style="margin-top: -10px; font-size: 11px;">23 Mar 2018</p></center>
+						@if($album->num_likes == 0)
+						<center><p class="followers" style="margin-top: -10px; font-size: 11px; color: #9e9e9e">0 likes</p></center>
+						@else
+						<center><p class="followers" style="margin-top: -10px; font-size: 11px; color: #9e9e9e">{{$ablum->num_likes}} likes</p></center>
+						@endif
 					</div>
-					<div class="col-md-6" style="display: flex;">
-						<div class="col-md-6" style="padding-right: 0px;">
-							<img src="{{asset('assets/img/banner.jpeg')}}" class="img-responsive panel-thumbnail">
-						</div>
-						<div class="col-md-6" style="padding-left: 0px;">
-							<div class="panel" style="border-radius: 0px; height: 100%;">
-								<div class="panel-body">
-									<h5 style="color: #212121;">Album name : Younger Dreams</h5>
-									<h6 style="color: #212121;">Release Date: Jan 20, 2018</h6>
-									<p style="color: #212121; font-size: 13px;">Our Last Night’s fourth full-length studio album Younger Dreams emerges via the expected trajectory their covers stint set them on, into a more pop-rock based album than metalcore. The album sees the band stepping into a different direction as they’re more drawn to melodies than the screams from their harsh metalcore roots.</p>
-								</div>
-							</div>
-						</div>
-						
-					</div>
+				@empty
+					<br>
+					<center><p>No albums yet</p></center>
+				@endforelse
 				</div>
 			</div>
 		</div>
@@ -324,12 +307,10 @@
 	    });
 
 	    vid.addEventListener("ended", function(){
-	        vid.currentTime = 0;
-	        controllerVid.src = playBtn;
-	        $(controllerBox).fadeOut();
-	        $(controllerVid).fadeIn();
-
-	    });
+        var controllerVidBottom = document.getElementById(playPauseBottom);
+        vid.currentTime = 0;
+        controllerVidBottom.src = playBtn;
+    });
 	}
 
 	// The rel attribute is the userID you would want to follow
