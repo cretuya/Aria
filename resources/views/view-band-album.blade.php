@@ -46,13 +46,43 @@
     border-bottom-right-radius: 7px;
   }*/
 
-  ul{
+  #albumlist{
     list-style-type: none;
+    padding-left: 0px;
+    margin-bottom: 0px;
   }
 
-  ul li{
+  #albumlist li{    
+    padding-left: 10px;
+    padding-right: 5px;
+    border-radius: 4px;
+    display: flex;
+  }
+  
+  #albumlist li a{
     padding-top: 15px;
     padding-bottom: 15px;
+    width: 100%;
+    height: 100%:;
+  }
+
+  #albumlist li span{
+    margin-top: 12px;
+    font-size: 15px;
+    color: #555555;
+    padding: 3px;
+  }
+
+  #albumlist li span:hover{
+    color: #E57C1F !important;
+  }
+
+  #albumlist li:hover a,#albumlist li:hover a:hover{
+    color: #E57C1F;   
+  }
+
+  #albumlist li:hover{
+     background: #181818;
   }
 
   input[type='range']{
@@ -123,27 +153,24 @@
 
             </div>
             <div class="media-body" style="padding-left: 10px; padding-top: 10px; padding-right: 10px;">
-              <h4 class="media-heading" id="song-name" style="color: #212121; padding-top: 12px;">No song played</h4>
+              <h4 class="media-heading" id="song-name" style="color: #212121; padding-top: 5px;">Currently Playing:</h4>
               <p style="color: #212121; font-size: 12px">{{$band->band_name}}</p>
               <audio hidden id="albumSong" src="" type="audio/mpeg" controls></audio>
               <span id="currentTime" style="color: #212121; vertical-align: text-top;">0:00</span><span style="color: #212121; vertical-align: text-top;">  / </span><span id="fullDuration" style="color: #212121; vertical-align: text-top;">0:00</span>
-              <input type="range" style="margin-top: 5px;">
+              <input id="musicslider" type="range" style="margin-top: 5px;" min="0" max="100" value="0" step="1">
             </div>
             <div class="panel" style="border-radius: 0px; background: #232323;">
               <div class="panel-body">
                 
-                <ul id="abumlist" class="songsInAblum">
-                <?php
-                for($i=0; $i < count($albums->songs); $i++){
-                    $removedmp3[$i] = str_replace('.mp3', '', $albums->songs[$i]->song_audio);
-                      if($i == 0){
-                        echo '<li class="current-song"><a href="http://localhost/Aria/public/assets/music/'.$albums->songs[$i]->song_audio.'" onclick="playOrPauseFromSongClick();">'.$removedmp3[$i].'</a><span data-id="'.$albums->songs[$i]->song_id.'" class="remlist btn fa fa-remove pull-right" style="margin-top: -7px;font-size: 18px; color: #555555" title="Remove from playlist"></span></li>';
-                      }
-                      else{
-                        echo '<li><a href="http://localhost/Aria/public/assets/music/'.$albums->songs[$i]->song_audio.'" onclick="playOrPauseFromSongClick();">'.$removedmp3[$i].'</a><span data-id="'.$albums->songs[$i]->song_id.'" class="remlist btn fa fa-remove pull-right" style="margin-top: -7px;font-size: 18px; color: #555555" title="Remove from playlist"></span></li>';
-                      }
-                }
-                ?>
+                <ul id="albumlist" class="songsInAblum">
+                @foreach($albums->songs as $songs)
+                    <?php $removedmp3 = str_replace('.mp3', '', $songs->song_audio);?>
+                      @if(count($songs)==0)
+                      <li class="current-song"><a href="{{asset('assets/music/'.$songs->song_audio)}}" onclick="playOrPauseFromSongClick();"><?php echo $removedmp3; ?></a></li>
+                      @else
+                        <li><a href="{{asset('assets/music/'.$songs->song_audio)}}" onclick="playOrPauseFromSongClick();"><?php echo $removedmp3; ?></a></li>                      
+                      @endif            
+                @endforeach
                 </ul>
 
               </div>
@@ -275,7 +302,7 @@ $(document).ready(function(){
   function audioPlayer(){
     var currentSong = 0;
     $("#albumSong")[0].src = $("#albumlist li a")[0];
-    // console.log($("#albumSong")[0]);
+    // console.log($("#albumlist li a")[0]);
     // $("#albumSong")[0].play();
     $("#albumlist li a").click(function(e){
        e.preventDefault(); 
@@ -294,20 +321,15 @@ $(document).ready(function(){
         $("#albumlist li").removeClass("current-song");
         $("#albumlist li:eq("+currentSong+")").addClass("current-song");
         $("#albumSong")[0].src = $("#albumlist li a")[currentSong].href;
-        $('#playPauseImg').attr("src","{{url('/assets/img/play.png')}}");
+        $('#playBtn').attr("src","{{url('/assets/img/play.png')}}");
+        $('#playBtn').css('width','50px');
+        $('#playBtn').css('left','47px');
+        $('#playBtn').css('top','32px');
         $("#albumSong")[0].play();
-
-        setTimeout(function(){
-
-          var currentTrack = $('#albumSong')[0];
-          var fullDuration = $('#fullDuration');
-          var minutes = Math.trunc(parseInt(currentTrack.duration)/60);
-          var seconds = parseInt(currentTrack.duration)%60;
-          
-          fullDuration.html(minutes+':'+seconds);          
-
-          $('#playPauseImg').attr("src","{{url('/assets/img/pause.png')}}");
-        },500);
+        $('#playBtn').attr("src","{{url('/assets/img/equa2.gif')}}");
+        $('#playBtn').css('width','23px');
+        $('#playBtn').css('left','60px');
+        $('#playBtn').css('top','38px');        
 
           var url = $('#albumSong')[0].src;
           var url2 = "{{url('/assets/music/')}}";        
@@ -316,7 +338,14 @@ $(document).ready(function(){
           var songnamedilipajud = songnamedilipa.replace('.mp3','');
           var songname = decodeURI(songnamedilipajud);
 
-          $('#song-name').html("Now playing: "+songname); 
+          $('#song-name').html("Currently Playing: "+songname);
+
+          $('#albumSong')[0].addEventListener('loadedmetadata', function() {
+              var minutes = Math.trunc(parseInt($('#albumSong')[0].duration)/60);
+              var seconds = parseInt($('#albumSong')[0].duration)%60;
+
+              $('#fullDuration').html(minutes+':'+seconds);
+          });
 
         },500);
 
@@ -328,12 +357,18 @@ $(document).ready(function(){
   function playOrPause() {
 
     if (!$("#albumSong")[0].paused && !$("#albumSong")[0].ended) {
-      $('#playPauseImg').attr("src","{{url('/assets/img/play.png')}}");
+      $('#playBtn').attr("src","{{url('/assets/img/play.png')}}");
+      $('#playBtn').css('width','50px');
+      $('#playBtn').css('left','47px');
+      $('#playBtn').css('top','32px');
       $("#albumSong")[0].pause();
       window.clearInterval(updateTime);
     }
     else{
-      $('#playPauseImg').attr("src","{{url('/assets/img/pause.png')}}");
+      $('#playBtn').attr("src","{{url('/assets/img/equa2.gif')}}");
+      $('#playBtn').css('width','23px');
+      $('#playBtn').css('left','60px');
+      $('#playBtn').css('top','38px');
       $("#albumSong")[0].play();
       var url = $('#albumSong')[0].src;
       var url2 = "{{url('/assets/music/')}}";        
@@ -342,20 +377,58 @@ $(document).ready(function(){
       var songnamedilipajud = songnamedilipa.replace('.mp3','');
       var songname = decodeURI(songnamedilipajud);
 
-      $('#song-name').html("Now playing: "+songname);
+      $('#song-name').html("Currently Playing: "+songname);
       updateTime = setInterval(update, 200);
     }
 
   }
 
   function playOrPauseFromSongClick() {
+
+    var seekslider = document.getElementById('musicslider');
+    var audio = document.getElementById('albumSong');
+
+    seekslider.addEventListener("change", function(){
+        var seekTo = audio.duration * (seekslider.value/100);
+        audio.currentTime = seekTo;
+    });
+
+    audio.addEventListener("timeupdate", function(){
+        var newtime = audio.currentTime/audio.duration*100;
+        seekslider.value = newtime;
+    });
     
+    if($("#albumSong")[0].paused || !$("#albumSong")[0].paused){
+      setTimeout(function(){
+
+          var currentTrack = $('#albumSong')[0];
+          var fullDuration = $('#fullDuration');
+          var minutes = Math.trunc(parseInt(currentTrack.duration)/60);
+          var seconds = parseInt(currentTrack.duration)%60;
+          
+          // console.log(minutes,seconds);
+
+          fullDuration.html(minutes+':'+seconds);          
+
+          $('#playBtn').attr("src","{{url('/assets/img/equa2.gif')}}");
+          $('#playBtn').css('width','23px');
+          $('#playBtn').css('left','60px');
+          $('#playBtn').css('top','38px');
+        },100);
+    }
+
     setTimeout(function(){
       if(!$("#albumSong")[0].paused && !$("#albumSong")[0].ended && 0 < $('#albumSong')[0].currentTime){
         setTimeout(function(){
-          $('#playPauseImg').attr("src","{{url('/assets/img/pause.png')}}");
+          $('#playBtn').attr("src","{{url('/assets/img/equa2.gif')}}");
+          $('#playBtn').css('width','23px');
+          $('#playBtn').css('left','60px');
+          $('#playBtn').css('top','38px');
         },100);
-        $('#playPauseImg').attr("src","{{url('/assets/img/play.png')}}");
+        $('#playBtn').attr("src","{{url('/assets/img/play.png')}}");
+        $('#playBtn').css('width','50px');
+        $('#playBtn').css('left','47px');
+        $('#playBtn').css('top','32px');
         updateTime = setInterval(update, 200);
 
         var url = $('#albumSong')[0].src;
@@ -365,7 +438,7 @@ $(document).ready(function(){
         var songnamedilipajud = songnamedilipa.replace('.mp3','');
         var songname = decodeURI(songnamedilipajud);
 
-        $('#song-name').html("Now playing: "+songname);
+        $('#song-name').html("Currently Playing: "+songname);
         // console.log(url);
         // console.log(url2);
         // console.log(songnamedilipajud);
@@ -412,8 +485,11 @@ $(document).ready(function(){
 
     }
     else{
-      currentTime.html('0.00');
-      $('#playPauseImg').attr("src","{{url('/assets/img/play.png')}}");
+      currentTime.html('0:00');
+      $('#playBtn').attr("src","{{url('/assets/img/play.png')}}");
+      $('#playBtn').css('width','50px');
+      $('#playBtn').css('left','47px');
+      $('#playBtn').css('top','32px');
       $('#moving_progressbar').width("0%");
       window.clearInterval(updateTime);
     }
@@ -444,5 +520,9 @@ function addSongPlayed(id)
           }
         });   
 }
+</script>
+<script>
+    // loads the audio player
+    audioPlayer();
 </script>
 @endsection

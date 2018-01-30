@@ -45,13 +45,18 @@ class BandController extends Controller
         $BandDetails = Band::where('band_id', $band->band_id)->first();
 
         $bandGenreSelected = BandGenre::where('band_id', $band->band_id)->get();
-
         $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
-        // dd($bandGenreSelected);
 
-
-        return view('dashboard-band' , compact('band','videos', 'albums', 'articles', 'genres', 'songs', 'bandmembers','BandDetails','bandGenreSelected','usernotifinvite'));
+        if ($bandmembers->contains('user_id',session('userSocial')['id'])) {
+            return view('dashboard-band' , compact('band','videos', 'albums', 'articles', 'genres', 'songs', 'bandmembers','BandDetails','bandGenreSelected','usernotifinvite'));
+        }
+        else
+        {
+            return redirect('/home');
+        }
+        
     }
+
     public function createBand(Request $request)
     {
         $name = $request->input('band_name');
