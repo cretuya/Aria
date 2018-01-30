@@ -2,88 +2,166 @@
 
 @section('content')
 
+<style type="text/css">
+    #albumPicTop{
+      position: absolute;
+      top: 25px;
+      width: calc(100% - 240px);
+    }
+    #albumPicTop img{
+      border: 2px solid #fafafa;
+    }
+
+    #albumBanner, #albumBannerFilter{
+      height: 300px;
+    }
+
+    #albumPicTop img{
+      height: 255px;
+    }
+
+  /*  table.table>tbody>tr.active>td{
+      background: transparent !important;
+    }
+
+    table.table>tbody>tr:hover{
+      background: #191919;
+      color: #E57C1F;
+    }
+
+    table.table>tbody>tr>td{
+      border-top: none;
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    table.table>tbody>tr>td:first-child{  
+      border-top-left-radius: 7px;
+      border-bottom-left-radius: 7px;
+      text-align: center;
+    }
+
+    table.table>tbody>tr>td:last-child{    
+      border-top-right-radius: 7px;
+      border-bottom-right-radius: 7px;
+    }*/
+
+    ul{
+      list-style-type: none;
+    }
+
+    ul li{
+      padding-top: 15px;
+      padding-bottom: 15px;
+    }
+
+    input[type='range']{
+      -webkit-appearance: none !important;
+      background: #212121;
+      cursor: pointer;
+      height: 5px;
+      outline: none !important;
+    }
+
+    input[type='range']::-webkit-slider-thumb{
+      -webkit-appearance: none !important;
+      background: #E57C1F;
+      height: 12px;
+      width: 12px;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+
+    #playBtn{
+      width: 50px; position: absolute; top: 32px; left: 47px;
+    }
+</style>
+
 @include('layouts.sidebar')
 
 <br><br>
-<div class="container" id="main" style="background: #161616; padding-left: 30px; padding-right: 30px;">
+<div class="container" id="main" style="background: #161616;">
+
   <div class="row">
-    <div class="col-md-12">
+      <div id="albumBanner" class="panel-thumbnail" style="background: url({{$albums->album_pic}}) no-repeat center center;">
+        &nbsp;
+      </div>
+      <div id="albumBannerFilter" class="panel-thumbnail">
+        &nbsp;
+      </div>
+      <div id="albumPicTop" class="panel-thumbnail" style="background: transparent;">
+          <div class="media" style="border: none; padding-left: 80px;">
+            <div class="media-left">
+              <img src="{{$albums->album_pic}}" class="media-object">
+            </div>
+            <div class="media-body" style="background: transparent; padding-left: 30px; padding-top: 15px;">
+              <p style="color: #E57C1F; font-size: 12px;">ALBUM</p>
+              <h2 style="letter-spacing: 1px;">{{$albums->album_name}}</h2>  
+              <h4>{{$band->band_name}}</h4>
+              <h6 style="margin-top: 20px;">Released on 10 Mar 2018</h6>
+              <p style="margin-top: 20px; font-size: 12px; text-align: justify; word-wrap: break-word; width: 75%">{{$albums->album_desc}}</p>
+            </div>
+          </div>
+      </div>
 
-<br><br>
-<center><h3>Albums</h3></center>
-<meta name ="csrf-token" content = "{{csrf_token() }}"/>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-md-1">&nbsp;</div>
+    <div class="col-md-7">
+      <div class="panel" style="border-radius: 0px; background: transparent;">
+        <div class="panel-body" style="padding: 0;">
+          <div class="media" style="border: 0; border-radius: 0px;">
+            <div class="media-left">
+              <img src="{{$albums->album_pic}}" class="media-object" style="width: 110px;">
+              
+              <a href="#" onclick="playOrPause();">
+                <img src="{{asset('assets/img/playfiller.png')}}" class="media-object" style="width: 50px; position: absolute; top: 32px; left: 47px; opacity: 0.75;" draggable="false">
+                <img id="playBtn" src="{{asset('assets/img/play.png')}}" class="media-object" draggable="false">
+              </a>
 
-<br><br><br><br>
-
-
-<input type="text" value="{{$band->band_name}}" id="bandName" hidden>
-
-{{--
-    @if($albums == null)
-    @else
-      @foreach($albums as $album)
-      <div class="row">
-        <div class="col-md-9">
-          <div class='albums'>
-          <a href="#" class="showSongs" data-id='{{$album->album_id}}' style="text-decoration: none;">
-            <div class="panel panel-default" style="margin-top: -20px; background:none">
+            </div>
+            <div class="media-body" style="padding-left: 10px; padding-top: 10px; padding-right: 10px;">
+              <h4 class="media-heading" id="song-name" style="color: #212121; padding-top: 12px;">No song played</h4>
+              <p style="color: #212121; font-size: 12px">{{$band->band_name}}</p>
+              <audio hidden id="albumSong" src="" type="audio/mpeg" controls></audio>
+              <span id="currentTime" style="color: #212121; vertical-align: text-top;">0:00</span><span style="color: #212121; vertical-align: text-top;">  / </span><span id="fullDuration" style="color: #212121; vertical-align: text-top;">0:00</span>
+              <input type="range" style="margin-top: 5px;">
+            </div>
+            <div class="panel" style="border-radius: 0px; background: #232323;">
               <div class="panel-body">
-              <img class="friends-in-aria-pic img-circle" src="{{$album->album_pic}}">
-              {{$album->album_name}}
+                
+                <ul id="abumlist" class="songsInAblum">
+                <?php
+                for($i=0; $i < count($albums->songs); $i++){
+                    $removedmp3[$i] = str_replace('.mp3', '', $albums->songs[$i]->song_audio);
+                      if($i == 0){
+                        echo '<li class="current-song"><a href="http://localhost/Aria/public/assets/music/'.$albums->songs[$i]->song_audio.'" onclick="playOrPauseFromSongClick();">'.$removedmp3[$i].'</a><span data-id="'.$albums->songs[$i]->song_id.'" class="remlist btn fa fa-remove pull-right" style="margin-top: -7px;font-size: 18px; color: #555555" title="Remove song from album"></span></li>';
+                      }
+                      else{
+                        echo '<li><a href="http://localhost/Aria/public/assets/music/'.$albums->songs[$i]->song_audio.'" onclick="playOrPauseFromSongClick();">'.$removedmp3[$i].'</a><span data-id="'.$albums->songs[$i]->song_id.'" class="remlist btn fa fa-remove pull-right" style="margin-top: -7px;font-size: 18px; color: #555555" title="Remove song from album"></span></li>';
+                      }
+                }
+                ?>
+                </ul>
+
               </div>
             </div>
-          </a>
-        </div>
-        </div>
-        <div class="col-md-2 likeAlbum">
-        @if (in_array($album->album_id, $likers))
-        <button type="button" class="likeButton liked" data-id='{{$album->album_id}}'>Unlike</button>
-        @else
-        <button type="button" class="likeButton" data-id='{{$album->album_id}}'>Like</button>
-        @endif
-        </div>
-      </div>
-      @endforeach
-    @endif
-  
-  --}}
-
-<!--   {{-- @if($albums == null)
-    @else
-      @foreach($albums as $album)
-      <div class='albums'>
-
-      <a href="#" data-toggle="collapse" data-target="#{{$album->album_id}}" style="text-decoration: none;">
-        <div class="panel panel-default" style="margin-top: -20px;">
-          <div class="panel-body">
-            {{$album->album_name}}
           </div>
         </div>
-      </a>
-
-      @foreach($songs as $song)
-      <div id="{{$album->album_id}}" class="collapse">
-        <label>{{$song->song_audio}}</label>
-        <audio controls>
-          <source src="{{url('/assets/music/')}} {{$song->song_audio}}" type="audio/mpeg">
-        </audio>
       </div>
-      @endforeach
-
-      
+    </div>
+    <div class="col-md-3">
+      <div class="panel" style="border-radius: 0px;">
+        <div class="panel-heading"><h5 style="color: #212121; text-align: center;">SOME PICKS FOR YOU</h5></div>
+        <div class="panel-body">
+          
+        </div>
       </div>
-      @endforeach
-    @endif --}} -->
+    </div>
+    <div class="col-md-1">&nbsp;</div>
+  </div>
 
-
-<div class="songs">
-<br>
-	<div class="list" align="center">
-		
-	</div>
-</div>
-</div>
-</div>
 </div>
 
 

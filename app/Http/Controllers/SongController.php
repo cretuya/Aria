@@ -32,6 +32,8 @@ class SongController extends Controller
         $aid = Album::where('album_id', $id)->first();
         $band = Band::where('band_name', $bname)->first();
 
+        // dd($id);
+
         $rules = new Song;
         $validator = Validator::make($request->all(), $rules->rules);
         if ($validator->fails())

@@ -414,14 +414,13 @@ input[type='range']::-webkit-slider-thumb{
                                     
                                 <div class="col-xs-2">
                                   @if($albums[$i]->album_pic == null)
-                                  <a href="{{url($band->band_name.'/albums/'.$albums[$i]->album_id)}}"><img src="{{asset('assets/img/dummy-pic.jpg')}}" class="img-responsive">
+                                  <a href="{{url($band->band_name.'/editAlbum/'.$albums[$i]->album_id)}}"><img src="{{asset('assets/img/dummy-pic.jpg')}}" class="img-responsive">
                                   </a>
                                   @else
                                   <a href="{{url($band->band_name.'/editAlbum/'.$albums[$i]->album_id)}}"><img src="{{$albums[$i]->album_pic}}" class="img-responsive">
                                   </a>
                                   @endif
-                                  <a href="{{url($band->band_name.'/editAlbum/'.$albums[$i]->album_id)}}"><p style="text-align: center; margin-top: 5px;">{{$albums[$i]->album_name}}</p>
-                                  </a>
+                                  <p style="text-align: center; margin-top: 5px;">{{$albums[$i]->album_name}}</p>                                  
                                   <p style="font-size: 11px; text-align: center; margin-top: -10px;">Released: 23 Aug 2008</p>
 
                                   
@@ -429,8 +428,9 @@ input[type='range']::-webkit-slider-thumb{
                                   <div class="dropup">
                                     <button class="dropdown-toggle" type="button" data-toggle="dropdown" style="background: transparent; border: none;"><span class="fa fa-ellipsis-h ellipsisAlbum pull-right" style="font-size: 16px;"></span></button>
                                     <ul class="dropdown-menu dropdown-menu-right">
-                                      <li class="editprofActions2"><span class="btn addSong" data-toggle="modal" data-target="">Add song to album</span></li>
-                                      <li class="editprofActions2"><span class="btn editAlbum" data-name="{{$albums[$i]->album_name}}" data-id="{{$albums[$i]->album_id}}" data-desc="{{$albums[$i]->album_desc}}" data-toggle="modal" data-target="#edit-album-modal">Edit album</span></li>
+                                      <li class="editprofActions2"><span class="btn addSong" data-toggle="modal" data-id="{{$albums[$i]->album_id}}">Add song to album</span></li>
+                                      <li class="editprofActions2"><span class="btn editAlbum" data-name="{{$albums[$i]->album_name}}" data-id="{{$albums[$i]->album_id}}" data-desc="{{$albums[$i]->album_desc}}" data-toggle="modal" data-target="#edit-album-modal">Edit album details</span></li>
+                                      <li class="editprofActions2"><span class="btn editAlbum"><a href="{{url($band->band_name.'/editAlbum/'.$albums[$i]->album_id)}}" style="color:#fafafa">Manage album</a></span></li>
                                       <li class="editprofActions2"><span class="btn deleteAlbum" data-toggle="modal" data-target="">Delete album</span></li>
                                     </ul>
                                   </div>
@@ -1043,7 +1043,7 @@ $(document).ready(function()
 
      $('.addSong').on('click', function(){
           var id = $(this).data('id');
-
+          // console.log(id);
           $('.modal-body #album_id').val(id);
           $('#add-song-modal').modal('show');
      });

@@ -82,6 +82,9 @@ class AlbumController extends Controller
         $albums = Album::where('album_id', $aid)->first();
         $band = Band::where('band_name', $bname)->first();
         $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
+
+        // dd($albums->songs);
+
         return view('view-band-album', compact('albums', 'band', 'usernotifinvite'));
 
     }
