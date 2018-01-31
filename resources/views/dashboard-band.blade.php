@@ -431,7 +431,7 @@ input[type='range']::-webkit-slider-thumb{
                                       <li class="editprofActions2"><span class="btn addSong" data-toggle="modal" data-id="{{$albums[$i]->album_id}}">Add song to album</span></li>
                                       <li class="editprofActions2"><span class="btn editAlbum" data-name="{{$albums[$i]->album_name}}" data-id="{{$albums[$i]->album_id}}" data-desc="{{$albums[$i]->album_desc}}" data-toggle="modal" data-target="#edit-album-modal">Edit album details</span></li>
                                       <li class="editprofActions2"><span class="btn editAlbum"><a href="{{url($band->band_name.'/editAlbum/'.$albums[$i]->album_id)}}" style="color:#fafafa">Manage album</a></span></li>
-                                      <li class="editprofActions2"><span class="btn deleteAlbum" data-toggle="modal" data-target="">Delete album</span></li>
+                                      <li class="editprofActions2"><span class="btn deleteAlbum" data-id="{{$albums[$i]->album_id}}">Delete album</span></li>
                                     </ul>
                                   </div>
                                   </center>                               
@@ -1024,7 +1024,7 @@ $(document).ready(function()
 
      $(".deleteAlbum").on('click',function(){
         
-        var val = $(this).val();
+        var val = $(this).data('id');
         if(confirm('Do you want to delete this album?'))
         {
             window.location.href = '../deleteAlbum/'+val;

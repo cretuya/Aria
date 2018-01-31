@@ -62,6 +62,7 @@ class UserController extends Controller
 
         // dd($articlesfeed);
         $recommend = $this->recommend();
+        dd($recommend);
         // dd($recommend);
         // dd($friends);
         return view('home', compact('userHasBand','userBandRole','usersBand','user','articlesfeed', 'recommend','usernotifinvite'));
@@ -119,6 +120,7 @@ class UserController extends Controller
         $data = Array();
         $scores = Array();
 
+
         if (count($preferences) > 0)
         {
             // get all preferences
@@ -136,20 +138,29 @@ class UserController extends Controller
             }
             // compare genres
             $test = Array();
-            foreach($get as $g)
+            if ($get == null)
             {
-              $genres = $g->bandgenres;
-              foreach ($genres as $genre)
+              return null;
+            }
+            else{
+                foreach($get as $g)
               {
-                foreach ($preferences as $preference)
+                $genres = $g->bandgenres;
+                foreach ($genres as $genre)
                 {
-                  $pgenres = $preference->band->bandgenres;
-                    if ($pgenres->contains('genre_id', $genre->genre_id))
-                    {
-                      array_push($genreArray, $genre->band->band_id);
-                    } 
-                }                
-              }
+                  foreach ($preferences as $preference)
+                  {
+                    $pgenres = $preference->band->bandgenres;
+                      if ($pgenres->contains('genre_id', $genre->genre_id))
+                      {
+                        array_push($genreArray, $genre->band->band_id);
+                      } 
+                  }                
+                }            
+            }
+            // dd($genreArray);
+
+
 
               
               $count = count(Band::all()); 
@@ -209,9 +220,32 @@ class UserController extends Controller
             }
             else
             {
+              $comp = Array();
+              $return = Array();
 
-              $randomBands = Band::inRandomOrder()->get();
-              return $randomBands;
+              // $randomBands = Band::inRandomOrder()->get();
+              // foreach ($randomBands as $randomBand)
+              // {
+              //   $compact = array('band' => $randomBand);
+              //   array_push($comp, $compact);
+              // }
+              // return $comp;
+              // return $randomBands;
+
+                foreach ($preferences as $preference)
+                {
+                  array_push($temp, $preference->band->band_id);
+                }
+                // add in array those bands not in his preference
+                foreach ($bands as $band)
+                {
+                  if (!in_array($band->band_id, $temp))
+                  {
+                    $comp = array('band' => $band);
+                    array_push($return, $comp);
+                  }
+                }
+                return $return;
             }
         }
         else

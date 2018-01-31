@@ -60,18 +60,13 @@
             <br>
             <p style="text-align:center; color: #a4a4a4; font-size: 16px;">No bands to show</p>
             <br>
-            @elseif($recommend != null)
+            @else($recommend != null)
               @foreach($recommend as $rec)
                 <li class="list-group-item" style="border: 0;background: transparent;">
                   <a href="#"><img class="friends-in-aria-pic img-circle" src="{{$rec['band']->band_pic}}"></a>
                   <a href="{{url($rec['band']->band_name)}}"><span class="feed-band-name">{{$rec['band']->band_name}}</span></a>
                 </li>
               @endforeach
-            @else
-                <li class="list-group-item" style="border: 0;background: transparent;">
-                  <a href="#"><img class="friends-in-aria-pic img-circle" src="{{$rec->band_pic}}"></a>
-                  <a href="{{url($rec->band_name)}}"><span class="feed-band-name">{{$rec->band_name}}</span></a>
-                </li>
             @endif
           </ul>
           </div>

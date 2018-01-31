@@ -137,6 +137,11 @@
   </div>
   <br>
   <div class="row">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <input type='text' id="aid" value="{{$albums->album_id}}" hidden>
+    <input type='text' id="bandName" value="{{$band->band_name}}" hidden>
+
     <div class="col-md-1">&nbsp;</div>
     <div class="col-md-7">
       <div class="panel" style="border-radius: 0px; background: transparent;">
@@ -165,9 +170,9 @@
                 @foreach($albums->songs as $songs)
                     <?php $removedmp3 = str_replace('.mp3', '', $songs->song_audio);?>
                       @if(count($songs)==0)
-                      <li class="current-song"><a href="{{asset('assets/music/'.$songs->song_audio)}}" onclick="playOrPauseFromSongClick();"><?php echo $removedmp3; ?></a><span data-id="'.$songs->song_id.'" class="remlist btn fa fa-remove pull-right" title="Remove from song album"></span></li>
+                      <li class="current-song"><a href="{{asset('assets/music/'.$songs->song_audio)}}" onclick="playOrPauseFromSongClick();"><?php echo $removedmp3; ?></a><span data-id="{{$songs->song_id}}" class="remlist btn fa fa-remove pull-right" title="Remove from song album"></span></li>
                       @else
-                        <li><a href="{{asset('assets/music/'.$songs->song_audio)}}" onclick="playOrPauseFromSongClick();"><?php echo $removedmp3; ?></a><span data-id="'.$songs->song_id.'" class="remlist btn fa fa-remove pull-right" title="Remove from song album"></span></li>                      
+                        <li><a href="{{asset('assets/music/'.$songs->song_audio)}}" onclick="playOrPauseFromSongClick();"><?php echo $removedmp3; ?></a><span data-id="{{$songs->song_id}}" class="remlist btn fa fa-remove pull-right" title="Remove from song album"></span></li>                      
                       @endif
                 @endforeach
                 </ul>
@@ -199,6 +204,34 @@ $(document).ready(function(){
 		var id = $(this).data('id');
 		getSongs(id);
 	});
+
+  $('#albumlist').on('click', '.remlist', function(){
+
+    var id = $(this).data('id');
+    var aid = $('#aid').val();
+    // var name = $('#aid').val();
+    // alert(name);
+    // window.location.href = '/deleteSong/'+id;
+      var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+      var bname = $('#bandName').val();
+      $.ajax({
+        method : "post",
+        url : '../../deleteSong/'+id,
+        data : { '_token' : CSRF_TOKEN,
+          'id' : id
+        },
+        success: function(json){
+          window.location.href = '../editAlbum/'+aid;
+        },
+        error: function(a,b,c)
+        {
+          console.log(b);
+
+        }
+      }); 
+
+  });
+
 	function getSongs(id)
 	{
         var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
