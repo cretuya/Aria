@@ -175,8 +175,12 @@
                 <div class="col-xs-3">
                   <center>
                   <div class="panel" style="background: none; margin-bottom: 0px;">
-                    <div class="panel-body" style="padding-bottom: 0px;">
-                      <a href="{{url('/'.$bandsfollowedNoGenre[$j]->band_name)}}"><img src="{{$bandsfollowedNoGenre[$j]->band_pic}}" class="img-responsive img-circle" style="width: 84%; min-width:199px; max-width: 200px height: 100%; min-height: 179px; max-height: 180px;"></a>
+                    <div class="panel-body" style="padding-bottom: 0px;">                    
+                      <a href="{{url('/'.$bandsfollowedNoGenre[$j]->band_name)}}">
+                      <div class="panel-thumbnail" style="background: transparent;">
+                        <img src="{{$bandsfollowedNoGenre[$j]->band_pic}}" class="img-responsive img-circle" style="height: 210px;">
+                      </div>
+                      </a>
                       <a href="{{url('/'.$bandsfollowedNoGenre[$j]->band_name)}}"><h5 style="font-size: 14px;">{{$bandsfollowedNoGenre[$j]->band_name}}</h5></a>
                       <p style="font-size: 12px;">{{$bandsfollowedNoGenre[$i]->num_followers}} Followers</p>
                     </div>
@@ -198,7 +202,11 @@
                   <center>
                   <div class="panel" style="background: none; margin-bottom: 0px;">
                     <div class="panel-body" style="padding-bottom: 0px;">
-                      <a href="{{url('/'.$bandsfollowed[$j]->band_name)}}"><img src="{{$bandsfollowed[$j]->band_pic}}" class="img-responsive img-circle" style="width: 84%; max-width:199px; max-width: 200px height: 100%; min-height: 179px; max-height: 180px;"></a>
+                      <a href="{{url('/'.$bandsfollowed[$j]->band_name)}}">
+                      <div class="panel-thumbnail" style="background: transparent;">
+                        <img src="{{$bandsfollowed[$j]->band_pic}}" class="img-responsive img-circle" style="height: 210px;">
+                      </div>
+                      </a>
                       <a href="{{url('/'.$bandsfollowed[$j]->band_name)}}"><h5 style="font-size: 14px;">{{$bandsfollowed[$j]->band_name}}</h5></a>
                       <p style="font-size: 12px;">{{$bandsfollowed[$j]->genre_name}} | {{$bandsfollowed[$j+1]->genre_name}}</p>
                       <p style="font-size: 12px;">{{$bandsfollowed[$i]->num_followers}} Followers</p>

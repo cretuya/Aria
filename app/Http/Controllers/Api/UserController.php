@@ -208,4 +208,9 @@ class UserController extends Controller
             ['pl_id',$id],
         ])->delete();
     }
+
+    public function getPlistById(Request $request){
+        $plist = Plist::where('pl_id', $request->input('pl_id'))->get();
+        return response()->json($plist);
+    }
 }

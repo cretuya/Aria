@@ -1,96 +1,146 @@
 @extends('layouts.master')
-
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/discover.css').'?'.rand()}}">
-
-@include('layouts.navbar')
 @section('content')
-<br><br><br>
-<div class="container">
-<meta name ="csrf-token" content = "{{csrf_token() }}"/>
 
-	<center><h3>{{$genreChoice->genre_name}}</h3><br></center>
+<style type="text/css">
+	.hovereffect {
+	  width: 100%;
+	  height: 100%;
+	  float: left;
+	  overflow: hidden;
+	  position: relative;
+	  text-align: center;
+	  cursor: default;
+	  background: #000;
+	}
 
-	<ul class="nav nav-pills">
-	  <li class="active"><a data-toggle="tab" href="#bandstab">Bands</a></li>
-	  <!-- <li><a data-toggle="tab" href="#playliststab">Playlists</a></li> -->
-	</ul>
+	.hovereffect .overlay {
+	  width: 100%;
+	  height: 100%;
+	  position: absolute;
+	  overflow: hidden;
+	  top: 0;
+	  left: 0;
+	  padding: 50px 20px;
+	}
 
-	<div class="tab-content" style="padding-top: 25px;">
-	  <div id="bandstab" class="tab-pane fade in active">
-	    	<section id="bands">
-	    	@if ($bands == null)
-	    	@else
-	    		@foreach ($bands as $band)
-	    		<div class="bandphoto">
-	    		@if ($band->band->band_pic == null)
-	    		<div class="col-xs-2">
-	    			<a href="#" data-id="{{$band->band->band_id}}" data-title="{{$band->band->band_name}}" data-desc="{{$band->band->band_desc}}" data-follower="{{$band->band->num_followers}}" data-pic="{{$band->band->band_pic}}" class="viewBand">
-	    			<div style="background: #222">
-	    				<img src="http://res.cloudinary.com/demo/image/upload/v1499589454/sample.jpg" class="img-responsive genre-thumbnail">
-	    				<div class="carousel-caption">
-	    					<h4>{{$band->band->band_name}}</h4>
-	    				</div>
-	    				<div>
-	    					<h1> </h1>
-	    				</div>
-	    			</div>
-	    			</a>
-	    		</div>
-	    		@else
-	    		<div class="col-xs-2">
-	    			<a href="#" data-id="{{$band->band->band_id}}" data-title="{{$band->band->band_name}}" data-desc="{{$band->band->band_desc}}" data-follower="{{$band->band->num_followers}}" data-pic="{{$band->band->band_pic}}" class="viewBand">
-	    			<div style="background: #222">
-	    				<img src="{{$band->band->band_pic}}" class="img-responsive genre-thumbnail">				
-	    				<div>
-	    					<h1> </h1>
-	    				</div>
-	    			</div>
-	    			<center><h4>{{$band->band->band_name}}</h4></center>
-	    			</a>
-	    		</div>
-	    		@endif
-	    		</div>
-	    		@endforeach
-	    	@endif		
-	    	</section>
-	  </div>
-	  <!-- <div id="playliststab" class="tab-pane fade">
-	    <div class="col-xs-2">
-	    	<a href="#">
-	    	<div style="background: #222">
-	    		<img src="https://images.pexels.com/photos/287240/pexels-photo-287240.jpeg?w=940&h=650" class="img-responsive genre-thumbnail">				
-	    		<div>
-	    			<h1> </h1>
-	    		</div>
-	    	</div>
-	    	<center>
-	    	<h4>Relax and Unwind</h4>
-	    	<p>by: Aria</p>
-	    	</center>
-	    	</a>
-	    </div>
-	  </div> -->
-	</div>
+	.hovereffect img {
+	  display: block;
+	  position: relative;
+	  max-width: none;
+	  width: calc(100% + 20px);
+	  height: 100%;
+	  -webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
+	  transition: opacity 0.35s, transform 0.35s;
+	  -webkit-transform: translate3d(-10px,0,0);
+	  transform: translate3d(-10px,0,0);
+	  -webkit-backface-visibility: hidden;
+	  backface-visibility: hidden;
+	}
 
-	<div id="bandModal" class="modal fade" role="dialog">
-	  <div class="modal-dialog">
-	    <div class="modal-content">
-	      <div class="modal-body">
-	       <img src="https://www.theshowlastnight.com/wp-content/uploads/2014/08/IMG_0244.jpg" class="img-responsive thispic">
-	       <h3></h3>
-	       <p class="desc"></p>
-	       <p class="followers"></p>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default visitpage">Visit Page</button>
-	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-	      </div>
-	    </div>
+	.hovereffect:hover img {
+	  opacity: 0.4;
+	  filter: alpha(opacity=40);
+	  -webkit-transform: translate3d(0,0,0);
+	  transform: translate3d(0,0,0);
+	}
 
-	  </div>
-	</div>
+	.hovereffect h2 {
+	  text-transform: uppercase;
+	  color: #fff;
+	  text-align: center;
+	  position: relative;
+	  font-size: 17px;
+	  overflow: hidden;
+	  padding: 0.5em 0;
+	  background-color: transparent;
+	}
+
+	.hovereffect h2:after {
+	  position: absolute;
+	  bottom: 0;
+	  left: 0;
+	  width: 100%;
+	  height: 2px;
+	  background: #fff;
+	  content: '';
+	  -webkit-transition: -webkit-transform 0.35s;
+	  transition: transform 0.35s;
+	  -webkit-transform: translate3d(-100%,0,0);
+	  transform: translate3d(-100%,0,0);
+	}
+
+	.hovereffect:hover h2:after {
+	  -webkit-transform: translate3d(0,0,0);
+	  transform: translate3d(0,0,0);
+	}
+
+	.hovereffect a, .hovereffect p {
+	  color: #fafafa;
+	  opacity: 0;
+	  filter: alpha(opacity=0);
+	  -webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
+	  transition: opacity 0.35s, transform 0.35s;
+	  -webkit-transform: translate3d(100%,0,0);
+	  transform: translate3d(100%,0,0);
+	}
+
+	.hovereffect a:hover, .hovereffect p:hover {
+		color: #E57C1F;
+	}
+
+	.hovereffect:hover a, .hovereffect:hover p {
+	  opacity: 1;
+	  filter: alpha(opacity=100);
+	  -webkit-transform: translate3d(0,0,0);
+	  transform: translate3d(0,0,0);
+	}
+</style>
+
+@include('layouts.sidebar')
+
+<br><br>
+<div class="container" id="main" style="background: #161616; padding-left: 30px; padding-right: 30px;">
+  <div class="row">
+    <div class="col-md-12">
+    <h3 style="text-align: center; text-transform: uppercase; letter-spacing: 3px;">{{ $genreChoice->genre_name }} Bands</h3>
+    <hr style="width: 10%">
+    </div>
+  </div>
+  @foreach($bands as $band)
+  	<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" style="height: 280px; margin-top: 20px;">
+  	    <div class="panel-thumbnail hovereffect">
+  	        <img class="img-responsive" src="{{$band->band->band_pic}}" alt="">
+  	            <div class="overlay">
+  	                <h2>{{$band->band->band_name}}</h2>
+  					<p>
+  						<a href="{{url('/'.$band->band->band_name)}}">Visit Page</a>
+  					</p>
+  	            </div>
+  	    </div>
+  	</div>
+  @endforeach
 
 </div>
+
+
+<!-- <div id="bandModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+       <img src="https://www.theshowlastnight.com/wp-content/uploads/2014/08/IMG_0244.jpg" class="img-responsive thispic">
+       <h3></h3>
+       <p class="desc"></p>
+       <p class="followers"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default visitpage">Visit Page</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div> -->
 
 <script>
 $(document).ready(function()
