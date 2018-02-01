@@ -204,7 +204,12 @@ input[type='range']::-webkit-slider-thumb{
           <div class="row">
            <div class="col-md-7 dashboard-tablesection" style="max-height: 450px; overflow-y: scroll;">
                <table class="table">
-                <thead><h4>Events</h4></thead>
+                <thead>
+                  <tr>
+                    <td colspan="3"><h4>Events</h4></td>
+                    <td><button class="btn pull-right" style="background: #E57C1F" data-toggle="modal" data-target="#add-event-modal">Add an Event</button></td>
+                  </tr>
+                </thead>
                  <tr>
                    <td>Mar 08</td>
                    <td>Slim's</td>
@@ -538,7 +543,7 @@ input[type='range']::-webkit-slider-thumb{
 
     <!-- Modal content-->
     <div class="modal-content">
-    <form method="post" action="{{'../'.$band->band_name.'/updateVideo'}}" enctype="multipart/form-data">
+    <form method="post" action="{{'../'.$band->band_name.'/updateVideo'}}">
         {{csrf_field()}}
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -814,6 +819,41 @@ input[type='range']::-webkit-slider-thumb{
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Add Event Modal -->
+<div id="add-song-modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+    <form method="post" action="{{'../'.$band->band_name.'/addEvent'}}" enctype="multipart/form-data">
+        {{csrf_field()}}
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Add Song</h4>
+      </div>
+      <div class="modal-body">
+        Event Title:<br>
+        <input type="text" name="event_name"  class='form-control' required>
+        Date:<br>
+        <input type="text" name="event_date"  class='form-control' required>
+        Time:<br>
+        <input type="text" name="event_time"  class='form-control' required>
+        Venue:<br>
+        <input type="text" name="event_venue"  class='form-control' required>
+        Location:<br>
+        <input type="text" name="event_location"  class='form-control' required>
+      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-default" >Submit</button>
+      </div>
+      </form>
+    </div>
+
   </div>
 </div>
 

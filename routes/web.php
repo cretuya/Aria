@@ -104,4 +104,6 @@ Route::middleware(['auth'])->group(function(){
 	Route::post('addtolist', 'UserController@addtolist');
 	Route::post('listrecommend', 'UserController@listrecommend');
 
+	Route::post('{band_name}/addEvent' , 'EventController@addEvent');
+
 });

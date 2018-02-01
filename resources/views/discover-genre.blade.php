@@ -3,6 +3,12 @@
 @section('content')
 
 <style type="text/css">
+
+@media (min-width: 1920px) {
+	.portraits{
+		width: 16.66666667%;
+	}
+}
 	.hovereffect {
 	  width: 100%;
 	  height: 100%;
@@ -108,7 +114,7 @@
     </div>
   </div>
   @foreach($bands as $band)
-  	<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" style="height: 280px; margin-top: 20px;">
+  	<div class="portraits col-lg-3 col-md-4 col-sm-6 col-xs-12" style="height: 280px; margin-top: 20px;">
   	    <div class="panel-thumbnail hovereffect">
   	        <img class="img-responsive" src="{{$band->band->band_pic}}" alt="">
   	            <div class="overlay">
