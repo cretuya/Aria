@@ -206,46 +206,34 @@ input[type='range']::-webkit-slider-thumb{
                <table class="table">
                 <thead>
                   <tr>
-                    <td colspan="3"><h4>Events</h4></td>
+                    <td colspan="4"><h4>Events</h4></td>
                     <td><button class="btn pull-right" style="background: #E57C1F" data-toggle="modal" data-target="#add-event-modal">Add an Event</button></td>
                   </tr>
                 </thead>
+                @if(count($events) == 0)
+                <tr><td align="center" colspan="6" style="padding: 35px;">No events yet</td></tr>
+                @else
+                @foreach($events as $event)
+
+                <?php
+
+                $date = DateTime::createFromFormat("Y-m-d", $event->event_date);
+                $event->event_date = $date->format("M d");
+
+                $time = $event->event_time; 
+                $event->event_time = date('h:i A', strtotime($time));
+
+                ?>
+
                  <tr>
-                   <td>Mar 08</td>
-                   <td>Slim's</td>
-                   <td>4:00 PM</td>
-                   <td>San Francisco, CA</td>
+                   <td>{{$event->event_date}}</td>
+                   <td>{{$event->event_name}}</td>
+                   <td>{{$event->event_venue}}</td>
+                   <td>{{$event->event_time}}</td>
+                   <td>{{$event->event_location}}</td>
                  </tr>
-                 <tr>
-                   <td>Mar 10</td>
-                   <td>Hawthrone Theatre</td>
-                   <td>5:00 PM</td>
-                   <td>Portland, OR</td>
-                 </tr>
-                 <tr>
-                   <td>Mar 08</td>
-                   <td>Slim's</td>
-                   <td>4:00 PM</td>
-                   <td>San Francisco, CA</td>
-                 </tr>
-                 <tr>
-                   <td>Mar 10</td>
-                   <td>Hawthrone Theatre</td>
-                   <td>5:00 PM</td>
-                   <td>Portland, OR</td>
-                 </tr>
-                 <tr>
-                   <td>Mar 08</td>
-                   <td>Slim's</td>
-                   <td>4:00 PM</td>
-                   <td>San Francisco, CA</td>
-                 </tr>
-                 <tr>
-                   <td>Mar 10</td>
-                   <td>Hawthrone Theatre</td>
-                   <td>5:00 PM</td>
-                   <td>Portland, OR</td>
-                 </tr>
+                 @endforeach
+                 @endif
                </table>
            </div>
            <div class="col-md-5 dashboard-tablesection" style="max-height: 450px; overflow-y: scroll;">
@@ -823,29 +811,47 @@ input[type='range']::-webkit-slider-thumb{
 </div>
 
 <!-- Add Event Modal -->
-<div id="add-song-modal" class="modal fade" role="dialog">
+<div id="add-event-modal" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
     <!-- Modal content-->
     <div class="modal-content">
-    <form method="post" action="{{'../'.$band->band_name.'/addEvent'}}" enctype="multipart/form-data">
+    <form method="post" action="{{'../'.$band->band_name.'/addEvent'}}">
         {{csrf_field()}}
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Add Song</h4>
       </div>
       <div class="modal-body">
-        Event Title:<br>
-        <input type="text" name="event_name"  class='form-control' required>
-        Date:<br>
-        <input type="text" name="event_date"  class='form-control' required>
-        Time:<br>
-        <input type="text" name="event_time"  class='form-control' required>
-        Venue:<br>
-        <input type="text" name="event_venue"  class='form-control' required>
-        Location:<br>
-        <input type="text" name="event_location"  class='form-control' required>
-      
+        <div class="row">
+          <div class="col-md-12">
+            <label>Event Title:<br></label>
+            <input type="text" name="event_name"  class='form-control' required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <label>Date:<br></label>
+            <input type="text" name="event_date" class='form-control datepicker' required readonly>
+          </div>
+          <div class="col-md-6">
+            <label>Time:<br></label>
+            <input type='text' name="event_time" class="form-control" required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <label>Venue:<br></label>
+            <input type="text" name="event_venue"  class='form-control' required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <label>Location:<br></label>
+            <input type="text" name="event_location"  class='form-control' required>
+          </div>
+        </div>
+        <input type="text" name="event_band_id" value="{{$band->band_id}}" hidden>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -1216,6 +1222,7 @@ $(document).ready(function()
 <script>
     $('.carousel').carousel({
         interval: false
-    }); 
+    });
+    $('.datepicker').datepicker();
 </script>
 @endsection

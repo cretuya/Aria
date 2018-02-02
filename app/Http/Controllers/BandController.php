@@ -13,6 +13,7 @@ use App\BandArticle;
 use App\Bandmember;
 use App\BandVideo;
 use App\Genre;
+use App\BandEvent;
 use App\Song;
 use App\User;
 use App\UserNotification;
@@ -33,6 +34,7 @@ class BandController extends Controller
         $videos = BandVideo::where('band_id', $band->band_id)->get();
         $albums = Album::where('band_id', $band->band_id)->get();
         $articles = BandArticle::where('band_id' , $band->band_id)->get();
+        $events = BandEvent::where('band_id' , $band->band_id)->get();
         $genres = Genre::all();
 
         $songs = array();
@@ -48,7 +50,7 @@ class BandController extends Controller
         $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
 
         if ($bandmembers->contains('user_id',session('userSocial')['id'])) {
-            return view('dashboard-band' , compact('band','videos', 'albums', 'articles', 'genres', 'songs', 'bandmembers','BandDetails','bandGenreSelected','usernotifinvite'));
+            return view('dashboard-band' , compact('band','videos', 'albums', 'articles', 'events', 'genres', 'songs', 'bandmembers','BandDetails','bandGenreSelected','usernotifinvite'));
         }
         else
         {
