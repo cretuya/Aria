@@ -145,9 +145,9 @@
                   @foreach($lists as $list)
                       <?php $removedmp3 = str_replace('.mp3', '', $list->songs->song_audio);?>
                         @if(count($list)==0)
-                        <li class="current-song"><a href="{{asset('assets/music/'.$list->songs->song_audio)}}" onclick="playOrPauseFromSongClick();"><?php echo $removedmp3; ?></a><span data-id="'.$list->songs->song_id.'" class="remlist btn fa fa-remove pull-right" title="Remove from playlist"></span></li>
+                        <li class="current-song"><a href="{{asset('assets/music/'.$list->songs->song_audio)}}" onclick="playOrPauseFromSongClick();"><?php echo $removedmp3; ?></a><span data-id="{{$list->songs->song_id}}" class="remlist btn fa fa-remove pull-right" title="Remove from playlist"></span></li>
                         @else
-                          <li><a href="{{asset('assets/music/'.$list->songs->song_audio)}}" onclick="playOrPauseFromSongClick();"><?php echo $removedmp3; ?></a><span data-id="'.$list->songs->song_id.'" class="remlist btn fa fa-remove pull-right" title="Remove from playlist"></span></li>                      
+                          <li><a href="{{asset('assets/music/'.$list->songs->song_audio)}}" onclick="playOrPauseFromSongClick();"><?php echo $removedmp3; ?></a><span data-id="{{$list->songs->song_id}}" class="remlist btn fa fa-remove pull-right" title="Remove from playlist"></span></li>                      
                         @endif
                   @endforeach
                 </ul>
@@ -161,8 +161,11 @@
     <div class="col-md-3">
       <div class="panel" style="border-radius: 0px;">
         <div class="panel-heading"><h5 style="color: #212121; text-align: center;">SOME PICKS FOR YOU</h5></div>
-        <div class="panel-body">
-          
+
+        <div class="panel-body recommendBody">
+        @foreach($recommend as $rec)
+          <button class="addRecSong" data-id="{{$rec->song_id}}">Add song</button>{{$rec->song_title}}<br>
+        @endforeach
         </div>
       </div>
     </div>
@@ -173,6 +176,40 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+$('.recommendBody').on('click', '.addRecSong', function(){
+  var sid = $(this).data('id');
+  var pid = $('#pid').val();
+  var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+
+        $.ajax({
+          method : "post",
+          url : "../addSongToPlaylist",
+          data : { '_token' : CSRF_TOKEN,
+            'id' : sid,
+            'pid' : pid,
+          },
+          success: function(data){
+            // console.log(data);
+            window.location =  '../playlist/'+pid;
+
+
+          },
+          error: function(a,b,c)
+          {
+            console.log('Error');
+
+          }
+        });
+});
+$('.songsInAblum').on('click', '.remlist', function(){
+  var sid = $(this).data('id');
+  var pid = $('#pid').val();
+
+  window.location = '../delplsong/'+sid+'/'+pid;
+});
+
+
+
 $('.addnlist').click(function(){
     
     var sid = $(this).data('id');
