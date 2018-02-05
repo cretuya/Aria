@@ -94,7 +94,7 @@ Route::post('AddPlayList', 'Api\UserController@AddPlayList');
 Route::get('DeletePlayList', 'Api\UserController@DeletePlayList');
 Route::post('updateplaylist', 'Api\UserController@updateplaylist');
 Route::get('getAllPlaylist', 'Api\UserController@getAllPlaylist');
-Route::get('addSongToPlaylist', 'Api\UserController@addSongToPlaylist');
+Route::post('addSongToPlaylist', 'Api\UserController@addSongToPlaylist');
 Route::get('getAllPlist','Api\UserController@getAllPlist');
 Route::get('AllAlbums','Api\AlbumController@AllAlbums');
 Route::get('removeSongFromPlaylist','Api\UserController@removeSongFromPlaylist');

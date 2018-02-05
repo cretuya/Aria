@@ -105,4 +105,8 @@ Route::middleware(['auth'])->group(function(){
 	// Route::post('listrecommend', 'UserController@listrecommend');
 	Route::post('addSongToPlaylist', 'UserController@addSongToPlaylist');
 
+	Route::post('{band_name}/addEvent' , 'EventController@addEvent');
+	Route::post('{band_name}/editEvent' , 'EventController@editEvent');
+	Route::get('deleteEvent/{event_id}' , 'EventController@deleteEvent');
+
 });

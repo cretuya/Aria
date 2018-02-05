@@ -204,43 +204,38 @@ input[type='range']::-webkit-slider-thumb{
           <div class="row">
            <div class="col-md-7 dashboard-tablesection" style="max-height: 450px; overflow-y: scroll;">
                <table class="table">
-                <thead><h4>Events</h4></thead>
+                <thead>
+                  <tr>
+                    <td colspan="4"><h4>Events</h4></td>
+                    <td><button class="btn pull-right" style="background: #E57C1F" data-toggle="modal" data-target="#add-event-modal">Add an Event</button></td>
+                  </tr>
+                </thead>
+                @if(count($events) == 0)
+                <tr><td align="center" colspan="6" style="padding: 35px;">No events yet</td></tr>
+                @else
+                @foreach($events as $event)
+
+                <?php
+                $date1=$event->event_date;
+                $date = DateTime::createFromFormat("Y-m-d", $event->event_date);
+                $event->event_date = $date->format("M d");
+
+                $time = $event->event_time; 
+                $event->event_time = date('h:i A', strtotime($time));
+
+                ?>
+
                  <tr>
-                   <td>Mar 08</td>
-                   <td>Slim's</td>
-                   <td>4:00 PM</td>
-                   <td>San Francisco, CA</td>
+                   <td>{{$event->event_date}}</td>
+                   <td>{{$event->event_name}}</td>
+                   <td>{{$event->event_venue}}</td>
+                   <td>{{$event->event_time}}</td>
+                   <td>{{$event->event_location}}</td>
+                   <td><a href="#" id="editEvent" data-id="{{$event->event_id}}" data-name="{{$event->event_name}}" data-venue="{{$event->event_venue}}" data-time="{{$event->event_time}}" data-location="{{$event->event_location}}" data-date="{{$date1}}"><span class="fa fa-pencil" style="color: #fafafa;" title="Edit Event"></span></a></td>
+                   <td><a href="#" class="deleteEvent" data-id="{{$event->event_id}}"><span class="fa fa-trash" style="color: #fafafa;" title="Delete Event"></span></a></td>
                  </tr>
-                 <tr>
-                   <td>Mar 10</td>
-                   <td>Hawthrone Theatre</td>
-                   <td>5:00 PM</td>
-                   <td>Portland, OR</td>
-                 </tr>
-                 <tr>
-                   <td>Mar 08</td>
-                   <td>Slim's</td>
-                   <td>4:00 PM</td>
-                   <td>San Francisco, CA</td>
-                 </tr>
-                 <tr>
-                   <td>Mar 10</td>
-                   <td>Hawthrone Theatre</td>
-                   <td>5:00 PM</td>
-                   <td>Portland, OR</td>
-                 </tr>
-                 <tr>
-                   <td>Mar 08</td>
-                   <td>Slim's</td>
-                   <td>4:00 PM</td>
-                   <td>San Francisco, CA</td>
-                 </tr>
-                 <tr>
-                   <td>Mar 10</td>
-                   <td>Hawthrone Theatre</td>
-                   <td>5:00 PM</td>
-                   <td>Portland, OR</td>
-                 </tr>
+                 @endforeach
+                 @endif
                </table>
            </div>
            <div class="col-md-5 dashboard-tablesection" style="max-height: 450px; overflow-y: scroll;">
@@ -538,7 +533,7 @@ input[type='range']::-webkit-slider-thumb{
 
     <!-- Modal content-->
     <div class="modal-content">
-    <form method="post" action="{{'../'.$band->band_name.'/updateVideo'}}" enctype="multipart/form-data">
+    <form method="post" action="{{'../'.$band->band_name.'/updateVideo'}}">
         {{csrf_field()}}
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -817,6 +812,113 @@ input[type='range']::-webkit-slider-thumb{
   </div>
 </div>
 
+<!-- Add Event Modal -->
+<div id="add-event-modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+    <form method="post" action="{{'../'.$band->band_name.'/addEvent'}}">
+        {{csrf_field()}}
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Add Event</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <label>Event Title:<br></label>
+            <input type="text" name="event_name"  class='form-control' required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <label>Date:<br></label>
+            <input type="text" name="event_date" class='form-control datepicker' required readonly>
+          </div>
+          <div class="col-md-6">
+            <label>Time:<br></label>
+            <input type='text' name="event_time" class="form-control" required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <label>Venue:<br></label>
+            <input type="text" name="event_venue"  class='form-control' required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <label>Location:<br></label>
+            <input type="text" name="event_location"  class='form-control' required>
+          </div>
+        </div>
+        <input type="text" name="event_band_id" value="{{$band->band_id}}" hidden>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-default" >Submit</button>
+      </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<!-- Edit Event Modal -->
+<div id="edit-event-modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+    <form method="post" action="{{'../'.$band->band_name.'/editEvent'}}">
+        {{csrf_field()}}
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Event</h4>
+      </div>
+      <div class="modal-body">
+        <input type="text" name="event_id" id="event_id"  class='form-control hidden'>
+        <div class="row">
+          <div class="col-md-12">
+            <label>Event Title:<br></label>
+            <input type="text" name="event_name" id="event_name"  class='form-control' required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <label>Date:<br></label>
+            <input type="text" name="event_date" id="event_date" class='form-control datepicker' required readonly>
+          </div>
+          <div class="col-md-6">
+            <label>Time:<br></label>
+            <input type='text' name="event_time" id="event_time" class="form-control" required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <label>Venue:<br></label>
+            <input type="text" name="event_venue" id="event_venue"  class='form-control' required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <label>Location:<br></label>
+            <input type="text" name="event_location" id="event_location"  class='form-control' required>
+          </div>
+        </div>
+        <input type="text" name="event_band_id" value="{{$band->band_id}}" hidden>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-default" >Submit</button>
+      </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
 </body>
 
 <script src="/vendor/unisharp/laravel-ckeditor/ckeditor.js"></script>
@@ -1048,6 +1150,35 @@ $(document).ready(function()
           $('#add-song-modal').modal('show');
      });
 
+     $('#editEvent').on('click', function(){
+          var id = $(this).data('id');
+          var name = $(this).data('name');
+          var date = $(this).data('date');
+          var time = $(this).data('time');
+          var venue = $(this).data('venue');
+          var location = $(this).data('location');
+          console.log(id);
+          $('.modal-body #event_id').val(id);
+          $('.modal-body #event_name').val(name);
+          $('.modal-body #event_date').val(date);
+          $('.modal-body #event_time').val(time);
+          $('.modal-body #event_venue').val(venue);
+          $('.modal-body #event_location').val(location);
+          $('#edit-event-modal').modal('show');
+     });
+
+     $(".deleteEvent").on('click', function(){
+        
+        var val = $(this).data('id');
+
+        console.log('nisud diri',val);
+
+        if(confirm('Do you want to delete this event?'))
+        {
+            window.location.href = '../deleteEvent/'+val;
+        }
+     });
+
     $('#showAlbums').on('click', '.viewSongs', function(){
         var album_id = $(this).data('id');
         viewSongs(album_id);
@@ -1176,6 +1307,7 @@ $(document).ready(function()
 <script>
     $('.carousel').carousel({
         interval: false
-    }); 
+    });
+    $('.datepicker').datepicker();
 </script>
 @endsection

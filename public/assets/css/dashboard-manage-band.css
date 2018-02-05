@@ -156,6 +156,9 @@ input[type=checkbox] {
 
 .add-member-btn{
   margin-top: 25px;
+  background: #E57C1F !important;
+  color: #fafafa;
+  border-color: #E57C1F !important;
 }
 
 .container-profile-photo:hover .overlay {
