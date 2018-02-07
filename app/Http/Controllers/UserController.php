@@ -13,6 +13,7 @@ use App\Preference;
 Use App\Song;
 use App\Playlist;
 use App\Plist;
+use App\Genre;
 use Auth;
 use Validator;
 class UserController extends Controller
@@ -62,7 +63,6 @@ class UserController extends Controller
 
         // dd($articlesfeed);
         $recommend = $this->recommend();
-        dd($recommend);
         // dd($recommend);
         // dd($friends);
         return view('home', compact('userHasBand','userBandRole','usersBand','user','articlesfeed', 'recommend','usernotifinvite'));
@@ -202,6 +202,7 @@ class UserController extends Controller
                   $scoreGenre = 2;
                 }
                 $k = Band::where('band_id', $key)->first();
+                $compute = null;
                 foreach ($scores as $score)
                 {
                   if ($key == $score['band_id'])
@@ -215,6 +216,7 @@ class UserController extends Controller
               }
               // $data = array($wholeGenre, $halfGenre);
               // array_push($display, $data);
+                    // dd($score);
 
               return $total;
             }
@@ -391,197 +393,316 @@ class UserController extends Controller
   {
     $pl = Playlist::join('users','playlists.pl_creator','=','users.user_id')->where('pl_id', $id)->first();
     $lists = Plist::where('pl_id', $id)->get();
-    $rsongs = Song::inRandomOrder()->get();
+    // $rsongs = Song::inRandomOrder()->get();
 
-    $songs = Song::all();
-    // get songs naa iya list
-    $ulists = Array();
-    $tmp = Array();
-    $recsongs = Array();
-    if (count($lists) > 0)
-    {
-      // compute para recommendation
-      foreach ($songs as $song)
-      {
-        if($lists->contains('song_id', $song->song_id))
-        {
+    // $songs = Song::all();
+    // // get songs naa iya list
+    // $ulists = Array();
+    // $tmp = Array();
+    // $recsongs = Array();
+    // if (count($lists) > 0)
+    // {
+    //   // compute para recommendation
+    //   foreach ($songs as $song)
+    //   {
+    //     if($lists->contains('song_id', $song->song_id))
+    //     {
 
-        }
-        else
-        {
-          array_push($recsongs, $song);
-        }
+    //     }
+    //     else
+    //     {
+    //       array_push($recsongs, $song);
+    //     }
 
-      }
-      // dd($recsongs);
-      // foreach ($songs as $song)
-      // {
-      //   foreach ($lists as $list)
-      //   {
-      //     if ($song == $list->songs && $song->genre == $list->songs->genre)
-      //     {
-            
-      //     }
-      //     else if ($song != $list->songs)
-      //     {
-      //       if ($song->genre == $list->songs->genre)
-      //       {
-      //         array_push($tmp, $song);
-      //       }
-      //     }
-      //   }
-      // }
+    //   }
 
-      // $ul = collect($lists);
-      // dd($ul);
-      // // $get= Array();
-      // foreach ($tmp as $t)
-      // {
-      //   if ($ul->contains('song_id', $t->song_id))
-      //   {
-
-      //   }
-      //   else
-      //   {
-      //     array_push($recsongs, $t);
-      //   }
-      // }
-
-    }
+    // }
 
     $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
 
-    return view('view-playlist', compact('pl', 'lists', 'rsongs', 'recsongs', 'usernotifinvite'));
+    $recommend = $this->recommendplaylist($id);
+    // dd($recommend);
+
+
+    return view('view-playlist', compact('pl', 'lists', 'rsongs', 'recsongs', 'usernotifinvite', 'recommend'));
   }
 
-  public function addtonlist(Request $request)
-  {
-    $id = $request->input('id');
-    $pid = $request->input('pid');
 
-    $song = Song::where('song_id', $id)->first();
-    $genre = $song->genre;
+  public function recommendplaylist($id){
+    $family = collect([
+    [['genre_id' => 1, 'name' => 'Alternative'],[ 'genre_id' => 16 ,'name' => 'Rock']],
+    [['genre_id' => 2, 'name'=> 'Blues'],['genre_id' => 9,'name' => 'Jazz']],
+    [['genre_id' => 3,'name' => 'Classical'],['genre_id' => 10, 'name' => 'Opera']],
+    [['genre_id' => 4,  'name'=> 'Country'],['genre_id' => 15, 'name'=> 'Reggae']], 
+    [['genre_id' => 5, 'name' => 'Dance'],['genre_id' => 7,  'name'=> 'Hiphop']],
+    [['genre_id' =>6, 'name'=> 'Electronic'],[ 'genre_id' =>14, 'name'=> 'Rap']],
+    [['genre_id' => 8,'name' => 'Inspirational'],[ 'genre_id' =>17, 'name'=> 'Romance']],[['genre_id' => 11, 'name'=> 'Pop' ],['genre_id' => 12, 'name'=> 'Punk']],
+    [['genre_id' =>13,'name' =>'R&B'],['genre_id' => 18, 'name'=> 'Soul']]]);
 
-    if (count($song) > 0)
-    {
-      $create = Plist::create([
-        'genre_id' => $genre->genre_id,
-        'song_id' => $song->song_id,
-        'pl_id' => $pid,
-      ]);
+    $user = User::where('user_id',session('userSocial')['id'])->first();
+    $lists = Plist::where('pl_id', $id)->get();
+    
+    if (count($lists) > 0){
+      // kwaon ang mga genre sa list nya kwaon ang mga related genres for that certain list
+      $genreOfSongsinPlaylist = Array();
+      $songsInaPlaylist = Array();
+      foreach ($lists as $list)
+      {
+        array_push($genreOfSongsinPlaylist, $list->genre_id);
+        array_push($songsInaPlaylist, $list->song_id);
+      }      
+        // $test = Song::all();
+        // return $test;
+
+      $familyGenres = Array();
+      foreach ($genreOfSongsinPlaylist as $key => $value) {
+        foreach($family as $fam){
+          if ($fam[0]['genre_id'] == $value || $fam[1]['genre_id'] == $value){
+            array_push($familyGenres, $fam);
+          }
+        }
+      }
+      // dd($familyGenres);
+
+      $songsToRecommend = Array();
+      
+
+      foreach ($familyGenres as $key => $value) {
+        foreach ($value as $key => $val) {
+          $songs = Song::where('genre_id', $val['genre_id'])->get();
+          if(count($songs) == null){
+
+          } else {
+            foreach($songs as $song){
+              if(!in_array($song->song_id, $songsInaPlaylist)){
+                 array_push($songsToRecommend, $song);
+              }
+
+            }
+          }
+        }
+      }
+        // dd($toArray);
+      // if(count($songsToRecommend) == null){
+      //   // get the top band charts nya kwaa mga genre nya songs nga ni relate sa kanta
+      //   // $songstorecommend == $newsongstorecommend;
+      // }
+
+      return array_unique($songsToRecommend);
+
+    }
+    else {
+        $preferences = Preference::where('user_id', $user->user_id)->get();
+
+        if (count($preferences) > 0) {
+          // get bands genre nya recommend songs based sa genre sa band
+          $bands = Array();
+          $storeGenres = Array();
+
+          foreach ($preferences as $preference){
+            if($preference->band_id != null) {
+              $band = Band::where('band_id', $preference->band_id)->first();
+              $genresOfBand = BandGenre::where('band_id', $band->band_id)->get(); 
+              foreach($genresOfBand as $genreOfBand){
+                array_push($storeGenres, $genreOfBand->genre->genre_id);
+              }
+            }
+          }
+
+          $genreIdCount = array_count_values($storeGenres);
+          $collection = collect($genreIdCount);
+          $chunkedCollectionofGenres = $collection->chunk(3)->first();
+          // dd($chunkedCollectionofGenres);
+          $familyGenres = Array();
+          foreach ($chunkedCollectionofGenres as $key => $value) {
+            foreach($family as $fam){
+              if ($fam[0]['genre_id'] == $key || $fam[1]['genre_id'] == $key){
+                array_push($familyGenres, $fam);
+              }
+            }
+          }
+
+          $songsToRecommend = Array();
+          foreach ($familyGenres as $key => $value) {
+            foreach ($value as $key => $val) {
+              $songs = Song::where('genre_id', $val['genre_id'])->get();
+              if(count($songs) == null){
+
+              } else {
+                foreach($songs as $song){
+                array_push($songsToRecommend, $song);
+
+                }
+              }
+            }
+          }
+
+          // if(count($songsToRecommend) == null){
+          //   // get the top band charts nya kwaa mga genre nya songs nga ni relate sa kanta
+          //   // $songstorecommend == $newsongstorecommend;
+          // }         
+          return array_unique($songsToRecommend);
+        }
+        else {
+          // sandwich
+        }
     }
 
-    return response ()->json(['create' => $create, 'song' => $song]);
+
+
+
+
+    // return $storeGenres;
   }
 
-  public function nrecommend(Request $request)
-  {
-    $id = $request->input('id');
-    $pid = $request->input('pid');
+  public function addSongToPlaylist(Request $request){
+      $id = $request->input('id');
+      $pid = $request->input('pid');
 
-    $song = Song::where('song_id', $id)->first();
-    $origs = Song::all();
-    $recs = Array();
-    $genres = Array();
-    $lists = Plist::where('pl_id', $pid)->get();
+      $song = Song::where('song_id', $id)->first();
+      $genre = $song->genre;
 
-    foreach($origs as $orig)
-    {
-      if($lists->contains('song_id', $orig->song_id))
+      if (count($song) > 0)
       {
-
+        $create = Plist::create([
+          'genre_id' => $genre->genre_id,
+          'song_id' => $song->song_id,
+          'pl_id' => $pid,
+        ]);
       }
-      else
-      {
-        $data = array($orig, $orig->genre->genre_name);
-        array_push($recs, $orig);
-        // array_push($genres, $orig->genre);
-      }
-      // if ($song->song_id == $orig->song_id && $song->genre == $orig->genre)
-      // {
 
-      // }
-      // else
-      // {
-      //   if ($song->genre == $orig->genre)
-      //   {
-      //     array_push($recs, $orig);
-      //   }
-      // }
-    }
-
-    return response ()->json($recs);
+      return response ()->json(['create' => $create, 'song' => $song]);
   }
 
-  public function addtolist(Request $request)
-  {
-    $id = $request->input('id');
-    $pid = $request->input('pid');
 
-    $song = Song::where('song_id', $id)->first();
-    $genre = $song->genre;
+  // public function addtonlist(Request $request)
+  // {
+  //   $id = $request->input('id');
+  //   $pid = $request->input('pid');
 
-    if (count($song) > 0)
-    {
-      $create = Plist::create([
-        'genre_id' => $genre->genre_id,
-        'song_id' => $song->song_id,
-        'pl_id' => $pid,
-      ]);
-    }
+  //   $song = Song::where('song_id', $id)->first();
+  //   $genre = $song->genre;
 
-    return response ()->json(['create' => $create, 'song' => $song]);
-  }  
+  //   if (count($song) > 0)
+  //   {
+  //     $create = Plist::create([
+  //       'genre_id' => $genre->genre_id,
+  //       'song_id' => $song->song_id,
+  //       'pl_id' => $pid,
+  //     ]);
+  //   }
 
-  public function listrecommend(Request $request)
-  {
-    $id = $request->input('id');
-    $pid = $request->input('pid');
+  //   return response ()->json(['create' => $create, 'song' => $song]);
+  // }
 
-    $song = Song::where('song_id', $id)->first();
-    $origs = Song::all();
-    $recs = Array();
-    $lists = Plist::where('pl_id', $pid)->get();
+  // public function nrecommend(Request $request)
+  // {
+  //   $id = $request->input('id');
+  //   $pid = $request->input('pid');
 
-    foreach($origs as $orig)
-    {
-      if($lists->contains('song_id', $orig->song_id))
-      {
+  //   $song = Song::where('song_id', $id)->first();
+  //   $origs = Song::all();
+  //   $recs = Array();
+  //   $genres = Array();
+  //   $lists = Plist::where('pl_id', $pid)->get();
 
-      }
-      else
-      {
-        array_push($recs, $orig);
-      }
-      // if ($song->song_id == $orig->song_id && $song->genre == $orig->genre)
-      // {
+  //   foreach($origs as $orig)
+  //   {
+  //     if($lists->contains('song_id', $orig->song_id))
+  //     {
 
-      // }
-      // else
-      // {
-      //   if ($song->genre == $orig->genre)
-      //   {
-      //     array_push($recs, $orig);
-      //   }
-      // }
-    }
-    // foreach($origs as $orig)
-    // {
-    //   if ($song->song_id == $orig->song_id && $song->genre == $orig->genre)
-    //   {
+  //     }
+  //     else
+  //     {
+  //       $data = array($orig, $orig->genre->genre_name);
+  //       array_push($recs, $orig);
+  //       // array_push($genres, $orig->genre);
+  //     }
+  //     // if ($song->song_id == $orig->song_id && $song->genre == $orig->genre)
+  //     // {
 
-    //   }
-    //   else
-    //   {
-    //     if ($song->genre == $orig->genre)
-    //     {
-    //       array_push($recs, $orig);
-    //     }
-    //   }
-    // }
+  //     // }
+  //     // else
+  //     // {
+  //     //   if ($song->genre == $orig->genre)
+  //     //   {
+  //     //     array_push($recs, $orig);
+  //     //   }
+  //     // }
+  //   }
 
-    return response ()->json($recs);
-  }
+  //   return response ()->json($recs);
+  // }
+
+  // public function addtolist(Request $request)
+  // {
+  //   $id = $request->input('id');
+  //   $pid = $request->input('pid');
+
+  //   $song = Song::where('song_id', $id)->first();
+  //   $genre = $song->genre;
+
+  //   if (count($song) > 0)
+  //   {
+  //     $create = Plist::create([
+  //       'genre_id' => $genre->genre_id,
+  //       'song_id' => $song->song_id,
+  //       'pl_id' => $pid,
+  //     ]);
+  //   }
+
+  //   return response ()->json(['create' => $create, 'song' => $song]);
+  // }  
+
+  // public function listrecommend(Request $request)
+  // {
+  //   $id = $request->input('id');
+  //   $pid = $request->input('pid');
+
+  //   $song = Song::where('song_id', $id)->first();
+  //   $origs = Song::all();
+  //   $recs = Array();
+  //   $lists = Plist::where('pl_id', $pid)->get();
+
+  //   foreach($origs as $orig)
+  //   {
+  //     if($lists->contains('song_id', $orig->song_id))
+  //     {
+
+  //     }
+  //     else
+  //     {
+  //       array_push($recs, $orig);
+  //     }
+  //     // if ($song->song_id == $orig->song_id && $song->genre == $orig->genre)
+  //     // {
+
+  //     // }
+  //     // else
+  //     // {
+  //     //   if ($song->genre == $orig->genre)
+  //     //   {
+  //     //     array_push($recs, $orig);
+  //     //   }
+  //     // }
+  //   }
+  //   // foreach($origs as $orig)
+  //   // {
+  //   //   if ($song->song_id == $orig->song_id && $song->genre == $orig->genre)
+  //   //   {
+
+  //   //   }
+  //   //   else
+  //   //   {
+  //   //     if ($song->genre == $orig->genre)
+  //   //     {
+  //   //       array_push($recs, $orig);
+  //   //     }
+  //   //   }
+  //   // }
+
+  //   return response ()->json($recs);
+  // }
 
   public function delplsong($sid, $pid)
   {
