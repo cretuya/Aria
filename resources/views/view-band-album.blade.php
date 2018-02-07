@@ -105,6 +105,15 @@
   #playBtn{
     width: 50px; position: absolute; top: 32px; left: 47px;
   }
+
+  .likealbumbtn{
+    background: transparent;
+    border: 0;
+    font-size: 16px;
+  }
+  .likealbumbtn:hover{
+    color: #E57C1F;
+  }
   
 </style>
 
@@ -127,9 +136,14 @@
             </div>
             <div class="media-body" style="background: transparent; padding-left: 30px; padding-top: 15px;">
               <p style="color: #E57C1F; font-size: 12px;">ALBUM</p>
-              <h2 style="letter-spacing: 1px;">{{$albums->album_name}}</h2>  
-              <h4>{{$band->band_name}}</h4>
-              <h6 style="margin-top: 20px;">Released on 10 Mar 2018</h6>
+              <h2 style="letter-spacing: 1px; margin: 0px;">{{$albums->album_name}}</h2>
+              <h4 style="font-size: 18px;">{{$band->band_name}}</h4>
+              @if($albums->num_likes == null)
+              <button class="fa fa-thumbs-up likealbumbtn" title="Like Album"></button> 0
+              @else
+              <button class="fa fa-thumbs-up likealbumbtn" title="Like Album"></button> {{$albums->num_likes}}
+              @endif
+              <h6 style="margin-top: 10px;">Released on 10 Mar 2018</h6>
               <p style="margin-top: 20px; font-size: 12px; text-align: justify; word-wrap: break-word; width: 75%">{{$albums->album_desc}}</p>
             </div>
           </div>
