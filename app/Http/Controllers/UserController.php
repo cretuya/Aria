@@ -14,6 +14,7 @@ Use App\Song;
 use App\Playlist;
 use App\Plist;
 use App\Genre;
+use App\BandEvent;
 use Auth;
 use Validator;
 class UserController extends Controller
@@ -79,15 +80,31 @@ class UserController extends Controller
         $userHasBand = Bandmember::where('user_id',session('userSocial')['id'])->get();
         $userBandRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->get();
 
-        $articlesfeed = BandArticle::join('preferences','bandarticles.band_id','=','preferences.band_id')->join('bands','preferences.band_id','=','bands.band_id')->join('articles','bandarticles.art_id','=','articles.art_id')->where('user_id',session('userSocial')['id'])->orderBy('created_at','desc')->distinct()->get(['preferences.band_id','art_title','content','band_name','band_pic','articles.created_at']);
+        // $articlesfeed = BandArticle::join('preferences','bandarticles.band_id','=','preferences.band_id')->join('bands','preferences.band_id','=','bands.band_id')->join('articles','bandarticles.art_id','=','articles.art_id')->where('user_id',session('userSocial')['id'])->orderBy('created_at','desc')->distinct()->get(['preferences.band_id','art_title','content','band_name','band_pic','articles.created_at']);
 
+        $preferences = Preference::where('user_id', $user->user_id)->get();
+        $storeBands = Array();
+        foreach($preferences as $preference){
+          $getBand = Band::where('band_id', $preference->band_id)->first();
+          // $event = $getBand->events->toArray();
+          array_push($storeBands, $getBand);
+        }
+        $storeEvents = Array();
+        foreach ($storeBands as $band) {
+          $getEvents = BandEvent::where('band_id', $band->band_id)->get();
+          foreach ($getEvents as $event) {
+            array_push($storeEvents, $event);
+          }
+        }
+
+        $collection = collect($storeEvents);
+        $events = $collection->sortBy('event_date');
         $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
 
-        // dd($articlesfeed);
-        $recommend = $this->recommend();
-        // dd($recommend);
-        // dd($friends);
-        return view('feed', compact('userHasBand','userBandRole','usersBand','user','articlesfeed', 'recommend','usernotifinvite'));
+        $recommendBands = $this->recommendBands();
+        $recommendGigs = $this->recommendGigs();
+
+        return view('feed', compact('userHasBand','userBandRole','usersBand','user','events', 'recommendBands','usernotifinvite', 'recommendGigs'));
     }
 
     public function friends(){
@@ -109,7 +126,7 @@ class UserController extends Controller
         return view('friends', compact('friends','usernotifinvite'));
     }
 
-  public function recommend()
+  public function recommendBands()
   {
         $user = User::where('user_id',session('userSocial')['id'])->first();
         $preferences = Preference::where('user_id', $user->user_id)->get();
@@ -712,5 +729,58 @@ class UserController extends Controller
     ])->delete();
     return redirect('playlist/'.$pid);
   }  
+
+
+  public function recommendGigs(){
+    $user = User::where('user_id',session('userSocial')['id'])->first();
+
+    // get friends
+      $socialfriends = session('userSocial')['friends']['data'];
+      $friends = Array();
+      foreach ($socialfriends as $socialfriend) {
+          $friend = $socialfriend['id'];
+          $thisuser = User::where('user_id', $friend)->first();
+
+          if(count($thisuser) > 0)
+          {
+              array_push($friends, $thisuser);
+          }
+      }
+
+      //get friends' preferred bands
+
+    if(count($friends) > 0){
+        $storeBands = Array();
+        foreach ($friends as $friend) {
+        $preferences = Preference::where('user_id', $friend->user_id)->get();
+
+          foreach($preferences as $preference){
+            if ($preference->band_id != null){
+                array_push($storeBands, $preference->band);
+              }
+            }
+          }
+
+        // storebands & get duplicate bands
+        $newBands = array_unique($storeBands);
+        $recommendGigs = Array();
+        foreach ($newBands as $newBand) {
+          $events = BandEvent::where('band_id', $newBand->band_id)->get();
+
+          foreach ($events as $event) {
+            array_push($recommendGigs, $event);
+          }
+        }
+
+      return $recommendGigs;        
+    }
+    else {
+      // popular bands kwaon ila mga gigs
+    }
+
+
+    // show bands event based on closest time
+
+  }
 
 }

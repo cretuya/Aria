@@ -57,4 +57,8 @@ class Band extends Model
 	{
 		return $this->hasMany('App\Preference', 'band_id', 'band_id');
 	}
+	public function events()
+	{
+		return $this->hasMany('App\BandEvent', 'band_id', 'band_id');
+	}
 }
