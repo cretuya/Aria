@@ -307,6 +307,7 @@ class BandController extends Controller
         $articles = $band->bandarticles;
         $videos = BandVideo::where('band_id', $band->band_id)->get();
         $albums = Album::where('band_id', $band->band_id)->get();
+        $events = BandEvent::where('band_id', $band->band_id)->get();
 
         $follower = Preference::where([
             ['user_id' , Auth::user()->user_id],
@@ -333,7 +334,7 @@ class BandController extends Controller
         $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
         // dd($usernotifinvite);
         // dd($band->members);
-            return view('band-profile', compact('band', 'genres', 'articles', 'videos', 'albums' , 'follower', 'followers','usernotifinvite'));
+            return view('band-profile', compact('band', 'genres', 'articles', 'videos', 'albums' , 'events', 'follower', 'followers','usernotifinvite'));
         // }
 
     }

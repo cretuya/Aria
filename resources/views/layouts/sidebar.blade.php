@@ -157,6 +157,9 @@
             <a href="{{url('feed')}}">
               <li style="padding: 3px 20px">Feed</li>
             </a>
+            <a href="{{url('charts')}}">
+              <li style="padding: 3px 20px">Top Bands</li>
+            </a>
 
             <hr style="width: 80%; margin-top: 12px;">
 

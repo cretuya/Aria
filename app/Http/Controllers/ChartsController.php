@@ -12,8 +12,9 @@ class ChartsController extends Controller
 {
     public function show(){
 
-    	$allbands = Band::join('bandgenres','bands.band_id','=','bandgenres.band_id')->join('genres','bandgenres.genre_id','=','genres.genre_id')->get();
+    	// $allbands = Band::join('bandgenres','bands.band_id','=','bandgenres.band_id')->join('genres','bandgenres.genre_id','=','genres.genre_id')->get();
+    	$bands = Band::orderBy('band_score', 'DESC')->take(50)->get();
     	$usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
-    	return view('top-charts', compact('allbands','bandgenre','usernotifinvite'));
+    	return view('top-charts', compact('bands','usernotifinvite'));
     }
 }

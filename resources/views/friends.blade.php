@@ -98,7 +98,7 @@ body.modal-open #main{
     <div class="col-md-12">
 
     <br><br>
-    <h4 style="font-size: 18px;">Friends who joined Aria</h4>
+    <h4 style="font-size: 18px;">Facebook friends who joined Aria</h4>
     <br>
     <div class="row">
       @if($friends == null)

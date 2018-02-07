@@ -1,225 +1,142 @@
 @extends('layouts.master')
 
-<style>
-.charts-nav{
-  width: 85px;
-}
-
-.charts-nav li a{
-  border-radius: 0px !important;
-  padding-top: 18px !important;
-}
-
-.charts-nav li a:hover{
-  color: #212121 !important;
-}
-
-.charts-nav li.active>a:hover>h5{
-  color: #fafafa !important;
-}
-
-.charts-nav span{
-  font-size: 28px;
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
-.charts-nav>li.active>a{
-  background: #424242 !important;
-}
-
-.charts-nav>li.active>a span{
-  background: none !important;
-  color: #F9A825 !important;
-}
-
-.breadcrumb{
-  background: none !important;
-}
-
-.breadcrumb li{
-  color: #212121;
-}
-
-.breadcrumb li>a:hover{
-  color: #F9A825;
-
-  -webkit-transition-property:color, text;
-  -webkit-transition-duration: 0.15s, 0.15s;
-  -webkit-transition-timing-function: linear, ease-in;
-
-  -moz-transition-property:color, text;
-  -moz-transition-duration:0.15s;
-  -moz-transition-timing-function: linear, ease-in;
-
-  -o-transition-property:color, text;
-  -o-transition-duration:0.15s;
-  -o-transition-timing-function: linear, ease-in;
-}
-
-.charts-media-left-rank{
-  padding-top: 28px;
-  padding-bottom: 0px;
-  padding-left: 32px !important;
-  padding-right: 32px !important;
-  background: #F9A825;
-  color: #fafafa;
-}
-
-.charts-media-left-rank-2{
-  padding-top: 23px;
-  padding-bottom: 0px;
-  padding-left: 32px !important;
-  padding-right: 32px !important;
-  background: #F9A825;
-  color: #fafafa;
-}
-
-.charts-media-left-rank-3{
-  padding-top: 50px;
-  padding-bottom: 0px;
-  padding-left: 32px !important;
-  padding-right: 32px !important;
-  background: #F9A825;
-  color: #fafafa;
-}
-
-</style>
-
 @section('content')
 
-@include('layouts.navbar')
+<style type="text/css">
 
-<br><br><br><br>
+@media (min-width: 1920px) {
+  .portraits{
+    width: 16.66666667%;
+  }
+}
+  .hovereffect {
+    width: 100%;
+    height: 100%;
+    float: left;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    cursor: default;
+    background: #000;
+  }
 
-  <div class="container">
+  .hovereffect .overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    padding: 50px 20px;
+  }
 
-    <h1>Top Charts</h1>
+  .hovereffect img {
+    display: block;
+    position: relative;
+    max-width: none;
+    width: calc(100% + 20px);
+    height: 100%;
+    -webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
+    transition: opacity 0.35s, transform 0.35s;
+    -webkit-transform: translate3d(-10px,0,0);
+    transform: translate3d(-10px,0,0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    opacity: 0.8;
+  }
 
-    <br><br>
+  .hovereffect:hover img {
+    opacity: 0.4;
+    filter: alpha(opacity=40);
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+  }
+
+  .hovereffect h6 {
+    color: #fff;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 10px;
+    background-color: transparent;
+  }
+
+  .hovereffect h6:after {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #fff;
+    content: '';
+    -webkit-transition: -webkit-transform 0.35s;
+    transition: transform 0.35s;
+    -webkit-transform: translate3d(-100%,0,0);
+    transform: translate3d(-100%,0,0);
+  }
+
+  .hovereffect:hover h6:after {
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+  }
+
+  .hovereffect a, .hovereffect p {
+    color: #fafafa;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    -webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
+    transition: opacity 0.35s, transform 0.35s;
+    -webkit-transform: translate3d(100%,0,0);
+    transform: translate3d(100%,0,0);
+  }
+
+  .hovereffect a:hover, .hovereffect p:hover {
+    color: #E57C1F;
+  }
+
+  .hovereffect:hover a, .hovereffect:hover p {
+    opacity: 1;
+    filter: alpha(opacity=100);
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+  }
+</style>
+
+@include('layouts.sidebar')
+
+<br><br>
+
+<div class="container" id="main" style="background: #161616; padding-left: 30px; padding-right: 30px;">
+  <div class="row">
+    <div class="col-md-12">
     
-    <div class="col-md-2">
+    <h3 style="text-align: center; text-transform: uppercase; letter-spacing: 3px;">Top 50 Bands</h3>
+    <hr style="width: 10%">
 
-      <ul class="nav nav-pills nav-stacked charts-nav" style="box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);">
-        <li class="active"><a data-toggle="tab" href="#bands-tab" class="text-center" title="Top Ranking Bands"><span  class="fa fa-star"></span><h5>Bands</h5></a></li>
-        <li><a data-toggle="tab" href="#tracks-tab" class="text-center" title="Most Played Songs"><span class="fa fa-headphones"></span><h5>Tracks</h5></a></li>
-        <li><a data-toggle="tab" href="#videos-tab" class="text-center" title="Most Viewed Videos"><span class="fa fa-play-circle-o"></span><h5>Videos</h5></a></li>
-      </ul>
+    <?php 
+      $counter = 1;
+    ?>
 
-    </div>
-
-    <div class="col-md-10">
-
-      <div class="tab-content">
-
-        <div id="bands-tab" class="tab-pane fade in active">
-          <ol class="breadcrumb">
-            <li class="active">All Time</li>
-            <li><a href="#">By Week</a></li>
-            <li><a href="#">By Month</a></li>
-          </ol>
-            <div class="media" style="border-bottom: 1px solid #e4e4e4; box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);">
-              <div class="media-left charts-media-left-rank">
-                <h4>1</h4>
-              </div>
-              <div class="media-left">
-                <a href="#"><img src="" class="media-object" style="width:92px"></a>
-              </div>
-              <div class="media-body" style="padding-top: 8px; padding-left: 5px;">
-                <a href="#"><h4 class="media-heading">Paramore</h4></a>
-                <p>Pop | Punk</p>
-                <p>5 Followers</p>
-                
-              </div>
-            </div>
-
-    
-        </div>
-
-        <div id="tracks-tab" class="tab-pane fade">
-          <ol class="breadcrumb">
-            <li class="active">All Time</li>
-            <li><a href="#">By Week</a></li>
-            <li><a href="#">By Month</a></li>
-          </ol>
-
-          <div class="media" style="border-bottom: 1px solid #e4e4e4; box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);">
-            <div class="media-left charts-media-left-rank-2">
-              <h4>1</h4>
-            </div>
-            <div class="media-body" style="padding-top: 12px; padding-bottom: 10px; padding-left: 5px;">
-              <p>Adele - Make You Feel My Love (Karaoke Version)</p>
-              <audio controls>
-                <source src="{{url('assets/music/Adele - Make You Feel My Love (Karaoke Version).mp3')}}" type="audio/mpeg">
-              </audio>
-            </div>
+    @foreach($bands as $band)
+      <div class="col-md-2" style="height: 210px; margin-top: 20px;">
+          <div class="panel-thumbnail hovereffect">
+              <img class="img-responsive" src="{{$band->band_pic}}" alt="">
+                  <div class="overlay">
+                    <h2 style="font-size: 17px; text-transform: uppercase; margin-top: 10px;">{{$band->band_name}}</h2>
+                    <h6>{{$band->num_followers}} Followers</h6>
+                    <p>
+                      <a href="{{url('/'.$band->band_name)}}">Visit Page</a>
+                    </p>
+                  </div>
+              <div style="position: absolute; bottom: 0px; right: 0px; background: #E57C1F; padding: 8px; opacity: 0.9;">#{{$counter}}</div>
           </div>
-
-          <div class="media" style="border-bottom: 1px solid #e4e4e4; box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);">
-            <div class="media-left charts-media-left-rank-2">
-              <h4>2</h4>
-            </div>
-            <div class="media-body" style="padding-top: 12px; padding-bottom: 10px; padding-left: 5px;">
-              <p>Adele - Make You Feel My Love (Clean Version)</p>
-              <audio controls>
-                <source src="{{url('assets/music/Adele - Make You Feel My Love (Karaoke Version).mp3')}}" type="audio/mpeg">
-              </audio>
-            </div>
-          </div>
-
-          
-
-        </div>
-
-        <div id="videos-tab" class="tab-pane fade">
-
-          <ol class="breadcrumb">
-            <li class="active">All Time</li>
-            <li><a href="#">By Week</a></li>
-            <li><a href="#">By Month</a></li>
-          </ol>
-
-            <div class="media" style="border-bottom: 1px solid #e4e4e4; box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);">
-              <div class="media-left charts-media-left-rank-3">
-                <h4>1</h4>
-              </div>
-              <div class="media-left">
-                <video style="width: 250px" class="embed-responsive-item" controls>
-                  <source src="{{url('assets/video/12023583_1219430358083506_65886198_n.mp4')}}">
-                </video>
-              </div>
-              <div class="media-body" style="padding-top: 12px; padding-left: 5px;">
-                <h4 class="media-heading">Especially For You</h4>
-                <a href="#"><p>Our Last Night</p></a>
-                <p>3,638 Views</p>
-              </div>
-            </div>
-
-            <div class="media" style="border-bottom: 1px solid #e4e4e4; box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);">
-              <div class="media-left charts-media-left-rank-3">
-                <h4>2</h4>
-              </div>
-              <div class="media-left">
-                <video style="width: 250px" class="embed-responsive-item" controls>
-                  <source src="{{url('assets/video/12023583_1219430358083506_65886198_n.mp4')}}">
-                </video>
-              </div>
-              <div class="media-body" style="padding-top: 12px; padding-left: 5px;">
-                <h4 class="media-heading">Especially For You Version 2</h4>
-                <a href="#"><p>Our Last Night</p></a>
-                <p>2,426 Views</p>
-              </div>
-            </div>
-
-        </div>
-
       </div>
+    <?php $counter++; ?>
+    @endforeach
 
     </div>
-    
-
   </div>
-
+</div>
 @stop
 
 

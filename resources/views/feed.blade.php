@@ -22,8 +22,8 @@
                 
           @if(count($articlesfeed)==0)
           <br><br><br>
-            <p style="text-align:center; color: #a4a4a4; font-size: 16px;">Where did the articles go? </p>
-            <p style="text-align:center; color: #a4a4a4; font-size: 16px;">You might want to follow some bands. Head over to Explore!</p>
+            <p style="text-align:center; color: #a4a4a4; font-size: 16px;">Not seeing updates from bands? </p>
+            <p style="text-align:center; color: #a4a4a4; font-size: 16px;">Head over to Home and check them out!</p>
           @else
             @foreach($articlesfeed as $articles)
               <div class="panel" style="background: #232323;">

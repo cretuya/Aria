@@ -51,18 +51,16 @@
 	  transform: translate3d(0,0,0);
 	}
 
-	.hovereffect h2 {
-	  text-transform: uppercase;
+	.hovereffect h6 {
 	  color: #fff;
 	  text-align: center;
 	  position: relative;
-	  font-size: 17px;
 	  overflow: hidden;
-	  padding: 0.5em 0;
+	  padding-bottom: 10px;
 	  background-color: transparent;
 	}
 
-	.hovereffect h2:after {
+	.hovereffect h6:after {
 	  position: absolute;
 	  bottom: 0;
 	  left: 0;
@@ -76,7 +74,7 @@
 	  transform: translate3d(-100%,0,0);
 	}
 
-	.hovereffect:hover h2:after {
+	.hovereffect:hover h6:after {
 	  -webkit-transform: translate3d(0,0,0);
 	  transform: translate3d(0,0,0);
 	}
@@ -118,7 +116,8 @@
   	    <div class="panel-thumbnail hovereffect">
   	        <img class="img-responsive" src="{{$band->band->band_pic}}" alt="">
   	            <div class="overlay">
-  	                <h2>{{$band->band->band_name}}</h2>
+  	                <h2 style="font-size: 17px; text-transform: uppercase;">{{$band->band->band_name}}</h2>
+  	                <h6>{{$band->band->num_followers}} Followers</h6>
   					<p>
   						<a href="{{url('/'.$band->band->band_name)}}">Visit Page</a>
   					</p>

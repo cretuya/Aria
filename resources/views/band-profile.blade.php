@@ -93,37 +93,29 @@
 			  	<center><h6 style="color: #212121; text-transform: uppercase; letter-spacing: 1px;">Upcoming Events</h6></center>
 			  </div>
 				<div class="panel-body" style=" background: transparent;">
-					<table class="table">
+					<table class="table">					  
+					  @if( count($events) == 0)
 					  <tr>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Mar 08</td>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Slim's</td>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">4:00 PM</td>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">San Francisco, CA</td>
+					  	<td colspan="4" style="padding-top: 20px; padding-bottom: 20px; color: #7c7c7c; font-size: 13px; text-align: center;">No events yet</td>
 					  </tr>
+					  @else
+					  @foreach($events as $event)
+
+					  <?php
+						  $date = DateTime::createFromFormat("Y-m-d", $event->event_date);
+						  $event->event_date = $date->format("M d");
+						  $time = $event->event_time; 
+						  $event->event_time = date('h:i A', strtotime($time));
+					  ?>
 					  <tr>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Mar 10</td>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Hawthrone Theatre</td>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">5:00 PM</td>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Portland, OR</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">{{$event->event_date}}</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">{{$event->event_name}}</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">{{$event->event_venue}}</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">{{$event->event_time}}</td>
+					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">{{$event->event_location}}</td>
 					  </tr>
-					  <tr>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Mar 08</td>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Slim's</td>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">4:00 PM</td>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">San Francisco, CA</td>
-					  </tr>
-					  <tr>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Mar 10</td>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Hawthrone Theatre</td>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">5:00 PM</td>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Portland, OR</td>
-					  </tr>
-					  <tr>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Mar 10</td>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Hawthrone Theatre</td>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">5:00 PM</td>
-					    <td style="padding-top: 20px; padding-bottom: 20px; color: #212121;">Portland, OR</td>
-					  </tr>
+					  @endforeach
+					  @endif
 					</table>
 				</div>
 			</div>
