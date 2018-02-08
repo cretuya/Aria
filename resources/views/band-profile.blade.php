@@ -184,7 +184,7 @@
 						@if($album->num_likes == 0)
 						<center><p class="followers" style="margin-top: -10px; font-size: 11px; color: #9e9e9e">0 likes</p></center>
 						@else
-						<center><p class="followers" style="margin-top: -10px; font-size: 11px; color: #9e9e9e">{{$ablum->num_likes}} likes</p></center>
+						<center><p class="followers" style="margin-top: -10px; font-size: 11px; color: #9e9e9e">{{$album->num_likes}} likes</p></center>
 						@endif
 					</div>
 				@empty

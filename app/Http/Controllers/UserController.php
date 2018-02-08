@@ -86,8 +86,10 @@ class UserController extends Controller
         $storeBands = Array();
         foreach($preferences as $preference){
           $getBand = Band::where('band_id', $preference->band_id)->first();
-          // $event = $getBand->events->toArray();
+          if($getBand != null){
           array_push($storeBands, $getBand);
+          }
+          // $event = $getBand->events->toArray();
         }
         $storeEvents = Array();
         foreach ($storeBands as $band) {
@@ -96,6 +98,7 @@ class UserController extends Controller
             array_push($storeEvents, $event);
           }
         }
+        // dd($storeBands);
 
         $collection = collect($storeEvents);
         $events = $collection->sortBy('event_date');
@@ -129,7 +132,7 @@ class UserController extends Controller
   public function recommendBands()
   {
         $user = User::where('user_id',session('userSocial')['id'])->first();
-        $preferences = Preference::where('user_id', $user->user_id)->get();
+        $preferences = Preference::where('user_id', $user->user_id)->whereNotNull('band_id')->get();
         $temp = Array();
         $get = Array();
         $bands = Band::all();
@@ -137,13 +140,13 @@ class UserController extends Controller
         $data = Array();
         $scores = Array();
 
-
         if (count($preferences) > 0)
         {
             // get all preferences
+
             foreach ($preferences as $preference)
             {
-              array_push($temp, $preference->band->band_id);
+                  array_push($temp, $preference->band->band_id);
             }
             // add in array those bands not in his preference
             foreach ($bands as $band)

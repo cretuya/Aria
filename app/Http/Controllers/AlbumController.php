@@ -81,11 +81,16 @@ class AlbumController extends Controller
     {
         $albums = Album::where('album_id', $aid)->first();
         $band = Band::where('band_name', $bname)->first();
+        $liked = Preference::where([
+            ['user_id' , Auth::user()->user_id],
+            ['album_id', $albums->album_id],
+            ])->first();     
         $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
 
         // dd($albums->songs);
+        // dd($liked);
 
-        return view('view-band-album', compact('albums', 'band', 'usernotifinvite'));
+        return view('view-band-album', compact('albums', 'band', 'usernotifinvite', 'liked'));
 
     }
 
@@ -160,7 +165,7 @@ class AlbumController extends Controller
 
         }
         
-        scoringfunc($band->band_id);
+        // scoringfunc($band->band_id);
 
         return response ()->json(['album' => $newalbum, 'liker' => $create]);
 
@@ -195,23 +200,23 @@ class AlbumController extends Controller
 
 
 
-        if (count($follower) > 0)
-        {   
-            $band = Band::where('band_id' , $request->input('bid'))->first();            
-            $numfollow = $band->num_followers;
-            $newfollowers = $numfollow - 1;
-            $update =  Band::where('band_id', $request->input('bid'))->update([
-            'num_followers' => $newfollowers
-            ]);
+        // if (count($follower) > 0)
+        // {   
+        //     $band = Band::where('band_id' , $request->input('bid'))->first();            
+        //     $numfollow = $band->num_followers;
+        //     $newfollowers = $numfollow - 1;
+        //     $update =  Band::where('band_id', $request->input('bid'))->update([
+        //     'num_followers' => $newfollowers
+        //     ]);
 
-            $delete = Preference::where([
-            ['user_id' , $request->input('uid')],
-            ['band_id', $request->input('bid')],
-            ])->delete();
-            $newband = $follower->band;
-        }
+        //     $delete = Preference::where([
+        //     ['user_id' , $request->input('uid')],
+        //     ['band_id', $request->input('bid')],
+        //     ])->delete();
+        //     $newband = $follower->band;
+        // }
 
-        return response ()->json(['band' => $newband, 'preference' => $follower]);            
+        // return response ()->json(['band' => $newband, 'preference' => $follower]);            
     }    
 
 }

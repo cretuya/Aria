@@ -111,7 +111,7 @@
     border: 0;
     font-size: 16px;
   }
-  .likealbumbtn:hover{
+  .unlikealbumbtn{
     color: #E57C1F;
   }
   
@@ -120,8 +120,9 @@
 @include('layouts.sidebar')
 
 <br><br>
+<meta name ="csrf-token" content = "{{csrf_token() }}"/>
 <div class="container" id="main" style="background: #161616;">
-
+<input type="text" value="{{$albums->album_id}}" id="albumId" hidden>
   <div class="row">
       <div id="albumBanner" class="panel-thumbnail" style="background: url({{$albums->album_pic}}) no-repeat center center;">
         &nbsp;
@@ -134,14 +135,14 @@
             <div class="media-left">
               <img src="{{$albums->album_pic}}" class="media-object">
             </div>
-            <div class="media-body" style="background: transparent; padding-left: 30px; padding-top: 15px;">
+            <div class="media-body showLikeButton" style="background: transparent; padding-left: 30px; padding-top: 15px;">
               <p style="color: #E57C1F; font-size: 12px;">ALBUM</p>
               <h2 style="letter-spacing: 1px; margin: 0px;">{{$albums->album_name}}</h2>
               <h4 style="font-size: 18px;">{{$band->band_name}}</h4>
-              @if($albums->num_likes == null)
-              <button class="fa fa-thumbs-up likealbumbtn" title="Like Album"></button> 0
+              @if($liked == null)
+              <button class="fa fa-thumbs-up likealbumbtn" title="Like Album"></button><span class="likeText"> Like</span>
               @else
-              <button class="fa fa-thumbs-up likealbumbtn" title="Like Album"></button> {{$albums->num_likes}}
+              <button class="fa fa-thumbs-up unlikealbumbtn" title="Like Album"></button><span class="likeText"> Unlike</span>
               @endif
               <h6 style="margin-top: 10px;">Released on 10 Mar 2018</h6>
               <p style="margin-top: 20px; font-size: 12px; text-align: justify; word-wrap: break-word; width: 75%">{{$albums->album_desc}}</p>
@@ -247,70 +248,120 @@ $(document).ready(function(){
         });			
 	}
 
-  $('button.likeButton').on('click', function(e)
-  {
-      e.preventDefault();
-      $button = $(this);
-      if($button.hasClass('liked')){
-          
-          // $.ajax(); Do Unlike
-          var id = $(this).data('id');
-          alert('unlike');
-          unlikeAlbum(id); 
-          
-      } else {
-          
-          // $.ajax(); Do Like
-          var id = $(this).data('id');
-          alert('like');
-          likeAlbum(id);   
-      }
+  $('.showLikeButton').on('click', '.likealbumbtn', function(){
+        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+        var id = $('#albumId').val();
+        // alert(id);
+        $.ajax({
+          method : "post",
+          url : '../../likeAlbum',
+          data : { '_token' : CSRF_TOKEN,
+            'id' : id
+          },
+          success: function(json){
+            console.log(json);
+            $('button').removeClass('likealbumbtn');
+            $('button').addClass('unlikealbumbtn');
+            $('.likeText').html('Unlike');
+            // change ang name to unlike ug ang likebutton nga classname mahimo ug unlike
+
+          },
+          error: function(a,b,c)
+          {
+            console.log(b);
+
+          }
+        });  
+  });
+    $('.showLikeButton').on('click', '.unlikealbumbtn', function(){
+        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+        var id = $('#albumId').val();
+        // alert(id);
+        $.ajax({
+          method : "post",
+          url : '../../unlikeAlbum',
+          data : { '_token' : CSRF_TOKEN,
+            'id' : id
+          },
+          success: function(json){
+            console.log(json);
+            $('button').removeClass('unlikealbumbtn');
+            $('button').addClass('likealbumbtn');
+            $('.likeText').html('Like');
+            // change ang name to like nya ang classname mahimo ug like
+          },
+          error: function(a,b,c)
+          {
+            console.log(b);
+
+          }
+        });  
   });
 
-  function likeAlbum(id)
-  {
-        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-        // var bname = $('#bandName').val();
-        $.ajax({
-          method : "post",
-          url : "../likeAlbum",
-          data : { '_token' : CSRF_TOKEN,
-            'id' : id
-          },
-          success: function(json){
-            console.log(json);
-            $button.addClass('liked');
-            $button.text('Unlike');
-          },
-          error: function(a,b,c)
-          {
-            console.log(b);
+  // $('button.likeButton').on('click', function(e)
+  // {
+  //     e.preventDefault();
+  //     $button = $(this);
+  //     if($button.hasClass('liked')){
+          
+  //         // $.ajax(); Do Unlike
+  //         var id = $(this).data('id');
+  //         alert('unlike');
+  //         unlikeAlbum(id); 
+          
+  //     } else {
+          
+  //         // $.ajax(); Do Like
+  //         var id = $(this).data('id');
+  //         alert('like');
+  //         likeAlbum(id);   
+  //     }
+  // });
 
-          }
-        });         
-  }
-  function unlikeAlbum(id)
-  {
-        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-        // var bname = $('#bandName').val();
-        $.ajax({
-          method : "post",
-          url : "../unlikeAlbum",
-          data : { '_token' : CSRF_TOKEN,
-            'id' : id
-          },
-          success: function(json){
-            console.log(json);
-            $button.removeClass('liked');
-            $button.text('Like');
-          },
-          error: function(a,b,c)
-          {
-            console.log(b);
+  // function likeAlbum(id)
+  // {
+  //       var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+  //       // var bname = $('#bandName').val();
+  //       $.ajax({
+  //         method : "post",
+  //         url : "../likeAlbum",
+  //         data : { '_token' : CSRF_TOKEN,
+  //           'id' : id
+  //         },
+  //         success: function(json){
+  //           console.log(json);
+  //           $button.addClass('liked');
+  //           $button.text('Unlike');
+  //         },
+  //         error: function(a,b,c)
+  //         {
+  //           console.log(b);
 
-          }
-        });         
-  }
+  //         }
+  //       });         
+  // }
+  // function unlikeAlbum(id)
+  // {
+  //       var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+  //       // var bname = $('#bandName').val();
+  //       $.ajax({
+  //         method : "post",
+  //         url : "../unlikeAlbum",
+  //         data : { '_token' : CSRF_TOKEN,
+  //           'id' : id
+  //         },
+  //         success: function(json){
+  //           console.log(json);
+  //           $button.removeClass('liked');
+  //           $button.text('Like');
+  //         },
+  //         error: function(a,b,c)
+  //         {
+  //           console.log(b);
+
+  //         }
+  //       });         
+  // }
 });
 
   function audioPlayer(){
