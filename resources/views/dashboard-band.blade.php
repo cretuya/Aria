@@ -424,7 +424,7 @@ input[type='range']::-webkit-slider-thumb{
                                     <button class="dropdown-toggle" type="button" data-toggle="dropdown" style="background: transparent; border: none;"><span class="fa fa-ellipsis-h ellipsisAlbum pull-right" style="font-size: 16px;"></span></button>
                                     <ul class="dropdown-menu dropdown-menu-right">
                                       <li class="editprofActions2"><span class="btn addSong" data-toggle="modal" data-id="{{$albums[$i]->album_id}}">Add song to album</span></li>
-                                      <li class="editprofActions2"><span class="btn editAlbum" data-name="{{$albums[$i]->album_name}}" data-id="{{$albums[$i]->album_id}}" data-desc="{{$albums[$i]->album_desc}}" data-toggle="modal" data-target="#edit-album-modal">Edit album details</span></li>
+                                      <li class="editprofActions2"><span class="btn editAlbum" data-name="{{$albums[$i]->album_name}}" data-id="{{$albums[$i]->album_id}}" data-desc="{{$albums[$i]->album_desc}}" data-reldate="{{$albums[$i]->released_date}}" data-toggle="modal" data-target="#edit-album-modal">Edit album details</span></li>
                                       <li class="editprofActions2"><span class="btn editAlbum"><a href="{{url($band->band_name.'/editAlbum/'.$albums[$i]->album_id)}}" style="color:#fafafa">Manage album</a></span></li>
                                       <li class="editprofActions2"><span class="btn deleteAlbum" data-id="{{$albums[$i]->album_id}}">Delete album</span></li>
                                     </ul>
@@ -578,7 +578,9 @@ input[type='range']::-webkit-slider-thumb{
             Description:<br>
             <input type='text' name='album_desc' class='form-control' required><br>
             Add Album Picture:<br>
-            <input type='file' name='album_pic'  class='form-control' accept="image/*" required><br><br>            
+            <input type='file' name='album_pic'  class='form-control' accept="image/*" required><br>
+            Release Date:<br>
+            <input type='date' name='released_date' class='form-control' required><br><br>            
             <br>
 
 
@@ -612,9 +614,12 @@ input[type='range']::-webkit-slider-thumb{
             <input type='text' name='album_name' id="album_name" class='form-control'><br>
             Description:<br>
             <input type='text' name='album_desc' id="album_desc" class='form-control'><br>
+            Released Date:<br>
+            <input type='date' name='released_date' id="released_date" class='form-control'><br>
             <br>
             <input type="text" id="album_id" name="album_id" hidden><br>
             <br>
+
 
       
       </div>
@@ -1137,10 +1142,14 @@ $(document).ready(function()
           var desc = $(this).data('desc');
           var id = $(this).data('id');
           var name = $(this).data('name');
+          var reldate = $(this).data('reldate');
+          // alert(reldate);
 
           $('.modal-body #album_desc').val(desc);
           $('.modal-body #album_id').val(id);
           $('.modal-body #album_name').val(name);
+          $('.modal-body #released_date').val(reldate);
+
      });
 
      $('.addSong').on('click', function(){

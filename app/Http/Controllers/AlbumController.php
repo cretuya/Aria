@@ -53,6 +53,7 @@ class AlbumController extends Controller
         $name = $request->input('album_name');
         $desc = $request->input('album_desc');
         $albumpic = $request->file('album_pic');
+        $released_date = $request->input('released_date');
 
         // $band = Band::where('band_id', $request->input('band_id'))->first();
 
@@ -65,6 +66,7 @@ class AlbumController extends Controller
                 'album_desc' => $desc,
                 'band_id' =>$band->band_id,
                 'album_pic' => $cloudder['url'],
+                'released_date' => $released_date,
             ]);
             // dd($create);
         return redirect($band->band_name.'/manage');
@@ -109,6 +111,7 @@ class AlbumController extends Controller
         $name = $request->input('album_name');
         $desc = $request->input('album_desc');
         $aid = $request->input('album_id');
+        $released_date = $request->input('released_date');
         $rules = new Album;
         $validator = Validator::make($request->all(), $rules->updaterules);        
         $band = Band::where('band_name', $bname)->first();
@@ -124,6 +127,7 @@ class AlbumController extends Controller
                     'album_name' => $name,
                     'album_desc' => $desc,
                     'band_id' =>$band->band_id,
+                    'released_date' => $released_date,
                 ]);
             }
             else

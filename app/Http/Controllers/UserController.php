@@ -15,6 +15,7 @@ use App\Playlist;
 use App\Plist;
 use App\Genre;
 use App\BandEvent;
+use App\Album;
 use Auth;
 use Validator;
 class UserController extends Controller
@@ -105,9 +106,9 @@ class UserController extends Controller
         $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
 
         $recommendBands = $this->recommendBands();
-        $recommendGigs = $this->recommendGigs();
-
-        return view('feed', compact('userHasBand','userBandRole','usersBand','user','events', 'recommendBands','usernotifinvite', 'recommendGigs'));
+        $recommendAlbums = $this->recommendAlbums();
+        // dd($recommendAlbums);
+        return view('feed', compact('userHasBand','userBandRole','usersBand','user','events', 'recommendBands','usernotifinvite', 'recommendAlbums'));
     }
 
     public function friends(){
@@ -734,55 +735,203 @@ class UserController extends Controller
   }  
 
 
-  public function recommendGigs(){
+
+  public function recommendAlbums(){
     $user = User::where('user_id',session('userSocial')['id'])->first();
+    $getPreferredBands = Preference::where([
+            ['user_id' , $user->user_id],
+            ['band_id', '!=', null],
+            ])->get(); 
 
-    // get friends
-      $socialfriends = session('userSocial')['friends']['data'];
-      $friends = Array();
-      foreach ($socialfriends as $socialfriend) {
-          $friend = $socialfriend['id'];
-          $thisuser = User::where('user_id', $friend)->first();
+    $socialfriends = session('userSocial')['friends']['data'];
+    $friends = Array();
+    foreach ($socialfriends as $socialfriend) {
+        $friend = $socialfriend['id'];
+        $thisuser = User::where('user_id', $friend)->first();
 
-          if(count($thisuser) > 0)
-          {
-              array_push($friends, $thisuser);
-          }
+        if(count($thisuser) > 0)
+        {
+            array_push($friends, $thisuser);
+        }
+    }
+
+    if(count($friends) > 0 || count($getPreferredBands) > 0){
+      // kwaon ang albums sa mga banda
+      $storeAllAlbums = Array();
+      foreach ($getPreferredBands as $band){
+        $albums = Album::where('band_id', $band->band_id)->get();
+
+        foreach ($albums as $album) {
+          array_push($storeAllAlbums, $album);
+        }
       }
+      // kwaon ang wala pa na like sa user
+      $getPreferredAlbums = Preference::where([
+            ['user_id' , $user->user_id],
+            ['album_id', '!=', null],
+            ])->get(); 
 
-      //get friends' preferred bands
+      $storeNotPreferredAlbums = Array();
 
-    if(count($friends) > 0){
-        $storeBands = Array();
-        foreach ($friends as $friend) {
-        $preferences = Preference::where('user_id', $friend->user_id)->get();
+      foreach($storeAllAlbums as $storeAllAlbum){
+        if(!$getPreferredAlbums->contains('album_id',$storeAllAlbum->album_id)) {
+          array_push($storeNotPreferredAlbums, $storeAllAlbum);
+        }
+      }
+      // if na like na nya tanan albums sa iyang mga banda
+      if(count($storeNotPreferredAlbums) > 0){
+        //gi kuha ang mga album nga wala niya na like
+        // e sort based on release date
+        $collect = collect($storeNotPreferredAlbums);
+        $sortedAlbums = $collect->sortBy('released_date');
+        return $sortedAlbums;
+      } else {
+        // kwaon ang mga albums nga g like sa iyang mga friends
+          $storeFriendsPreferences = Array();
+          foreach ($friends as $friend) {
+            $getFriendPreferences = Preference::where([
+              ['user_id' , $friend->user_id],
+              ['album_id', '!=', null],
+              ])->get(); 
 
-          foreach($preferences as $preference){
-            if ($preference->band_id != null){
-                array_push($storeBands, $preference->band);
-              }
+            foreach($getFriendPreferences as $getFriendPreference){
+              array_push($storeFriendsPreferences, $getFriendPreference);
             }
           }
-
-        // storebands & get duplicate bands
-        $newBands = array_unique($storeBands);
-        $recommendGigs = Array();
-        foreach ($newBands as $newBand) {
-          $events = BandEvent::where('band_id', $newBand->band_id)->get();
-
-          foreach ($events as $event) {
-            array_push($recommendGigs, $event);
+        // kwaon ang mga albums nga na like na nimo
+          // dd($storeFriendsPreferences);
+          $storeNotSamePreferredAlbums = Array();
+          foreach($storeFriendsPreferences as $storeFriendsPreference) {
+            if(!$getPreferredAlbums->contains('album_id', $storeFriendsPreference->album_id)){
+                  array_push($storeNotSamePreferredAlbums, $storeFriendsPreference->album);
+              }
           }
-        }
+          // if na like na nya tanan album
+          if(count($storeNotSamePreferredAlbums) > 0){
+            // order by released date
+            $collect = collect($storeNotSamePreferredAlbums);
+            $sortedAlbums = $collect->sortBy('released_date');
+            return $sortedAlbums;
 
-      return $recommendGigs;        
+          } else {
+            // kwaon ang user's preferred genre
+            $storeBandGenres = Array();
+            foreach($getPreferredBands as $band){
+              $getBand = $band->band;
+              $genres = $getBand->bandgenres;
+              foreach($genres as $genre){
+                array_push($storeBandGenres, $genre);
+              }
+
+            }
+
+            $collection = collect($storeBandGenres);
+            $uniqueGenres = $collection->unique('genre_id');
+
+            $bands = Band::all();
+            $storeBandsWhereSamePrefGenre = Array();
+            foreach ($bands as $band) {
+              $genres = $band->bandgenres;
+              foreach ($genres as $genre) {
+                if($uniqueGenres->contains('genre_id', $genre->genre_id)) {
+                  array_push($storeBandsWhereSamePrefGenre, $band);
+                }
+              }
+            }
+            $collectBands = collect($storeBandsWhereSamePrefGenre);
+            $uniqueBands = $collectBands->unique('band_id');
+
+            $storeAlbumsofBand = Array();
+            foreach($uniqueBands as $uniqueBand){
+              $albums = $uniqueBand->albums;
+              foreach ($albums as $album) {
+                array_push($storeAlbumsofBand, $album);
+              }
+            }
+
+            // kwaon ang mga albums nga na like na nya
+            $getAlbumsBasedOnGenre = Array();
+            foreach ($storeAlbumsofBand as $album) {
+              if(!$getPreferredAlbums->contains('album_id', $album->album_id)){
+                array_push($getAlbumsBasedOnGenre, $album);
+              }
+            }
+
+            // if na like na nya tanan albums
+            if(count($getAlbumsBasedOnGenre) > 0){
+              $collect = collect($getAlbumsBasedOnGenre);
+              $sortedAlbums = $collect->sortBy('released_date');
+              return $sortedAlbums;
+            } else {
+            // kwaon ang mga wala sa iyang preferences
+              $bands = Band::all();
+              $bandPreferences = Preference::where([
+                    ['user_id' , $user->user_id],
+                    ['band_id', '!=', null],
+                    ])->get();
+              $albumPreferences = Preference::where([
+                    ['user_id' , $user->user_id],
+                    ['album_id', '!=', null],
+                    ])->get();  
+              $getNotPrefBands = Array();
+              foreach ($bands as $band) {
+                if(!$bandPreferences->contains('band_id', $band->band_id)){
+                  array_push($getNotPrefBands, $band);
+                }
+
+              }
+              
+              $storeAlbums = Array();
+              foreach ($getNotPrefBands as $getNotPrefBand) {
+                $albums = $getNotPrefBand->albums;
+                foreach ($albums as $album) {
+                  if(!$albumPreferences->contains('album_id', $album->album_id))
+                  {
+                    array_push($storeAlbums, $album);
+                  }
+                }
+              }
+              
+              return $storeAlbums;
+            }
+
+
+          }
+
+      }
+
+    } else {
+            // kwaon ang mga wala sa iyang preferences
+              $bands = Band::all();
+              $bandPreferences = Preference::where([
+                    ['user_id' , $user->user_id],
+                    ['band_id', '!=', null],
+                    ])->get();
+              $albumPreferences = Preference::where([
+                    ['user_id' , $user->user_id],
+                    ['album_id', '!=', null],
+                    ])->get();  
+              $getNotPrefBands = Array();
+              foreach ($bands as $band) {
+                if(!$bandPreferences->contains('band_id', $band->band_id)){
+                  array_push($getNotPrefBands, $band);
+                }
+
+              }
+              
+              $storeAlbums = Array();
+              foreach ($getNotPrefBands as $getNotPrefBand) {
+                $albums = $getNotPrefBand->albums;
+                foreach ($albums as $album) {
+                  if(!$albumPreferences->contains('album_id', $album->album_id))
+                  {
+                    array_push($storeAlbums, $album);
+                  }
+                }
+              }
+              
+              return $storeAlbums;
     }
-    else {
-      // popular bands kwaon ila mga gigs
-    }
-
-
-    // show bands event based on closest time
 
   }
 
