@@ -24,6 +24,8 @@ Route::middleware(['auth'])->group(function(){
 	    return view('index');
 	});
 
+	Route::get('printscore','BandController@scoringfunc');
+
 	Route::get('home', 'UserController@homeshow');
 	Route::get('feed', 'UserController@feedshow');
 	Route::get('friends', 'UserController@friends');
@@ -108,5 +110,6 @@ Route::middleware(['auth'])->group(function(){
 	Route::post('{band_name}/addEvent' , 'EventController@addEvent');
 	Route::post('{band_name}/editEvent' , 'EventController@editEvent');
 	Route::get('deleteEvent/{event_id}' , 'EventController@deleteEvent');
+	Route::post('addSongPlayedForScore', 'AlbumController@addSongPlayedAsScore');
 
 });

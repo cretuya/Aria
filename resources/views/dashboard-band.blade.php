@@ -200,14 +200,76 @@ input[type='range']::-webkit-slider-thumb{
 
             </div>
             <br>
-              
+
           <div class="row">
-           <div class="col-md-7 dashboard-tablesection" style="max-height: 450px; overflow-y: scroll;">
+           <div class="col-md-12 dashboard-tablesection" style="max-height: 450px; overflow-y: scroll;">
+           <!-- <div class="col-md-12" style="height: 263px;max-height: 263px;"> -->
+             <h4>Band Members</h4>
+             <br>
+
+             <form method="post" action="{{url('/addmember')}}">
+                 {{csrf_field()}}
+             <div class="row" id="band-member-section">
+               <div class="col-xs-5">
+                 <label for="add-band-member-name">Add Member</label>
+                 <input type="text" class="form-control" id="add-band-member-name" name="add-band-member-name" placeholder="Enter a name">
+                 <input type="text" id="add-band-member-id" name="add-band-member-id" hidden>
+                 <input type="text" id="add-band-member-band-id" name="add-band-member-band-id" value="{{$band->band_id}}" hidden>
+                 <input type="text" id="add-band-member-band-name" name="add-band-member-band-name" value="{{$band->band_name}}" hidden>
+                 <div id="dummyContainer"></div>
+               </div>
+               <input type="text" name="member-user-id" hidden>
+               <div class="col-xs-5">      
+                 <label for="add-band-member">Role</label>
+                 <select id="add-band-member-role" class="form-control" name="add-band-member-role">
+                   <option hidden>Select Role</option>
+                   <option value="Vocalist">Vocalist</option>
+                   <option value="Lead Guitar">Lead Guitar</option>
+                   <option value="Rythm Guitar">Rythm Guitar</option>
+                   <option value="Keyboardist">Keyboardist</option>
+                   <option value="Drummer">Drummer</option>
+                   <option value="Bassist">Bassist</option>
+                 </select>
+               </div>
+
+               <div class="col-xs-2">
+                 <label>&nbsp;</label>                 
+                 <button class="btn btn-default pull-right add-member-btn" style="margin-right: 5px">Add Member</button>
+               </div>
+             </div>
+             </form>
+
+             <table class="table table-hover" style="margin-top: 5px;">
+             
+             @foreach($bandmembers as $members)
+             
+             <form id="bandmemberform" method="post" action="{{url('/deletemember')}}">
+             <span style="margin-top: 20px;">&nbsp;</span>
+             {{csrf_field()}}
+               <tr>
+                 <td class="hidden"><input type="text" name="band-member-id" class="member-id" value="{{$members->user->user_id}}"></td>
+                 <td class="hidden"><input type="text" name="band-id" value="{{$band->band_id}}"></td>
+                 <td><input type="text" name="band-member-name" class="member-name" style="border: none; background: transparent;" value="{{$members->user->fullname}}" readonly></td>
+                 <td><input type="text" name="band-member-role" class="member-role" style="border: none; background: transparent;" value="{{$members->bandrole}}" readonly></td>
+                 <input type="text" value="{{$band->band_name}}" name="bandName" hidden>
+                 <!-- <td><a href="#"><span class="fa fa-pencil"></span></a></td> -->
+                 <td><button type="submit" style="background: transparent; border: none;" class="fa fa-close"></button></td>
+               </tr>
+             </form>
+             @endforeach
+               
+             </table>
+
+            </div>
+           </div>
+
+           <div class="row">
+           <div class="col-md-12 dashboard-tablesection" style="max-height: 450px; overflow-y: scroll;">
                <table class="table">
                 <thead>
                   <tr>
                     <td colspan="4"><h4>Events</h4></td>
-                    <td><button class="btn pull-right" style="background: #E57C1F" data-toggle="modal" data-target="#add-event-modal">Add an Event</button></td>
+                    <td colspan="3"><button class="btn pull-right" style="background: #E57C1F" data-toggle="modal" data-target="#add-event-modal">Add an Event</button></td>
                   </tr>
                 </thead>
                 @if(count($events) == 0)
@@ -238,87 +300,7 @@ input[type='range']::-webkit-slider-thumb{
                  @endif
                </table>
            </div>
-           <div class="col-md-5 dashboard-tablesection" style="max-height: 450px; overflow-y: scroll;">
-           <!-- <div class="col-md-12" style="height: 263px;max-height: 263px;"> -->
-             <h4>Band Members</h4>
-             <br>
-
-             <form method="post" action="{{url('/addmember')}}">
-                 {{csrf_field()}}
-             <div class="row" id="band-member-section">
-               <div class="col-xs-4">
-                 <label for="add-band-member-name">Add Member</label>
-                 <input type="text" class="form-control" id="add-band-member-name" name="add-band-member-name" placeholder="Enter a name">
-                 <input type="text" id="add-band-member-id" name="add-band-member-id" hidden>
-                 <input type="text" id="add-band-member-band-id" name="add-band-member-band-id" value="{{$band->band_id}}" hidden>
-                 <input type="text" id="add-band-member-band-name" name="add-band-member-band-name" value="{{$band->band_name}}" hidden>
-                 <div id="dummyContainer"></div>
-               </div>
-               <input type="text" name="member-user-id" hidden>
-               <div class="col-xs-4">      
-                 <label for="add-band-member">Role</label>
-                 <select id="add-band-member-role" class="form-control" name="add-band-member-role">
-                   <option hidden>Select Role</option>
-                   <option value="Vocalist">Vocalist</option>
-                   <option value="Lead Guitar">Lead Guitar</option>
-                   <option value="Rythm Guitar">Rythm Guitar</option>
-                   <option value="Keyboardist">Keyboardist</option>
-                   <option value="Drummer">Drummer</option>
-                   <option value="Bassist">Bassist</option>
-                 </select>
-               </div>
-
-               <div class="col-xs-4">
-                 <label>&nbsp;</label>                 
-                 <button class="btn btn-default add-member-btn">Add Member</button>
-               </div>
-             </div>
-             </form>
-
-             <table class="table table-hover" style="margin-top: 5px;">
-             
-             @foreach($bandmembers as $members)
-             
-             <form id="bandmemberform" method="post" action="{{url('/deletemember')}}">
-             <span style="margin-top: 20px;">&nbsp;</span>
-             {{csrf_field()}}
-               <tr>
-                 <td class="hidden"><input type="text" name="band-member-id" class="member-id" value="{{$members->user->user_id}}"></td>
-                 <td class="hidden"><input type="text" name="band-id" value="{{$band->band_id}}"></td>
-                 <td><input type="text" name="band-member-name" class="member-name" style="border: none; background: transparent;" value="{{$members->user->fullname}}" readonly></td>
-                 <td><input type="text" name="band-member-role" class="member-role" style="border: none; background: transparent;" value="{{$members->bandrole}}" readonly></td>
-                 <input type="text" value="{{$band->band_name}}" name="bandName" hidden>
-                 <!-- <td><a href="#"><span class="fa fa-pencil"></span></a></td> -->
-                 <td><button type="submit" style="background: transparent; border: none;" class="fa fa-close"></button></td>
-               </tr>
-             </form>
-             @endforeach
-
-               <!-- 
-               <tr>
-                 <td><span class="member-name">Chester Bennington</span></td>
-                 <td><span class="member-role">Vocalist</span></td>
-                 <td><a href="#"><span class="fa fa-pencil"></span></a></td>
-                 <td><a href="#"><span class="fa fa-close"></span></a></td>
-               </tr>
-               <tr>
-                 <td><span class="member-name">Chester Bennington</span></td>
-                 <td><span class="member-role">Vocalist</span></td>
-                 <td><a href="#"><span class="fa fa-pencil"></span></a></td>
-                 <td><a href="#"><span class="fa fa-close"></span></a></td>
-               </tr>
-               <tr>
-                 <td><span class="member-name">Chester Bennington</span></td>
-                 <td><span class="member-role">Vocalist</span></td>
-                 <td><a href="#"><span class="fa fa-pencil"></span></a></td>
-                 <td><a href="#"><span class="fa fa-close"></span></a></td>
-               </tr> -->
-
-               
-             </table>
-
-            </div>
-           </div>
+          </div>
 
             <br>
 
@@ -339,7 +321,7 @@ input[type='range']::-webkit-slider-thumb{
                   <div class="col-md-3">
 
                     <div id="video-content{{$video->video->video_id}}" onclick="videoOpen({{$video->video->video_id}});">
-                    <video style="background: #000; width: 100%; height: inherit; cursor:pointer;" class="embed-responsive-item vidContent{{$video->video->video_id}}" data-content="{{asset('assets/video/'.$video->video->video_content)}}">
+                    <video style="background: #000; width: 100%; height: inherit; cursor:pointer;" class="embed-responsive-item vidContent{{$video->video->video_id}}" data-name="{{$video->video->video_title}}" data-content="{{asset('assets/video/'.$video->video->video_content)}}">
                         <source src="{{asset('assets/video/'.$video->video->video_content)}}">
                     </video>
                     </div>
@@ -412,7 +394,10 @@ input[type='range']::-webkit-slider-thumb{
                                   <a href="{{url($band->band_name.'/editAlbum/'.$albums[$i]->album_id)}}"><img src="{{asset('assets/img/dummy-pic.jpg')}}" class="img-responsive">
                                   </a>
                                   @else
-                                  <a href="{{url($band->band_name.'/editAlbum/'.$albums[$i]->album_id)}}"><img src="{{$albums[$i]->album_pic}}" class="img-responsive">
+                                  <a href="{{url($band->band_name.'/editAlbum/'.$albums[$i]->album_id)}}">
+                                  <div class="panel-thumbnail">
+                                    <img src="{{$albums[$i]->album_pic}}" class="img-responsive" style="height: 150px;">
+                                  </div>
                                   </a>
                                   @endif
                                   <p style="text-align: center; margin-top: 5px;">{{$albums[$i]->album_name}}</p>                                  
@@ -796,7 +781,7 @@ input[type='range']::-webkit-slider-thumb{
 <div class="modal fade" id="modal-video" tabindex="-1" role="dialog" aria-labelledby="modal-video-label" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header"><span id="vidName" style="margin: 0;"></span>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="resetVid();">
           <span aria-hidden="true" onclick="resetVid();">&times;</span>
         </button>
@@ -959,6 +944,8 @@ function videoOpen(id){
     var vid = document.getElementById('vidcontainer');
     var content = $('.vidContent'+id).data('content');
     var playIcon = "{{asset('assets/img/play.png')}}";
+    var vidname = $('.vidContent'+id).data('name');
+    $('#vidName').html(vidname);
 
     // console.log(content);
     vid.innerHTML ='<video id="actualVideo" class="embed-responsive-item" autoplay><source id="vidsrc" src="'+content+'" type="video/mp4"></source></video><div id="controllerBox" class="video-controls-box" style="position: absolute;bottom: 0px;width: 100%;"><input id="seeksliderVid" type="range" min="0" max="100" value="0" step="1"><div style="padding-top: 5px; padding-bottom: 4px;"><span><img id="playPauseBottomOfVid" src="'+playIcon+'" onclick="playPauseVid()" style="cursor:pointer; width: 25px; padding-left: 5px; margin-top: -2px;"></span><span id="curtimeText" style="color:#fafafa; margin-left: 5px;">0:00</span> / <span id="durtimeText" style="color:#fafafa;">0:00</span></div></div>';

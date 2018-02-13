@@ -122,7 +122,9 @@
       <div id="albumPicTop" class="panel-thumbnail" style="background: transparent;">
           <div class="media" style="border: none; padding-left: 80px;">
             <div class="media-left">
-              <img src="{{$albums->album_pic}}" class="media-object">
+              <div class="panel-thumbnail">
+                <img src="{{$albums->album_pic}}" class="media-object" style="width: 255px;">
+              </div>
             </div>
             <div class="media-body" style="background: transparent; padding-left: 30px; padding-top: 15px;">
               <p style="color: #E57C1F; font-size: 12px;">ALBUM</p>
@@ -148,7 +150,9 @@
         <div class="panel-body" style="padding: 0;">
           <div class="media" style="border: 0; border-radius: 0px;">
             <div class="media-left">
-              <img src="{{$albums->album_pic}}" class="media-object" style="width: 110px;">
+              <div class="panel-thumbnail">
+                <img src="{{$albums->album_pic}}" class="media-object" style="width: 110px; height: 110px;">
+              </div>
               
               <a href="#" onclick="playOrPause();">
                 <img src="{{asset('assets/img/playfiller.png')}}" class="media-object" style="width: 50px; position: absolute; top: 32px; left: 47px; opacity: 0.75;" draggable="false">
@@ -168,11 +172,10 @@
                 
                 <ul id="albumlist" class="songsInAblum">
                 @foreach($albums->songs as $songs)
-                    <?php $removedmp3 = str_replace('.mp3', '', $songs->song_audio);?>
                       @if(count($songs)==0)
-                      <li class="current-song"><a href="{{asset('assets/music/'.$songs->song_audio)}}" onclick="playOrPauseFromSongClick();"><?php echo $removedmp3; ?></a><span data-id="{{$songs->song_id}}" class="remlist btn fa fa-remove pull-right" title="Remove from song album"></span></li>
+                      <li class="current-song"><a href="{{asset('assets/music/'.$songs->song_audio)}}" onclick="playOrPauseFromSongClick();">{{$songs->song_title}}</a><span data-id="{{$songs->song_id}}" class="remlist btn fa fa-remove pull-right" title="Remove from song album"></span></li>
                       @else
-                        <li><a href="{{asset('assets/music/'.$songs->song_audio)}}" onclick="playOrPauseFromSongClick();"><?php echo $removedmp3; ?></a><span data-id="{{$songs->song_id}}" class="remlist btn fa fa-remove pull-right" title="Remove from song album"></span></li>                      
+                        <li><a href="{{asset('assets/music/'.$songs->song_audio)}}" onclick="playOrPauseFromSongClick();">{{$songs->song_title}}</a><span data-id="{{$songs->song_id}}" class="remlist btn fa fa-remove pull-right" title="Remove from song album"></span></li>                      
                       @endif
                 @endforeach
                 </ul>

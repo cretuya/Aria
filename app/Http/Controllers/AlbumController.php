@@ -8,6 +8,7 @@ use App\UserNotification;
 use App\Band;
 use App\Album;
 use App\Song;
+use App\SongsPlayed;
 use App\Album_Contents;
 use App\Preference;
 use Auth;   
@@ -165,7 +166,7 @@ class AlbumController extends Controller
 
         }
         
-        // scoringfunc($band->band_id);
+        $this->scoringfunc();
 
         return response ()->json(['album' => $newalbum, 'liker' => $create]);
 
@@ -196,6 +197,9 @@ class AlbumController extends Controller
             $newalbum = $liker->album;            
 
         }
+
+        $this->scoringfunc();
+
         return response ()->json($newalbum);   
 
 
@@ -217,6 +221,156 @@ class AlbumController extends Controller
         // }
 
         // return response ()->json(['band' => $newband, 'preference' => $follower]);            
-    }    
+    }
+
+    public function addSongPlayedAsScore(Request $request){
+        $durationPlayed = $request->input('durationPlayed');
+        // dd('hello');
+        $userid = Auth::user()->user_id;
+        $songid = $request->input('songID');
+        $categoryFull = 1;
+        $categoryMore = 2;
+        $categoryLess = 3;
+
+        // dd($durationPlayed,$userid,$categoryFull,$categoryMore,$categoryLess);
+
+        if ($durationPlayed < 40) {
+            $create = SongsPlayed::create([
+                'user_id' => $userid,
+                'song_id' => $songid,
+                'category' => $categoryLess,
+            ]);
+        }else if ($durationPlayed > 40 && $durationPlayed <= $request->input('prevSong')) {
+            $create = SongsPlayed::create([
+                'user_id' => $userid,
+                'song_id' => $songid,
+                'category' => $categoryMore,
+            ]);
+        }else{
+            $create = SongsPlayed::create([
+                'user_id' => $userid,
+                'song_id' => $songid,
+                'category' => $categoryFull,
+            ]);
+        }
+
+        $this->scoringfunc();
+    }
+
+    public function scoringfunc(){
+
+        $bands = Band::all();
+        $albums = Album::all();
+        $maxalbumlikes = 0;
+        $maxvisitcount = 0;
+        $maxfollowers = 0;
+
+
+        //get the total number of likes sa tanan album
+        foreach ($albums as $tananalbums) {
+            $maxalbumlikes += $tananalbums->num_likes;
+        }
+
+        //get the total number of visit counts sa tanan bands
+        //get the total number of followers
+        foreach ($bands as $tananbanda) {
+            $maxvisitcount += $tananbanda->visit_counts;
+            $maxfollowers += $tananbanda->num_followers;
+        }
+
+        //start for scoring
+        foreach ($bands as $tananbanda) {
+            $bandAlbumLikes = 0;
+            $bandFollowers = $tananbanda->num_followers;
+            $bandVisitCounts = $tananbanda->visit_counts;
+            $songScore=0;
+            $score = 0;
+            $bandScore = 0;
+            $maxSongScore = 0;
+            $maxSongCount = 0;
+
+            foreach ($tananbanda->albums as $album) {
+                $bandAlbumLikes += $album->num_likes;
+                foreach ($album->songs as $songs) {
+                    $maxSongCount += count($songs->songsplayed);
+                    foreach($songs->songsplayed as $songsplayed){
+                        // echo $songsplayed->category."<br>";
+                        if ($songsplayed->category == 1) {
+                            $songScore += 10;
+                        }else if ($songsplayed->category == 2) {
+                            $songScore += 6;
+                        }else{
+                            $songScore += 2;
+                        }
+                    }
+                }
+                // echo $songScore."<br>";
+                // echo $maxSongCount."<br>";
+            }
+
+            if ($maxalbumlikes != 0) {
+                $albumlikeScore = ((($bandAlbumLikes/$maxalbumlikes)*100)*0.25);
+            }else{
+                $albumlikeScore = 0;
+            }
+
+            if ($maxfollowers != 0) {
+                $followerScore = ((($bandFollowers/$maxfollowers)*100)*0.10);
+            }else{
+                $followerScore = 0;
+            }
+
+            if ($maxvisitcount != 0) {
+                $visitScore = ((($bandVisitCounts/$maxvisitcount)*100)*0.05);
+            }else{
+                $visitScore = 0;
+            }
+
+            if ($maxSongCount != 0) {
+                $songsplayedScore = ((($songScore/($maxSongCount*10))*100)*0.60);
+            }else{
+                $songsplayedScore = 0;
+            }
+
+            $score = $albumlikeScore + $followerScore + $visitScore + $songsplayedScore;
+
+            // echo $score."<br>";
+            $weeklyscore = $score;
+
+            $createweeklyscore = Band::where('band_id',$tananbanda->band_id)->update([
+                'weekly_score' => $weeklyscore
+            ]);
+            // dd($tananbanda->band_score,$tananbanda->band_id);
+            $bandscore = $tananbanda->band_score;    
+
+            if ($tananbanda->band_score != null) {
+                $bandscore += $weeklyscore;
+            }
+            else{
+                $bandscore = $weeklyscore;
+            }
+            
+            date_default_timezone_set("Asia/Manila");
+            $dateToday = date('Y-m-d');
+            // $advDate = date('Y-m-d', strtotime($dateToday . '+ 7 day'));
+            // $checkifWeekNa = date('Y-m-d', strtotime($advDate . '- 7 day'));
+            $checkifWeekNa = date('Y-m-d', strtotime($dateToday . '- 7 day'));
+            // dd($advDate, $checkifWeekNa);
+            // dd($dateToday);
+
+            if ($checkifWeekNa == $tananbanda->scored_updated_date) {
+                $updatebandscore = Band::where('band_id',$tananbanda->band_id)->update([
+                    'band_score' => $bandscore
+                ]);
+                $weeklyscore = 0;
+                $updateScoredUpdatedDate = Band::where('band_id',$tananbanda->band_id)->update([
+                    // 'scored_updated_date' => $advDate
+                    'scored_updated_date' => $dateToday
+                ]);
+            }
+            
+        }
+
+    }
 
 }

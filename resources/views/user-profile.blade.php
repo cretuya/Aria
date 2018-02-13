@@ -119,7 +119,11 @@
               <div class="col-xs-3">
                 <div class="panel" style="background: none; border: none;">
                   <div class="panel-body">
-                    <a href="{{url('playlist/'.$playlists[$i]->pl_id)}}"><img src="{{$playlists[$i]->image}}" class="img-responsive" style="height: 100%; max-height: 180px; border: 2px solid #dddddd; margin-bottom: 10px;"><span style="font-size: 14px;">{{$playlists[$i]->pl_title}}</span></a>
+                    <a href="{{url('playlist/'.$playlists[$i]->pl_id)}}">
+                    <div class="panel-thumbnail">
+                      <img src="{{$playlists[$i]->image}}" class="img-responsive" style="height: 100%; max-height: 180px; border: 2px solid #dddddd; margin-bottom: 10px;">
+                    </div>
+                    <span style="font-size: 14px;">{{$playlists[$i]->pl_title}}</span></a>
                     <br>
                     <p style="font-size: 12px; color: #999; font-family: Arial; font-weight: 600;">{{$playlists[$i]->fullname}}</p>
 

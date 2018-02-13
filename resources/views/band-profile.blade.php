@@ -176,7 +176,10 @@
 				<div class="row">
 				@forelse($albums as $album)
 					<div class="col-md-2">
-						<a href="{{url($band->band_name.'/albums/'.$album->album_id)}}"><img src="{{$album->album_pic}}" class="img-responsive">
+						<a href="{{url($band->band_name.'/albums/'.$album->album_id)}}">
+						  <div class="panel-thumbnail">
+							<img src="{{$album->album_pic}}" class="img-responsive" style="height: 150px;">
+						  </div>
 						</a>
 						<a href="{{url($band->band_name.'/albums/'.$album->album_id)}}"><p style="text-align: center; margin-top: 10px;">{{$album->album_name}}</p>
 						</a>

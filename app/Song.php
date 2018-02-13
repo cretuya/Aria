@@ -43,4 +43,8 @@ class Song extends Model
 	{
 		return $this->hasMany('App\Plist', 'song_id');
 	}
+	public function songsplayed()
+	{
+		return $this->hasMany('App\SongsPlayed', 'song_id');
+	}
 }

@@ -20,32 +20,6 @@
     height: 255px;
   }
 
-/*  table.table>tbody>tr.active>td{
-    background: transparent !important;
-  }
-
-  table.table>tbody>tr:hover{
-    background: #191919;
-    color: #E57C1F;
-  }
-
-  table.table>tbody>tr>td{
-    border-top: none;
-    padding-top: 20px;
-    padding-bottom: 20px;
-  }
-
-  table.table>tbody>tr>td:first-child{  
-    border-top-left-radius: 7px;
-    border-bottom-left-radius: 7px;
-    text-align: center;
-  }
-
-  table.table>tbody>tr>td:last-child{    
-    border-top-right-radius: 7px;
-    border-bottom-right-radius: 7px;
-  }*/
-
   #albumlist{
     list-style-type: none;
     padding-left: 0px;
@@ -133,7 +107,9 @@
       <div id="albumPicTop" class="panel-thumbnail" style="background: transparent;">
           <div class="media" style="border: none; padding-left: 80px;">
             <div class="media-left">
-              <img src="{{$albums->album_pic}}" class="media-object">
+              <div class="panel-thumbnail">
+                <img src="{{$albums->album_pic}}" class="media-object" style="width: 255px;">
+              </div>
             </div>
             <div class="media-body showLikeButton" style="background: transparent; padding-left: 30px; padding-top: 15px;">
               <p style="color: #E57C1F; font-size: 12px;">ALBUM</p>
@@ -159,7 +135,9 @@
         <div class="panel-body" style="padding: 0;">
           <div class="media" style="border: 0; border-radius: 0px;">
             <div class="media-left">
-              <img src="{{$albums->album_pic}}" class="media-object" style="width: 110px;">
+              <div class="panel-thumbnail">
+                <img src="{{$albums->album_pic}}" class="media-object" style="width: 110px; height: 110px;">
+              </div>
               
               <a href="#" onclick="playOrPause();">
                 <img src="{{asset('assets/img/playfiller.png')}}" class="media-object" style="width: 50px; position: absolute; top: 32px; left: 47px; opacity: 0.75;" draggable="false">
@@ -179,11 +157,10 @@
                 
                 <ul id="albumlist" class="songsInAblum">
                 @foreach($albums->songs as $songs)
-                    <?php $removedmp3 = str_replace('.mp3', '', $songs->song_audio);?>
                       @if(count($songs)==0)
-                      <li class="current-song"><a href="{{asset('assets/music/'.$songs->song_audio)}}" onclick="playOrPauseFromSongClick();"><?php echo $removedmp3; ?></a></li>
+                      <li class="current-song"><a href="{{asset('assets/music/'.$songs->song_audio)}}" value="{{$songs->song_id}}" class="songLiA">{{$songs->song_title}}</a></li>
                       @else
-                        <li><a href="{{asset('assets/music/'.$songs->song_audio)}}" onclick="playOrPauseFromSongClick();"><?php echo $removedmp3; ?></a></li>                      
+                        <li><a href="{{asset('assets/music/'.$songs->song_audio)}}" data-id="{{$songs->song_id}}" class="songLiA">{{$songs->song_title}}</a></li>                      
                       @endif            
                 @endforeach
                 </ul>
@@ -210,8 +187,14 @@
 
 <script type="text/javascript">
 
+var usersDurationPlayed = 0;
+var globalInt;
+var currSong;
+var songId;
+var prevSong;
 
 $(document).ready(function(){
+
 	$('.albums').on('click', '.showSongs', function()
 	{
 		var id = $(this).data('id');
@@ -262,7 +245,7 @@ $(document).ready(function(){
             console.log(json);
             $('button').removeClass('likealbumbtn');
             $('button').addClass('unlikealbumbtn');
-            $('.likeText').html('Unlike');
+            $('.likeText').html(' Unlike');
             // change ang name to unlike ug ang likebutton nga classname mahimo ug unlike
 
           },
@@ -287,7 +270,7 @@ $(document).ready(function(){
             console.log(json);
             $('button').removeClass('unlikealbumbtn');
             $('button').addClass('likealbumbtn');
-            $('.likeText').html('Like');
+            $('.likeText').html(' Like');
             // change ang name to like nya ang classname mahimo ug like
           },
           error: function(a,b,c)
@@ -297,71 +280,6 @@ $(document).ready(function(){
           }
         });  
   });
-
-  // $('button.likeButton').on('click', function(e)
-  // {
-  //     e.preventDefault();
-  //     $button = $(this);
-  //     if($button.hasClass('liked')){
-          
-  //         // $.ajax(); Do Unlike
-  //         var id = $(this).data('id');
-  //         alert('unlike');
-  //         unlikeAlbum(id); 
-          
-  //     } else {
-          
-  //         // $.ajax(); Do Like
-  //         var id = $(this).data('id');
-  //         alert('like');
-  //         likeAlbum(id);   
-  //     }
-  // });
-
-  // function likeAlbum(id)
-  // {
-  //       var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-  //       // var bname = $('#bandName').val();
-  //       $.ajax({
-  //         method : "post",
-  //         url : "../likeAlbum",
-  //         data : { '_token' : CSRF_TOKEN,
-  //           'id' : id
-  //         },
-  //         success: function(json){
-  //           console.log(json);
-  //           $button.addClass('liked');
-  //           $button.text('Unlike');
-  //         },
-  //         error: function(a,b,c)
-  //         {
-  //           console.log(b);
-
-  //         }
-  //       });         
-  // }
-  // function unlikeAlbum(id)
-  // {
-  //       var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-  //       // var bname = $('#bandName').val();
-  //       $.ajax({
-  //         method : "post",
-  //         url : "../unlikeAlbum",
-  //         data : { '_token' : CSRF_TOKEN,
-  //           'id' : id
-  //         },
-  //         success: function(json){
-  //           console.log(json);
-  //           $button.removeClass('liked');
-  //           $button.text('Like');
-  //         },
-  //         error: function(a,b,c)
-  //         {
-  //           console.log(b);
-
-  //         }
-  //       });         
-  // }
 });
 
   function audioPlayer(){
@@ -383,6 +301,7 @@ $(document).ready(function(){
        currentSong++;
         if(currentSong == $("#albumlist li a").length)
             currentSong = 0;
+        prevSong = parseInt($("#albumSong")[0].duration);
         $("#albumlist li").removeClass("current-song");
         $("#albumlist li:eq("+currentSong+")").addClass("current-song");
         $("#albumSong")[0].src = $("#albumlist li a")[currentSong].href;
@@ -394,7 +313,44 @@ $(document).ready(function(){
         $('#playBtn').attr("src","{{url('/assets/img/equa2.gif')}}");
         $('#playBtn').css('width','23px');
         $('#playBtn').css('left','60px');
-        $('#playBtn').css('top','38px');        
+        $('#playBtn').css('top','38px');
+
+        
+        // console.log(songId);
+
+        // console.log('before ni push database song_id kay ',songId, currSong.next('li').find('a').data('id'));
+
+        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+        // console.log(CSRF_TOKEN, usersDurationPlayed, songId, prevSong);
+        $.ajax({
+          method : "post",
+          url : '../../addSongPlayedForScore',
+          data : { '_token' : CSRF_TOKEN, 'durationPlayed' : usersDurationPlayed, 'songID' : songId, 'prevSong' : prevSong
+          },
+          success: function(json){
+            console.log(json);
+          },
+          error: function(a,b,c)
+          {
+            console.log(b);
+          }
+        });
+        
+        // if (jQuery.type(currSong.next('li')) === 'undefined')
+        if (currSong.next('li').find('a').data('id') == songId){
+          songId = $('#albumlist').first().find('a').data('id');
+          // console.log('nisud diri', songId);
+        }else if (currSong.next('li').find('a').data('id') == null){
+          songId = $('#albumlist').first().find('a').data('id');
+          // console.log('nisud diri undefined ang next song id', songId);
+        }else{
+          songId = currSong.next('li').find('a').data('id');
+          // console.log('after pag push na change ang song_id into ', songId);
+        }
+
+        clearInterval(globalInt);
+        usersDurationPlayed = 0;
+        timerDurationPlayed();
 
           var url = $('#albumSong')[0].src;
           var url2 = "{{url('/assets/music/')}}";        
@@ -414,7 +370,9 @@ $(document).ready(function(){
 
         },500);
 
-        updateTime = setInterval(update, 200);
+        updateTime = setInterval(update, 0);
+
+        
 
     });
 }
@@ -428,6 +386,8 @@ $(document).ready(function(){
       $('#playBtn').css('top','32px');
       $("#albumSong")[0].pause();
       window.clearInterval(updateTime);
+      clearInterval(globalInt);
+      console.log(usersDurationPlayed);
     }
     else{
       $('#playBtn').attr("src","{{url('/assets/img/equa2.gif')}}");
@@ -443,12 +403,54 @@ $(document).ready(function(){
       var songname = decodeURI(songnamedilipajud);
 
       $('#song-name').html("Currently Playing: "+songname);
-      updateTime = setInterval(update, 200);
+      updateTime = setInterval(update, 0);
+      timerDurationPlayed();
     }
 
   }
 
-  function playOrPauseFromSongClick() {
+  function timerDurationPlayed(flag = true){
+
+    globalInt = setInterval(function(){
+      usersDurationPlayed++;
+      // console.log(usersDurationPlayed);
+    }, 1000);
+  }
+
+  $('.songLiA').click(function (e) {
+
+    // console.log(id, 'mao ni ang song id');
+    // $('#albumSong')[0].attr('data-id', id);
+    e.preventDefault();
+
+    currSong = $(this).closest('li');
+    console.log(currSong.find('a').data('id'));
+    songId = currSong.find('a').data('id');
+
+    prevSong = parseInt($('#albumSong')[0].duration);
+
+    if(usersDurationPlayed == 0){
+      timerDurationPlayed();
+    }else{
+      //push then usersDurationPlayed = 0;
+      var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+      // console.log(CSRF_TOKEN, usersDurationPlayed, songId, prevSong);
+      $.ajax({
+        method : "post",
+        url : '../../addSongPlayedForScore',
+        data : { '_token' : CSRF_TOKEN, 'durationPlayed' : usersDurationPlayed, 'songID' : songId, 'prevSong' : prevSong
+        },
+        success: function(json){
+          console.log(json);
+        },
+        error: function(a,b,c)
+        {
+          console.log(b);
+        }
+      });
+      usersDurationPlayed = 0;
+      timerDurationPlayed();
+    }
 
     var seekslider = document.getElementById('musicslider');
     var audio = document.getElementById('albumSong');
@@ -513,7 +515,7 @@ $(document).ready(function(){
       }
     },200);
 
-  }
+  });
 
   function muteOrUnmute() {
 
