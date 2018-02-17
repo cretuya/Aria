@@ -23,16 +23,30 @@
           @if(count($events)==0)
           <br><br><br>
             <p style="text-align:center; color: #a4a4a4; font-size: 16px;">Not seeing updates from bands? </p>
-            <p style="text-align:center; color: #a4a4a4; font-size: 16px;">Head over to Home and check them out!</p>
+            <p style="text-align:center; color: #a4a4a4; font-size: 16px;">Head over to home and start following some!</p>
           @else
-          <br><br><br>
-            <p style="text-align:center; color: #a4a4a4; font-size: 16px;">Upcoming GIGS of you favorite Bands! </p>
-            <p style="text-align:center; color: #a4a4a4; font-size: 16px;">Head over to Home and check them out!</p>
             @foreach($events as $event)
+
+            <?php
+
+            $date1=$event->event_date;
+            $date = DateTime::createFromFormat("Y-m-d", $event->event_date);
+            $event->event_date = $date->format("M d, Y");
+
+            $time = $event->event_time; 
+            $event->event_time = date('h:i A', strtotime($time));
+
+            ?>
+
               <div class="panel" style="background: #232323;">
                 <div class="panel-heading" style="border-bottom: 2px solid #E57C1F">
                   <a href="{{url('/'.$event->band->band_name)}}"><img class="feed-band-pic img-circle" src="{{$event->band->band_pic}}"></a>
-                  <a href="{{url('/'.$event->band->band_name)}}"><span class="feed-band-name">{{$event->band->band_name}} //tarongon ni ang nawng ani</span></a>
+                  <a href="{{url('/'.$event->band->band_name)}}"><span class="feed-band-name">{{$event->band->band_name}}</span></a>
+                </div>
+                <div class="panel-body">
+                  <h4 style="margin-top: 0px;">{{$event->event_name}}</h4>
+                  <span>{{$event->event_date}} {{$event->event_time}}</span><br>
+                  <span>{{$event->event_venue}}</span>, <span>{{$event->event_location}}</span>
                 </div>
               </div>
             @endforeach
@@ -57,7 +71,7 @@
             @else($recommendBands != null)
               @foreach($recommendBands as $rec)
                 <li class="list-group-item" style="border: 0;background: transparent;">
-                  <a href="#"><img class="friends-in-aria-pic img-circle" src="{{$rec['band']->band_pic}}"></a>
+                  <a href="#"><img class="friends-in-aria-pic img-circle" src="{{$rec['band']->band_pic}}" style="object-fit: cover;"></a>
                   <a href="{{url($rec['band']->band_name)}}"><span class="feed-band-name">{{$rec['band']->band_name}}</span></a>
                 </li>
               @endforeach
@@ -65,33 +79,32 @@
           </ul>
           </div>
 
-          </div>
-        </div>
-        </div>
+          <br>
 
-        <div class="col-md-3" style="padding-left: 0; padding-right: 0;">
-        
-        <center><h4>Album you may want to like</h4></center>
-        <br>
+          <center><h4>Album you may want to like</h4></center>
+          <br>
 
-        <div class="panel" style="background: transparent;">
-          <div class="panel-body" style="padding-left: 15px; padding-right: 15px;">
+          <div class="panel" style="background: transparent;">
+            <div class="panel-body" style="padding-left: 15px; padding-right: 15px;">
 
-          <div class="row">
-          <ul class="list-group" style="margin-bottom: 0px;">
-            @if($recommendAlbums == null)
-            <br>
-            <p style="text-align:center; color: #a4a4a4; font-size: 16px;">No albums to show</p>
-            <br>
-            @else($recommendAlbums != null)
-              @foreach($recommendAlbums as $rec)
-                <li class="list-group-item" style="border: 0;background: transparent;">
-                  <a href="#"><img class="friends-in-aria-pic img-circle" src="{{$rec->album_pic}}"></a>
-                  <a href="{{url($rec->band->band_name.'/albums/'.$rec->album_id)}}"><span class="feed-band-name">{{$rec->album_name}}</span></a>
-                </li>
-              @endforeach
-            @endif
-          </ul>
+            <div class="row">
+            <ul class="list-group" style="margin-bottom: 0px;">
+              @if($recommendAlbums == null)
+              <br>
+              <p style="text-align:center; color: #a4a4a4; font-size: 16px;">No albums to show</p>
+              <br>
+              @else($recommendAlbums != null)
+                @foreach($recommendAlbums as $rec)
+                  <li class="list-group-item" style="border: 0;background: transparent;">
+                    <a href="#"><img class="friends-in-aria-pic img-circle" src="{{$rec->album_pic}}" style="object-fit: cover;"></a>
+                    <a href="{{url($rec->band->band_name.'/albums/'.$rec->album_id)}}"><span class="feed-band-name">{{$rec->album_name}}</span></a>
+                  </li>
+                @endforeach
+              @endif
+            </ul>
+            </div>
+
+            </div>
           </div>
 
           </div>

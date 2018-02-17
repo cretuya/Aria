@@ -565,7 +565,8 @@ class UserController extends Controller
           return array_unique($songsToRecommend);
         }
         else {
-          // sandwich
+          $songs = Song::all();
+          return $songs;
         }
     }
 

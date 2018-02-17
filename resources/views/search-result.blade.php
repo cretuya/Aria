@@ -33,7 +33,6 @@
 			  <li><a data-toggle="tab" href="#song">Song</a></li>
 			  <li><a data-toggle="tab" href="#album">Album</a></li>
 			  <li><a data-toggle="tab" href="#video">Video</a></li>
-			  <li><a data-toggle="tab" href="#article">Article</a></li>
 			</ul>
 
 			<div class="tab-content">
@@ -53,7 +52,7 @@
 				              </a>
 				            </div>
 				            <div class="media-body" style="padding-top: 16px; background: #232323; padding-left: 12px;">
-				              <a href="{{url('/profile/'.$searchResultUser[$x]->user_id)}}"><h4 class="media-heading">{{ $searchResultUser[$x]->fname }} {{ $searchResultUser[$x]->lname}}</h4></a>
+				              <a href="{{url('/profile/'.$searchResultUser[$x]->user_id)}}"><h5 class="media-heading">{{ $searchResultUser[$x]->fname }} {{ $searchResultUser[$x]->lname}}</h5></a>
 				              <p style="font-size: 12px; margin-top: 10px;">{{$searchResultUser[$x]->address}}</p>
 				              <p style="font-size: 12px; margin-top: -10px;">{{$searchResultUser[$x]->email}}</p>
 				            </div>
@@ -81,22 +80,26 @@
 			          	<div class="panel-body">
 				          <div class="media" style="border-top: 0px; border-right: 0px; border-left: 0px; border-bottom: 2px solid #E57C1F">
 				            <div class="media-left">
-				              <a href="{{ url('/'.$searchResultBand[$i]->band_name) }}"><img src="{{$searchResultBand[$i]->band_pic}}" class="media-object" style="width: 100%; min-width: 100px; height: 100px"></a>
+				              <a href="{{ url('/'.$searchResultBand[$i]->band_name) }}">
+				              <div class="panel-thumbnail">
+				              <img src="{{$searchResultBand[$i]->band_pic}}" class="media-object" style="width: 100%; min-width: 100px; height: 100px">
+				              </div>
+				              </a>
 				            </div>
-				            <div class="media-body" style="padding-top: 10px; background: #232323; padding-left: 10px;">
-				              <a href="{{ url('/'.$searchResultBand[$i]->band_name) }}"><h4 class="media-heading">{{$searchResultBand[$i]->band_name}}</h4></a>
+				            <div class="media-body" style="padding-top: 15px; background: #232323; padding-left: 10px;">
+				              <a href="{{ url('/'.$searchResultBand[$i]->band_name) }}"><h5 class="media-heading">{{$searchResultBand[$i]->band_name}}</h5></a>
 				              @if(count($bandGenre) == 0)
 					              @if($searchResultBand[$i]->num_followers == null)
-						          <p>0 Followers</p>
+						          <p style="font-size: 12px;">0 Followers</p>
 						          @else
-						          <p>{{$searchResultBand[$i]->num_followers}} Followers</p>
+						          <p style="font-size: 12px;">{{$searchResultBand[$i]->num_followers}} Followers</p>
 						          @endif
 					          @else			          
-						          <p>{{ $bandGenre[$j]->genre_name }} | {{ $bandGenre[$j+1]->genre_name }}</p>
+						          <p style="font-size: 12px;">{{ $bandGenre[$j]->genre_name }} | {{ $bandGenre[$j+1]->genre_name }}</p>
 						          @if($searchResultBand[$i]->num_followers == null)
-						          <p>0 Followers</p>
+						          <p style="font-size: 12px;">0 Followers</p>
 						          @else
-						          <p>{{$searchResultBand[$i]->num_followers}} Followers</p>
+						          <p style="font-size: 12px;">{{$searchResultBand[$i]->num_followers}} Followers</p>
 						          @endif
 				              @endif
 				            </div>
@@ -120,7 +123,11 @@
 		              	<div class="panel-body">
 		              		<div class="media" style="border-top: 0px; border-right: 0px; border-left: 0px; border-bottom: 2px solid #E57C1F">
 		              		  <div class="media-left">
-		              		    <a href="{{ url('/playlist/'.$srPlay->pl_id) }}"><img src="{{$srPlay->image}}" class="media-object" style="width: 100%; min-width: 100px; height: 100px"></a>
+		              		    <a href="{{ url('/playlist/'.$srPlay->pl_id) }}">
+		              		    <div class="panel-thumbnail">
+		              		    <img src="{{$srPlay->image}}" class="media-object" style="width: 100%; min-width: 100px; height: 100px">
+		              		    </div>
+		              		    </a>
 		              		  </div>
 		              		  <div class="media-body" style="padding-top: 20px; background: #232323; padding-left: 10px;">
 		              		    <a href="{{ url('/playlist/'.$srPlay->pl_id) }}"><h4 class="media-heading">{{$srPlay->pl_title}}</h4></a>
@@ -164,9 +171,28 @@
 			    @if(count($searchResultAlbum) > 0)
 		            <br>
 		            @foreach($searchResultAlbum as $srAlbum)
+
+		            <?php
+		            	$date = DateTime::createFromFormat("Y-m-d", $srAlbum->released_date);
+		            	$srAlbum->released_date = $date->format("M Y");
+		            ?>
+
 		              <div class="panel" style="background: transparent;">
 		              	<div class="panel-body">
+		              	<div class="media" style="border-top: 0px; border-right: 0px; border-left: 0px; border-bottom: 2px solid #E57C1F">
+		              		<div class="media-left">
+		              		<a href="#">
+		              			<div class="panel-thumbnail">
+		              				<img src="{{$srAlbum->album_pic}}" class="media-object" style="width: 100%; min-width: 100px; height: 100px">
+		              			</div>
+		              		</a>
+		              		</div>
+		              		<div class="media-body" style="padding-top: 5px; background: #232323; padding-left: 10px;">
 		              		<a href="#"><h5>{{$srAlbum->album_name}}</h5></a>
+		              		<p style="font-size: 12px; margin-top: -5px; margin-bottom: 20px;">{{$srAlbum->num_likes}} people liked this album</p>
+		              		<span style="font-size: 12px;">Date Release: {{$srAlbum->released_date}}</span>
+		              		</div>
+		              	</div>
 		              	</div>
 		              </div>
 		            @endforeach
@@ -201,24 +227,6 @@
 		          @else
 		          	<br>
 		          	<p>No videos titled '{{$termSearched}}' found.</p>
-		          @endif
-		          <br><br>
-			  </div>
-
-			  <div id="article" class="tab-pane fade">
-			    @if(count($searchResultArticle) > 0)
-		            <br>
-		            @foreach($searchResultArticle as $srArticle)
-		              <div class="panel" style="background: transparent;">
-		              	<div class="panel-body">
-		              		<a href="#"><h5>{{$srArticle->art_title}}</h5></a>
-		              		<!--  url('../'.$band->band_name.'/viewArticle/'.$srArticle->art_id) -->
-		              	</div>
-		              </div>
-		            @endforeach
-		          @else
-		          	<br>
-		          	<p>No articles titled '{{$termSearched}}' found.</p>
 		          @endif
 		          <br><br>
 			  </div>

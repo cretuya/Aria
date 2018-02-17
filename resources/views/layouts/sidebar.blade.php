@@ -144,7 +144,7 @@
             <li>
               <form class="navbar-form" action="{{ url('search') }}" method="get" role="search">
               <div class="input-group" style="margin-top: 50px;">
-                  <input type="text" class="form-control" placeholder="Search" name="search_result" style="background: transparent; color: #fafafa;">
+                  <input type="text" class="form-control" placeholder="Search" name="search_result" style="background: transparent; color: #fafafa;" required>
                   <div class="input-group-btn">
                       <button class="btn btn-default" type="submit" style="background: transparent; border-color: #d9d9d9; height: 34px;"><i class="fa fa-search" style="color:#d9d9d9"></i></button>
                   </div>

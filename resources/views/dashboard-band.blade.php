@@ -401,7 +401,7 @@ input[type='range']::-webkit-slider-thumb{
                                   </a>
                                   @endif
                                   <p style="text-align: center; margin-top: 5px;">{{$albums[$i]->album_name}}</p>                                  
-                                  <p style="font-size: 11px; text-align: center; margin-top: -10px;">Released: 23 Aug 2008</p>
+                                  <p style="font-size: 11px; text-align: center; margin-top: -10px;">{{$albums[$i]->released_date}}</p>
 
                                   
                                   <center>
