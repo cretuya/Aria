@@ -175,6 +175,12 @@
 			<div class="container-fluid">
 				<div class="row">
 				@forelse($albums as $album)
+
+				<?php
+					$date = DateTime::createFromFormat("Y-m-d", $album->released_date);
+					$album->released_date = $date->format("M d Y");
+				?>
+
 					<div class="col-md-2">
 						<a href="{{url($band->band_name.'/albums/'.$album->album_id)}}">
 						  <div class="panel-thumbnail">
@@ -183,7 +189,7 @@
 						</a>
 						<a href="{{url($band->band_name.'/albums/'.$album->album_id)}}"><p style="text-align: center; margin-top: 10px;">{{$album->album_name}}</p>
 						</a>
-						<center><p style="margin-top: -10px; font-size: 11px;">23 Mar 2018</p></center>
+						<center><p style="margin-top: -10px; font-size: 11px;">{{$album->released_date}}</p></center>
 						@if($album->num_likes == 0)
 						<center><p class="followers" style="margin-top: -10px; font-size: 11px; color: #9e9e9e">0 likes</p></center>
 						@else

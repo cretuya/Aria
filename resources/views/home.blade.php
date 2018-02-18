@@ -232,6 +232,8 @@
                     
                   </div>
 
+                  <br>
+
                   <div style="margin-left: 15px;">
                   <!-- Left and right controls -->
                       <a class="left carousel-control" href="#myCarousel1" data-slide="prev">

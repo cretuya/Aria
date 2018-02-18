@@ -1,5 +1,6 @@
 @extends('layouts.master')
-
+  <script src="{{asset('assets/js/jquery-3.2.1.min.js')}}"></script>
+  <script src="{{asset('assets/js/jquery-ui.min.js')}}"></script>
 <style>
 	.panel{
 		margin-bottom: 0px !important;
@@ -16,6 +17,22 @@
 		border-bottom: 2px solid #E57C1F;
 		border-radius: 0px;
 		color: #fafafa;
+	}
+	input[type='range']{
+	  -webkit-appearance: none !important;
+	  background: #212121;
+	  cursor: pointer;
+	  height: 5px;
+	  outline: none !important;
+	}
+
+	input[type='range']::-webkit-slider-thumb{
+	  -webkit-appearance: none !important;
+	  background: #E57C1F;
+	  height: 12px;
+	  width: 12px;
+	  border-radius: 2px;
+	  cursor: pointer;
 	}
 </style>
 
@@ -153,10 +170,27 @@
 		            @foreach($searchResultSong as $srSong)
 		              <div class="panel" style="background: transparent;">
 		              	<div class="panel-body">
-		              		<label>{{$srSong->song_audio}}</label><br>
-		              		<audio controls>
-		              			<source src="{{url('/assets/music/'.$srSong->song_audio)}}" type="audio/mpeg">
-		              		</audio>
+		              		<div class="media" style="width: 70%;">
+		              			<div class="media-left">
+		              				<div class="panel-thumbnail">
+		              				  <img src="{{$srSong->album->album_pic}}" class="media-object" style="width: 80px; height: 80px;">
+		              				</div>
+		              				<a href="#" onclick="playOrPause($(this));" style="position: relative;">
+		              				  <img src="{{asset('assets/img/playfiller.png')}}" class="media-object" style="width: 45px; position: absolute; top: -62px; left: 18px; opacity: 0.75;" draggable="false">
+		              				  <img id="playBtn" src="{{asset('assets/img/play.png')}}" class="media-object" draggable="false" style="width: 45px; position: absolute; top: -62px; left: 18px;">
+		              				</a>
+		              				<audio src="{{url('/assets/music/'.$srSong->song_audio)}}" type="audio/mpeg" controls hidden></audio>
+		              			</div>
+		              			<div class="media-body" style="background: #fafafa; padding: 15px;">
+		              				<h5 style="margin-top: 5px; color: #212121;">
+		              					{{$srSong->album->band->band_name}} - {{$srSong->song_title}}
+		              					<button class="btn pull-right" style="padding: 3px 7px; margin-top: -5px; background: #232323; color: #fafafa;">
+		              						<span style="font-size: 12px;">Add to playlist</span>
+		              					</button>
+		              				</h5>
+		              				<input id="musicslider" type="range" style="margin-top: 20px;" min="0" max="100" value="0" step="1">		              				
+		              			</div>
+		              		</div>		              		
 		              	</div>
 		              </div>
 		            @endforeach
@@ -236,5 +270,47 @@
 	</div>
 </div>
 
+
+<script type="text/javascript">
+	
+	function playOrPause(element){
+
+		var audioElement = element.next();
+
+		var seekslider = document.getElementById('musicslider');
+		var audio = audioElement;
+
+		console.log($(audioElement).get(0));
+
+		if (element.paused) {
+
+			element.find(':nth-child(2)').attr("src","{{url('/assets/img/equa2.gif')}}");
+			element.find(':nth-child(2)').css('width','20px');
+			element.find(':nth-child(2)').css('left','30px');
+			element.find(':nth-child(2)').css('top','-55px');
+			$(audioElement).get(0).play();
+			
+			console.log("if paused");
+		}
+		else{
+			element.find(':nth-child(2)').attr("src","{{url('/assets/img/play.png')}}");
+			$(audioElement).get(0).pause();
+			console.log('else');
+		}
+		
+		// console.log(element.next());
+
+		seekslider.addEventListener("change", function(){
+		    var seekTo = audio.duration * (seekslider.value/100);
+		    audio.currentTime = seekTo;
+		});
+
+		// audio.addEventListener("timeupdate", function(){
+		//     var newtime = audio.currentTime/audio.duration*100;
+		//     seekslider.value = newtime;
+		// });
+	}
+
+</script>
 
 @endsection

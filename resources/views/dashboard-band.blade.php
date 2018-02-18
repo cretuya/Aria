@@ -5,6 +5,8 @@
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/dashboard-manage-band.css').'?'.rand()}}">
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/awesome-bootstrap-checkbox.css').'?'.rand()}}">
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/dropdown-animation.css').'?'.rand()}}">
+<link rel="stylesheet" type="text/css" href="{{asset('assets/css/timepicker.css').'?'.rand()}}">
+<script src="//jonthornton.github.io/jquery-timepicker/jquery.timepicker.js"></script>
 
 <style>
   .carousel-control.left button, .carousel-control.right button{
@@ -278,7 +280,7 @@ input[type='range']::-webkit-slider-thumb{
                 @foreach($events as $event)
 
                 <?php
-                $date1=$event->event_date;
+                $date1 = $event->event_date;
                 $date = DateTime::createFromFormat("Y-m-d", $event->event_date);
                 $event->event_date = $date->format("M d");
 
@@ -377,9 +379,14 @@ input[type='range']::-webkit-slider-thumb{
                           @if(count($albums) == 0)
                           <center><p>No albums were found</p></center>
                           @else
-                                <?php 
+                                <?php
+
                                 $count=0;
                                 for($i=0; $i < count($albums) ; $i++) {  
+
+                                  $date = DateTime::createFromFormat("Y-m-d", $albums[$i]->released_date);
+                                  $albums[$i]->released_date = $date->format("M d Y");
+                                  $rdate = $date->format("m/d/Y");
 
                                 if($count == 6){
                                     echo "</div>";
@@ -395,8 +402,8 @@ input[type='range']::-webkit-slider-thumb{
                                   </a>
                                   @else
                                   <a href="{{url($band->band_name.'/editAlbum/'.$albums[$i]->album_id)}}">
-                                  <div class="panel-thumbnail">
-                                    <img src="{{$albums[$i]->album_pic}}" class="img-responsive" style="height: 150px;">
+                                  <div class="panel-thumbnail" style="background: none;">
+                                    <img src="{{$albums[$i]->album_pic}}" class="img-responsive" style="height: 150px; width: 150px;">
                                   </div>
                                   </a>
                                   @endif
@@ -409,7 +416,7 @@ input[type='range']::-webkit-slider-thumb{
                                     <button class="dropdown-toggle" type="button" data-toggle="dropdown" style="background: transparent; border: none;"><span class="fa fa-ellipsis-h ellipsisAlbum pull-right" style="font-size: 16px;"></span></button>
                                     <ul class="dropdown-menu dropdown-menu-right">
                                       <li class="editprofActions2"><span class="btn addSong" data-toggle="modal" data-id="{{$albums[$i]->album_id}}">Add song to album</span></li>
-                                      <li class="editprofActions2"><span class="btn editAlbum" data-name="{{$albums[$i]->album_name}}" data-id="{{$albums[$i]->album_id}}" data-desc="{{$albums[$i]->album_desc}}" data-reldate="{{$albums[$i]->released_date}}" data-toggle="modal" data-target="#edit-album-modal">Edit album details</span></li>
+                                      <li class="editprofActions2"><span class="btn editAlbum" data-name="{{$albums[$i]->album_name}}" data-id="{{$albums[$i]->album_id}}" data-desc="{{$albums[$i]->album_desc}}" data-reldate="{{$rdate}}" data-pic="{{$albums[$i]->album_pic}}" data-toggle="modal" data-target="#edit-album-modal">Edit album details</span></li>
                                       <li class="editprofActions2"><span class="btn editAlbum"><a href="{{url($band->band_name.'/editAlbum/'.$albums[$i]->album_id)}}" style="color:#fafafa">Manage album</a></span></li>
                                       <li class="editprofActions2"><span class="btn deleteAlbum" data-id="{{$albums[$i]->album_id}}">Delete album</span></li>
                                     </ul>
@@ -561,11 +568,11 @@ input[type='range']::-webkit-slider-thumb{
             Album Title:<br>
             <input type='text' name='album_name' class='form-control' required><br>
             Description:<br>
-            <input type='text' name='album_desc' class='form-control' required><br>
-            Add Album Picture:<br>
+            <textarea name='album_desc' class='form-control' required rows="6"></textarea><br>
+            Album Picture:<br>
             <input type='file' name='album_pic'  class='form-control' accept="image/*" required><br>
             Release Date:<br>
-            <input type='date' name='released_date' class='form-control' required><br><br>            
+            <input type='text' name='released_date' class='form-control datepicker' required style="padding-left: 13px;"><br><br>            
             <br>
 
 
@@ -598,9 +605,11 @@ input[type='range']::-webkit-slider-thumb{
             Album Title:<br>
             <input type='text' name='album_name' id="album_name" class='form-control'><br>
             Description:<br>
-            <input type='text' name='album_desc' id="album_desc" class='form-control'><br>
+            <textarea name='album_desc' id="album_desc" class='form-control' rows="6"></textarea><br>
+            Album Picture:<br>
+            <input type='file' name='album_pic' id="albumpicture" class='form-control' accept="image/*" required><br>
             Released Date:<br>
-            <input type='date' name='released_date' id="released_date" class='form-control'><br>
+            <input type='text' name='released_date' id="released_date" class='form-control datepicker' style="padding-left: 13px;"><br>
             <br>
             <input type="text" id="album_id" name="album_id" hidden><br>
             <br>
@@ -828,7 +837,7 @@ input[type='range']::-webkit-slider-thumb{
           </div>
           <div class="col-md-6">
             <label>Time:<br></label>
-            <input type='text' name="event_time" class="form-control" required>
+            <input type='text' name="event_time" class="form-control timepicker" required>
           </div>
         </div>
         <div class="row">
@@ -882,7 +891,7 @@ input[type='range']::-webkit-slider-thumb{
           </div>
           <div class="col-md-6">
             <label>Time:<br></label>
-            <input type='text' name="event_time" id="event_time" class="form-control" required>
+            <input type='text' name="event_time" id="event_time" class="form-control timepicker" required>
           </div>
         </div>
         <div class="row">
@@ -1073,6 +1082,9 @@ function playPauseVid(){
 $(document).ready(function()
 {
 
+  $('input.datepicker').datepicker();
+  $('input.timepicker').timepicker();
+
      $("#showVideos").on('click', '.delete' ,function(){
         
         var val = $(this).val();
@@ -1130,12 +1142,14 @@ $(document).ready(function()
           var id = $(this).data('id');
           var name = $(this).data('name');
           var reldate = $(this).data('reldate');
+          var pic = $(this).data('pic');
           // alert(reldate);
 
           $('.modal-body #album_desc').val(desc);
           $('.modal-body #album_id').val(id);
           $('.modal-body #album_name').val(name);
           $('.modal-body #released_date').val(reldate);
+          $('.modal-body #albumpicture').val(pic);
 
      });
 
@@ -1303,7 +1317,6 @@ $(document).ready(function()
 <script>
     $('.carousel').carousel({
         interval: false
-    });
-    $('.datepicker').datepicker();
+    });    
 </script>
 @endsection

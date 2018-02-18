@@ -14,7 +14,7 @@ class CreateUsernotificationsTable extends Migration
     public function up()
     {
         Schema::create('usernotifications', function (Blueprint $table) {
-            $table->integer('band_id')->unique();
+            $table->integer('band_id')->nullable();
             $table->string('user_id')->nullable();
             $table->string('bandrole')->nullable();
             $table->string('invitor')->nullable();

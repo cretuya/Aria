@@ -56,6 +56,9 @@ class AlbumController extends Controller
         $albumpic = $request->file('album_pic');
         $released_date = $request->input('released_date');
 
+
+        $rdate = date('Y-m-d', strtotime(str_replace('-', '/', $released_date)));
+
         // $band = Band::where('band_id', $request->input('band_id'))->first();
 
         if (count($band)>0)
@@ -67,7 +70,7 @@ class AlbumController extends Controller
                 'album_desc' => $desc,
                 'band_id' =>$band->band_id,
                 'album_pic' => $cloudder['url'],
-                'released_date' => $released_date,
+                'released_date' => $rdate,
             ]);
             // dd($create);
         return redirect($band->band_name.'/manage');
@@ -112,10 +115,12 @@ class AlbumController extends Controller
         $name = $request->input('album_name');
         $desc = $request->input('album_desc');
         $aid = $request->input('album_id');
+        $albumpic = $request->file('album_pic');
         $released_date = $request->input('released_date');
         $rules = new Album;
         $validator = Validator::make($request->all(), $rules->updaterules);        
         $band = Band::where('band_name', $bname)->first();
+        $rdate = date('Y-m-d', strtotime(str_replace('-', '/', $released_date)));
         if ($validator->fails())
         {
             return redirect('/'.$bname.'/manage')->withErrors($validator)->withInput();
@@ -124,11 +129,14 @@ class AlbumController extends Controller
         {
             if (count($band)>0)
             {
+                \Cloudder::upload($albumpic);
+                $cloudder=\Cloudder::getResult();
                 $create = Album::where('album_id' , $aid)->update([
                     'album_name' => $name,
                     'album_desc' => $desc,
                     'band_id' =>$band->band_id,
-                    'released_date' => $released_date,
+                    'album_pic' => $cloudder['url'],
+                    'released_date' => $rdate,
                 ]);
             }
             else
