@@ -39,6 +39,7 @@
 @include('layouts.sidebar')
 @section('content')
 <br><br>
+<meta name ="csrf-token" content = "{{csrf_token() }}"/>
 <div class="container" id="main" style="background: #161616; padding-left: 30px; padding-right: 30px;">
     <div class="row">
         <div class="col-md-12">
@@ -175,11 +176,11 @@
 		              				<div class="panel-thumbnail">
 		              				  <img src="{{$srSong->album->album_pic}}" class="media-object" style="width: 80px; height: 80px;">
 		              				</div>
-		              				<a href="#" onclick="playOrPause($(this));" style="position: relative;">
+		              				<a href="#" onclick="playOrPause($(this),{{$srSong->song_id}});" style="position: relative;">
 		              				  <img src="{{asset('assets/img/playfiller.png')}}" class="media-object" style="width: 45px; position: absolute; top: -62px; left: 18px; opacity: 0.75;" draggable="false">
 		              				  <img id="playBtn" src="{{asset('assets/img/play.png')}}" class="media-object" draggable="false" style="width: 45px; position: absolute; top: -62px; left: 18px;">
 		              				</a>
-		              				<audio src="{{url('/assets/music/'.$srSong->song_audio)}}" type="audio/mpeg" controls hidden></audio>
+		              				<audio src="{{url('/assets/music/'.$srSong->song_audio)}}" data-id="{{$srSong->song_id}}" type="audio/mpeg" controls hidden></audio>
 		              			</div>
 		              			<div class="media-body" style="background: #fafafa; padding: 15px;">
 		              				<h5 style="margin-top: 5px; color: #212121;">
@@ -187,8 +188,10 @@
 		              					<button class="btn pull-right" style="padding: 3px 7px; margin-top: -5px; background: #232323; color: #fafafa;">
 		              						<span style="font-size: 12px;">Add to playlist</span>
 		              					</button>
+		              					<!-- <div class="pull-right" style="margin-right: 20px;"><span id="fullDuration" style="color: #212121; vertical-align: text-top;">0:00</span>
+		              					</div> -->
 		              				</h5>
-		              				<input id="musicslider" type="range" style="margin-top: 20px;" min="0" max="100" value="0" step="1">		              				
+		              				<input id="musicslider{{$srSong->song_id}}" type="range" style="margin-top: 20px;" min="0" max="100" value="0" step="1">		              				
 		              			</div>
 		              		</div>		              		
 		              	</div>
@@ -272,43 +275,143 @@
 
 
 <script type="text/javascript">
-	
-	function playOrPause(element){
 
+	var usersDurationPlayed = 0;
+	var globalInt;
+	var othersongId;
+	var currentlyPlayingId;
+	var prevPlayingId;
+	var counter=0;
+	var prevSong;
+
+	function playOrPause(element, id){
+
+		// console.log(element.next().data('id'));
+		// console.log(currentlyPlayingId);
 		var audioElement = element.next();
 
-		var seekslider = document.getElementById('musicslider');
-		var audio = audioElement;
+		var seekslider = document.getElementById('musicslider'+id);
+		// var audio = audioElement;
 
-		console.log($(audioElement).get(0));
+		prevSong = parseInt($(audioElement).get(0).duration);
 
-		if (element.paused) {
+		$(audioElement).get(0).addEventListener("ended", function(){
+		  setTimeout(function(){
 
+		    element.find(':nth-child(2)').attr("src","{{url('/assets/img/play.png')}}");
+		    element.find(':nth-child(2)').css('width','45px');
+		    element.find(':nth-child(2)').css('left','18px');
+		    element.find(':nth-child(2)').css('top','-62px');
+
+		    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+		    console.log(CSRF_TOKEN, usersDurationPlayed, id, prevSong);
+		    $.ajax({
+		      method : "post",
+		      url : 'addSongPlayedForScore',
+		      data : { '_token' : CSRF_TOKEN, 'durationPlayed' : usersDurationPlayed, 'songID' : id, 'prevSong' : prevSong
+		      },
+		      success: function(json){
+		        console.log(json);
+		      },
+		      error: function(a,b,c)
+		      {
+		        console.log(b);
+		      }
+		    });
+
+		    clearInterval(globalInt);
+		    usersDurationPlayed = 0;
+		    timerDurationPlayed();
+
+			});
+		  var prevElement = $('audio[data-id="'+prevPlayingId+'"]');
+		  prevElement.get(0).currentTime=0;
+		});
+
+		// console.log($(audioElement).get(0));
+
+		if (!$(audioElement).get(0).paused && !$(audioElement).get(0).ended) {
+			element.find(':nth-child(2)').attr("src","{{url('/assets/img/play.png')}}");
+			element.find(':nth-child(2)').css('width','45px');
+			element.find(':nth-child(2)').css('left','18px');
+			element.find(':nth-child(2)').css('top','-62px');
+			$(audioElement).get(0).pause();			
+			// window.clearInterval(updateTime);
+		}
+		else{			
 			element.find(':nth-child(2)').attr("src","{{url('/assets/img/equa2.gif')}}");
 			element.find(':nth-child(2)').css('width','20px');
 			element.find(':nth-child(2)').css('left','30px');
 			element.find(':nth-child(2)').css('top','-55px');
 			$(audioElement).get(0).play();
-			
-			console.log("if paused");
-		}
-		else{
-			element.find(':nth-child(2)').attr("src","{{url('/assets/img/play.png')}}");
-			$(audioElement).get(0).pause();
-			console.log('else');
+
+			counter++;
+
+			if (counter == 1) {
+				prevPlayingId = id;
+			}else{				
+				if (id != prevPlayingId) {
+					var prevElement = $('audio[data-id="'+prevPlayingId+'"]');
+					// console.log(prevElement);
+					prevElement.prev().find(':nth-child(2)').attr("src","{{url('/assets/img/play.png')}}");
+					prevElement.prev().find(':nth-child(2)').css('width','45px');
+					prevElement.prev().find(':nth-child(2)').css('left','18px');
+					prevElement.prev().find(':nth-child(2)').css('top','-62px');
+					prevElement.get(0).pause();
+					prevElement.get(0).currentTime=0;
+
+					if(usersDurationPlayed == 0){
+					  timerDurationPlayed();
+					}else{
+					  //push then usersDurationPlayed = 0;
+					  var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+					    console.log(CSRF_TOKEN, usersDurationPlayed, prevPlayingId, prevSong);
+					  $.ajax({
+					    method : "post",
+					    url : 'addSongPlayedForScore',
+					    data : { '_token' : CSRF_TOKEN, 'durationPlayed' : usersDurationPlayed, 'songID' : prevPlayingId, 'prevSong' : prevSong
+					    },
+					    success: function(json){
+					      console.log(json);
+					    },
+					    error: function(a,b,c)
+					    {
+					      console.log(b);
+					    }
+					  });
+					  usersDurationPlayed = 0;
+					  timerDurationPlayed();
+					}
+
+					prevPlayingId = id;
+				}
+			}
+
+			// othersongId = audioElement.data('id');
+			// console.log(othersongId, "other song id");
+			// updateTime = setInterval(update(element), 0);
 		}
 		
 		// console.log(element.next());
+		// console.log(audioElement.get(0).duration);
 
 		seekslider.addEventListener("change", function(){
-		    var seekTo = audio.duration * (seekslider.value/100);
-		    audio.currentTime = seekTo;
+		    var seekTo = audioElement.get(0).duration * (seekslider.value/100);
+		    audioElement.get(0).currentTime = seekTo;
 		});
 
-		// audio.addEventListener("timeupdate", function(){
-		//     var newtime = audio.currentTime/audio.duration*100;
-		//     seekslider.value = newtime;
-		// });
+		audioElement.get(0).addEventListener("timeupdate", function(){
+		    var newtime = audioElement.get(0).currentTime/audioElement.get(0).duration*100;
+		    seekslider.value = newtime;
+		});
+	}
+
+	function timerDurationPlayed(flag = true){
+
+	  globalInt = setInterval(function(){
+	    usersDurationPlayed++;
+	    // console.log(usersDurationPlayed);
+	  }, 1000);
 	}
 
 </script>
