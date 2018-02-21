@@ -10,7 +10,13 @@
 }
 
 /* 1920x1080 */
-@media (min-width: 1919px) and (max-width: 1920px){
+/*@media (min-width: 1919px) and (max-width: 1920px){
+}*/
+
+@media (min-width: 1920px){
+  .xs3block{
+   width: 16.66666667%; 
+  }
 }
 
 @media (min-width: 320px) and (max-width: 768px){

@@ -57,6 +57,11 @@ input[type='range']::-webkit-slider-thumb{
   width: 2px;
 }
 
+.ui-menu .ui-menu-item{
+  font-family: Roboto;
+  font-size: 14px;
+}
+
 </style>
 
 @include('layouts.sidebar')
@@ -214,7 +219,7 @@ input[type='range']::-webkit-slider-thumb{
              <div class="row" id="band-member-section">
                <div class="col-xs-5">
                  <label for="add-band-member-name">Add Member</label>
-                 <input type="text" class="form-control" id="add-band-member-name" name="add-band-member-name" placeholder="Enter a name">
+                 <input type="text" class="form-control" id="add-band-member-name" name="add-band-member-name" placeholder="Enter a name" required>
                  <input type="text" id="add-band-member-id" name="add-band-member-id" hidden>
                  <input type="text" id="add-band-member-band-id" name="add-band-member-band-id" value="{{$band->band_id}}" hidden>
                  <input type="text" id="add-band-member-band-name" name="add-band-member-band-name" value="{{$band->band_name}}" hidden>
@@ -223,8 +228,8 @@ input[type='range']::-webkit-slider-thumb{
                <input type="text" name="member-user-id" hidden>
                <div class="col-xs-5">      
                  <label for="add-band-member">Role</label>
-                 <select id="add-band-member-role" class="form-control" name="add-band-member-role">
-                   <option hidden>Select Role</option>
+                 <select id="add-band-member-role" class="form-control" name="add-band-member-role" required>
+                   <option value="" selected hidden>Select Role</option>
                    <option value="Vocalist">Vocalist</option>
                    <option value="Lead Guitar">Lead Guitar</option>
                    <option value="Rythm Guitar">Rythm Guitar</option>
@@ -241,11 +246,11 @@ input[type='range']::-webkit-slider-thumb{
              </div>
              </form>
 
-             <table class="table table-hover" style="margin-top: 5px;">
+             <table id="bandmembersTable" class="table table-hover" style="margin-top: 5px;">
              
              @foreach($bandmembers as $members)
              
-             <form id="bandmemberform" method="post" action="{{url('/deletemember')}}">
+             <form id="bandmemberform{{$members->user->user_id}}" method="post" action="{{url('/deletemember')}}">
              <span style="margin-top: 20px;">&nbsp;</span>
              {{csrf_field()}}
                <tr>
@@ -255,7 +260,7 @@ input[type='range']::-webkit-slider-thumb{
                  <td><input type="text" name="band-member-role" class="member-role" style="border: none; background: transparent;" value="{{$members->bandrole}}" readonly></td>
                  <input type="text" value="{{$band->band_name}}" name="bandName" hidden>
                  <!-- <td><a href="#"><span class="fa fa-pencil"></span></a></td> -->
-                 <td><button type="submit" style="background: transparent; border: none;" class="fa fa-close"></button></td>
+                 <td><button type="button" onclick="confirmDelAction({{$members->user->user_id}},{{$members->user->user_id}}, {{session('userSocial')['id']}});" style="background: transparent; border: none;" class="fa fa-close"></button></td>
                </tr>
              </form>
              @endforeach
@@ -1313,6 +1318,27 @@ $(document).ready(function()
   // }
 
  });
+
+  function confirmDelAction(formID,memberID,currentUserID){
+    var numOfMembers = $('#bandmembersTable tr').size();
+
+    if(numOfMembers == 1){
+      if (confirm("Removing the last member would delete the band. Proceed to deleting the band?")){
+        $('#bandmemberform'+formID).submit();
+      }
+    }
+    else if(numOfMembers != 1 && memberID == currentUserID){
+      if (confirm("Are you sure you want to leave the band?")){
+        $('#bandmemberform'+formID).submit();
+      }
+    }
+    else{
+      if (confirm("Are you sure you want to remove this member?")){
+        $('#bandmemberform'+formID).submit();
+      }
+    }
+  }
+
 </script>
 <script>
     $('.carousel').carousel({

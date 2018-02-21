@@ -34,6 +34,11 @@
 	  border-radius: 2px;
 	  cursor: pointer;
 	}
+
+	.songforcertainplaylist h5:hover{
+		background: #101010;
+		color: #fafafa;
+	}
 </style>
 
 @include('layouts.sidebar')
@@ -147,9 +152,14 @@
 		              		    </div>
 		              		    </a>
 		              		  </div>
-		              		  <div class="media-body" style="padding-top: 20px; background: #232323; padding-left: 10px;">
-		              		    <a href="{{ url('/playlist/'.$srPlay->pl_id) }}"><h4 class="media-heading">{{$srPlay->pl_title}}</h4></a>
-		              		    <p>by: {{$srPlay->fullname}}</p>
+		              		  <div class="media-body" style="padding-top: 15px; background: #232323; padding-left: 10px;">
+		              		    <a href="{{ url('/playlist/'.$srPlay->pl_id) }}"><h5 class="media-heading">{{$srPlay->pl_title}}</h5></a>
+		              		    @if($srPlay->followers == 0 || $srPlay->followers == null)
+		              		    <p style="font-size: 12px;">0 people are following this playlist</p>
+		              		    @else
+		              		    <p style="font-size: 12px;">{{$srPlay->followers}} people are following this playlist</p>
+		              		    @endif
+		              		    <p style="font-size: 12px;">by: <a href="{{ url('/profile/'.$srPlay->user_id) }}">{{$srPlay->fullname}}</a></p>
 		              		  </div>
 		              		</div>
 		              		
@@ -185,7 +195,7 @@
 		              			<div class="media-body" style="background: #fafafa; padding: 15px;">
 		              				<h5 style="margin-top: 5px; color: #212121;">
 		              					{{$srSong->album->band->band_name}} - {{$srSong->song_title}}
-		              					<button class="btn pull-right" style="padding: 3px 7px; margin-top: -5px; background: #232323; color: #fafafa;">
+		              					<button class="btn pull-right" onclick="openSelectPlaylistModal({{$srSong->song_id}},{{$srSong->genre->genre_id}});" style="padding: 3px 7px; margin-top: -5px; background: #232323; color: #fafafa;">
 		              						<span style="font-size: 12px;">Add to playlist</span>
 		              					</button>
 		              					<!-- <div class="pull-right" style="margin-right: 20px;"><span id="fullDuration" style="color: #212121; vertical-align: text-top;">0:00</span>
@@ -211,23 +221,27 @@
 
 		            <?php
 		            	$date = DateTime::createFromFormat("Y-m-d", $srAlbum->released_date);
-		            	$srAlbum->released_date = $date->format("M Y");
+		            	$srAlbum->released_date = $date->format("M d Y");
 		            ?>
 
 		              <div class="panel" style="background: transparent;">
 		              	<div class="panel-body">
 		              	<div class="media" style="border-top: 0px; border-right: 0px; border-left: 0px; border-bottom: 2px solid #E57C1F">
 		              		<div class="media-left">
-		              		<a href="#">
+		              		<a href="{{url('/'.$srAlbum->band->band_name.'/albums/'.$srAlbum->album_id)}}">
 		              			<div class="panel-thumbnail">
 		              				<img src="{{$srAlbum->album_pic}}" class="media-object" style="width: 100%; min-width: 100px; height: 100px">
 		              			</div>
 		              		</a>
 		              		</div>
 		              		<div class="media-body" style="padding-top: 5px; background: #232323; padding-left: 10px;">
-		              		<a href="#"><h5>{{$srAlbum->album_name}}</h5></a>
+		              		<a href="{{url('/'.$srAlbum->band->band_name.'/albums/'.$srAlbum->album_id)}}"><h5>{{$srAlbum->album_name}}</h5></a>
+		              		@if($srAlbum->num_likes == 0 || $srAlbum->num_likes == null)
+		              		<p style="font-size: 12px; margin-top: -5px; margin-bottom: 20px;">0 people liked this album</p>
+		              		@else
 		              		<p style="font-size: 12px; margin-top: -5px; margin-bottom: 20px;">{{$srAlbum->num_likes}} people liked this album</p>
-		              		<span style="font-size: 12px;">Date Release: {{$srAlbum->released_date}}</span>
+		              		@endif
+		              		<span style="font-size: 12px;">Date Released: {{$srAlbum->released_date}}</span>
 		              		</div>
 		              	</div>
 		              	</div>
@@ -272,6 +286,32 @@
 		</div>
 	</div>
 </div>
+
+<div id="selectPlaylistModal" class="modal" role="dialog">
+  <div class="modal-dialog modal-sm">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Select Playlist</h4>
+        </div>
+        <div class="modal-body" style="padding-left: 25px;padding-right: 25px;">
+        <?php
+        	for ($i=0; $i < count($allUserPlaylist); $i++) {
+        ?>
+
+    		<a href="#" class="songforcertainplaylist" onclick="submitPlaylist({{$allUserPlaylist[$i]->pl_id}},this);">
+    			<h5 style="margin-top: 4px; margin-bottom: 4px; padding: 10px; border-radius: 4px;">{{$allUserPlaylist[$i]->pl_title}}</h5>
+    		</a>
+        <?php } ?>
+        </div>
+        </form>
+    </div>
+
+  </div>
+</div>
+
+  
 
 
 <script type="text/javascript">
@@ -412,6 +452,40 @@
 	    usersDurationPlayed++;
 	    // console.log(usersDurationPlayed);
 	  }, 1000);
+	}
+
+	function openSelectPlaylistModal(songID,genreID){
+
+		$('.songforcertainplaylist').attr('data-sngid', songID);
+		$('.songforcertainplaylist').attr('data-gnrid', genreID);
+		
+		$('#selectPlaylistModal').fadeTo(300, 1).modal('show');
+		// console.log('modal opened');
+	}
+
+	function submitPlaylist(id,element){
+		var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+		var plID = id;
+		var songID = $(element).data('sngid');
+		var genreID = $(element).data('gnrid');
+
+		// console.log(plID,songID,genreID);
+
+		$.ajax({
+		  method : "post",
+		  url : 'addSongResultToPlaylist',
+		  data : { '_token' : CSRF_TOKEN, 'plID' : plID , 'songID' : songID , 'genreID' : genreID
+		  },
+		  success: function(json){
+		    console.log(json);
+		  },
+		  error: function(a,b,c)
+		  {
+		    console.log(b);
+		  }
+		});
+
+		$('#selectPlaylistModal').fadeTo(300, 1).modal('hide');
 	}
 
 </script>

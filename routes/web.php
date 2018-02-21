@@ -111,5 +111,6 @@ Route::middleware(['auth'])->group(function(){
 	Route::post('{band_name}/editEvent' , 'EventController@editEvent');
 	Route::get('deleteEvent/{event_id}' , 'EventController@deleteEvent');
 	Route::post('addSongPlayedForScore', 'AlbumController@addSongPlayedAsScore');
+	Route::post('addSongResultToPlaylist', 'SearchController@addToPlaylistFromSearchResult');
 
 });

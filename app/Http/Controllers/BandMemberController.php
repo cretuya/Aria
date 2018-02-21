@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Band;
 use App\Bandmember;
 use App\User;
 use App\UserNotification;
@@ -154,10 +155,18 @@ class BandMemberController extends Controller
 
 	public function deleteBandMember(Request $request){
 		$memberID=$request->input('band-member-id');
+
 		$delMember = Bandmember::where([
 			['user_id', $memberID],
 			['band_id', $request->input('band-id')],
 		])->delete();
+
+		$numOfBandMembers = Bandmember::where('band_id', $request->input('band-id'))->get();
+
+		if (count($numOfBandMembers)==0) {
+			$delBand = Band::where('band_id', $request->input('band-id'))->delete();
+			return redirect('/home');
+		}		
 
 		// dd($delMember);
 		$bandName=$request->input('bandName');

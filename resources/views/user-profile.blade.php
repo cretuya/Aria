@@ -108,30 +108,24 @@
             </center>
           </div>
           @else
-            <?php
-            for ($i=0; $i < count($playlists); $i++) {
-              if ($i % 4 == 0) {
-                echo "</div><br>";
-                echo "<div class='row'>";
-              }
-            ?>
+            @foreach ($playlists as $playlist)
               <center>
-              <div class="col-xs-3">
+              <div class="col-xs-3 xs3block">
                 <div class="panel" style="background: none; border: none;">
                   <div class="panel-body">
-                    <a href="{{url('playlist/'.$playlists[$i]->pl_id)}}">
-                    <div class="panel-thumbnail">
-                      <img src="{{$playlists[$i]->image}}" class="img-responsive" style="height: 100%; max-height: 180px; border: 2px solid #dddddd; margin-bottom: 10px;">
+                    <a href="{{url('playlist/'.$playlist->pl_id)}}">
+                    <div class="panel-thumbnail" style="background: transparent;">
+                      <img src="{{$playlist->image}}" class="img-responsive" style="height: 100%; max-height: 180px; border: 2px solid #dddddd; margin-bottom: 10px;">
                     </div>
-                    <span style="font-size: 14px;">{{$playlists[$i]->pl_title}}</span></a>
+                    <span style="font-size: 14px;">{{$playlist->pl_title}}</span></a>
                     <br>
-                    <p style="font-size: 12px; color: #999; font-family: Arial; font-weight: 600;">{{$playlists[$i]->fullname}}</p>
+                    <p style="font-size: 12px; color: #999; font-family: Arial; font-weight: 600;">{{$playlist->fullname}}</p>
 
                     <div class="dropup">
                       <button class="dropdown-toggle" type="button" data-toggle="dropdown" style="background: transparent; border: none;"><span class="fa fa-ellipsis-h ellipsisPlaylist pull-right" style="font-size: 16px;"></span></button>
                       <ul class="dropdown-menu dropdown-menu-right">
-                        <li class="editprofActions2"><span class="btn edit" data-id="{{$playlists[$i]->pl_id}}">Edit</span></li>
-                        <li class="editprofActions2"><span class="btn delete" data-id="{{$playlists[$i]->pl_id}}">Delete</span></li>
+                        <li class="editprofActions2"><span class="btn edit" data-id="{{$playlist->pl_id}}">Edit</span></li>
+                        <li class="editprofActions2"><span class="btn delete" data-id="{{$playlist->pl_id}}">Delete</span></li>
                       </ul>
                     </div>
 
@@ -139,9 +133,9 @@
                 </div>
               </div>
               </center>
-              <?php }?>
+              @endforeach
 
-              <div class="col-xs-3">
+              <div class="col-xs-3 xs3block">
                 <center>
                 <a href="#" data-toggle="modal" data-target="#create_playlist_modal">
                 <div class="panel" id="addplistpanel" style="background: none; border: 2.5px solid #d9d9d9; width: 180px; height: 180px; margin-top: 15px;">
@@ -171,18 +165,18 @@
                 $i = 0;          
                 $j = $i;
                 for ($i=0; $i < count($bandsfollowedNoGenre)/2; $i++) {
-                  if ($i % 4 == 0) {
-                    echo "</div><br>";
-                    echo "<div class='row'>";
-                  }
+                  // if ($i % 4 == 0) {
+                  //   echo "</div><br>";
+                  //   echo "<div class='row'>";
+                  // }
                 ?>
-                <div class="col-xs-3">
+                <div class="col-xs-3 xs3block">
                   <center>
                   <div class="panel" style="background: none; margin-bottom: 0px;">
                     <div class="panel-body" style="padding-bottom: 0px;">                    
                       <a href="{{url('/'.$bandsfollowedNoGenre[$j]->band_name)}}">
                       <div class="panel-thumbnail" style="background: transparent;">
-                        <img src="{{$bandsfollowedNoGenre[$j]->band_pic}}" class="img-responsive img-circle" style="height: 210px;">
+                        <img src="{{$bandsfollowedNoGenre[$j]->band_pic}}" class="img-responsive img-circle" style="height: 210px; width: 210px;">
                       </div>
                       </a>
                       <a href="{{url('/'.$bandsfollowedNoGenre[$j]->band_name)}}"><h5 style="font-size: 14px;">{{$bandsfollowedNoGenre[$j]->band_name}}</h5></a>
@@ -197,18 +191,18 @@
                 $i = 0;
                 $j = $i;
                 for ($i=0; $i < count($bandsfollowed)/2; $i++) {
-                  if ($i % 4 == 0) {
-                    echo "</div><br>";
-                    echo "<div class='row'>";
-                  }
+                  // if ($i % 4 == 0) {
+                  //   echo "</div><br>";
+                  //   echo "<div class='row'>";
+                  // }
                 ?>
-                <div class="col-xs-3">
+                <div class="col-xs-3 xs3block">
                   <center>
                   <div class="panel" style="background: none; margin-bottom: 0px;">
                     <div class="panel-body" style="padding-bottom: 0px;">
                       <a href="{{url('/'.$bandsfollowed[$j]->band_name)}}">
                       <div class="panel-thumbnail" style="background: transparent;">
-                        <img src="{{$bandsfollowed[$j]->band_pic}}" class="img-responsive img-circle" style="height: 210px;">
+                        <img src="{{$bandsfollowed[$j]->band_pic}}" class="img-responsive img-circle" style="height: 210px; width: 210px;">
                       </div>
                       </a>
                       <a href="{{url('/'.$bandsfollowed[$j]->band_name)}}"><h5 style="font-size: 14px;">{{$bandsfollowed[$j]->band_name}}</h5></a>

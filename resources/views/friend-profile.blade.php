@@ -69,11 +69,11 @@
           @else
             @foreach ($playlists as $playlist)
               <center>
-              <div class="col-xs-3">
+              <div class="col-xs-3 xs3block">
                 <div class="panel" style="background: none; border: none;">
                   <div class="panel-body">
                     <a href="{{url('playlist/'.$playlist->pl_id)}}">
-                    <div class="panel-thumbnail">
+                    <div class="panel-thumbnail" style="background: transparent;">
                       <img src="{{$playlist->image}}" class="img-responsive" style="height: 100%; max-height: 180px; border: 2px solid #dddddd; margin-bottom: 10px;">
                     </div>
                     <span style="font-size: 14px;">{{$playlist->pl_title}}</span></a>
@@ -106,16 +106,19 @@
                 $i = 0;          
                 $j = $i;
                 for ($i=0; $i < count($bandsfollowedNoGenre)/2; $i++) {
-                  if ($i % 4 == 0) {
-                    echo "</div><br>";
-                    echo "<div class='row'>";
-                  }
+                  // if ($i % 4 == 0) {
+                  //   echo "</div><br>";
+                  //   echo "<div class='row'>";
+                  // }
                 ?>
-                <div class="col-xs-3">
+                <div class="col-xs-3 xs3block">
                   <center>
                   <div class="panel" style="background: none; margin-bottom: 0px;">
                     <div class="panel-body" style="padding-bottom: 0px;">
-                      <a href="{{url('/'.$bandsfollowedNoGenre[$j]->band_name)}}"><img src="{{$bandsfollowedNoGenre[$j]->band_pic}}" class="img-responsive img-circle" style="width: 84%; min-width:199px; max-width: 200px height: 100%; min-height: 179px; max-height: 180px;"></a>
+                      <a href="{{url('/'.$bandsfollowedNoGenre[$j]->band_name)}}">
+                      <div class="panel-thumbnail" style="background: transparent;">
+                        <img src="{{$bandsfollowed[$j]->band_pic}}" class="img-responsive img-circle" style="height: 210px; width: 210px;">
+                      </div>
                       <a href="{{url('/'.$bandsfollowedNoGenre[$j]->band_name)}}"><h5 style="font-size: 14px;">{{$bandsfollowedNoGenre[$j]->band_name}}</h5></a>
                       <p style="font-size: 12px;">{{$bandsfollowedNoGenre[$i]->num_followers}} Followers</p>
                     </div>
@@ -128,18 +131,18 @@
                 $i = 0;
                 $j = $i;
                 for ($i=0; $i < count($bandsfollowed)/2; $i++) {
-                  if ($i % 4 == 0) {
-                    echo "</div><br>";
-                    echo "<div class='row'>";
-                  }
+                  // if ($i % 4 == 0) {
+                  //   echo "</div><br>";
+                  //   echo "<div class='row'>";
+                  // }
                 ?>
-                <div class="col-xs-3">
+                <div class="col-xs-3 xs3block">
                   <center>
                   <div class="panel" style="background: none; margin-bottom: 0px;">
                     <div class="panel-body" style="padding-bottom: 0px;">
                       <a href="{{url('/'.$bandsfollowed[$j]->band_name)}}">
                       <div class="panel-thumbnail" style="background: transparent;">
-                        <img src="{{$bandsfollowed[$j]->band_pic}}" class="img-responsive img-circle" style="height: 210px;">
+                        <img src="{{$bandsfollowed[$j]->band_pic}}" class="img-responsive img-circle" style="height: 210px; width: 210px;">
                       </div>
                       </a>
                       <a href="{{url('/'.$bandsfollowed[$j]->band_name)}}"><h5 style="font-size: 14px;">{{$bandsfollowed[$j]->band_name}}</h5></a>

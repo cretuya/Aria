@@ -14,6 +14,7 @@ use App\Video;
 use App\Article;
 use App\UserHistory;
 use App\Playlist;
+use App\Plist;
 
 class SearchController extends Controller
 {
@@ -42,12 +43,14 @@ class SearchController extends Controller
 
     	//for song tab
     	$searchResultSong = Song::where('song_audio', 'LIKE' , '%'.$termSearched.'%')->get();
+        //get all playlists of user
+        $allUserPlaylist = Playlist::where('pl_creator',session('userSocial')['id'])->get();
 
     	//for video tab
     	$searchResultVideo = Video::where('video_desc', 'LIKE' , '%'.$termSearched.'%')->get();
 
         //for article tab
-        $searchResultArticle = Article::where('art_title', 'LIKE' , '%'.$termSearched.'%')->get();
+        // $searchResultArticle = Article::where('art_title', 'LIKE' , '%'.$termSearched.'%')->get();
 
         //for playlist tab
         $searchResultPlaylist = Playlist::join('users','playlists.pl_creator','=','users.user_id')->where('pl_title', 'LIKE' , '%'.$termSearched.'%')->get();
@@ -79,8 +82,23 @@ class SearchController extends Controller
     	}
 
         $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
-
-    	return view('search-result',compact('searchResultBand','searchResultUser','searchResultGenre','searchResultAlbum','searchResultSong','searchResultVideo','searchResultArticle','termSearched','band','bandGenre','usernotifinvite','searchResultPlaylist'));
+        // dd($allUserPlaylist);
+    	return view('search-result',compact('searchResultBand','searchResultUser','searchResultGenre','searchResultAlbum','searchResultSong','allUserPlaylist','searchResultVideo','termSearched','band','bandGenre','usernotifinvite','searchResultPlaylist'));
 
     }
+
+    public function addToPlaylistFromSearchResult(Request $request){
+
+    $pId = $request->input('plID');
+    $songId = $request->input('songID');
+    $genreId = $request->input('genreID');
+
+        $create = Plist::create([
+          'genre_id' => $genreId,
+          'song_id' => $songId,
+          'pl_id' => $pId,
+        ]);
+
+    }
+
 }
