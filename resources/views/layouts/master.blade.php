@@ -10,9 +10,12 @@
   <script src="{{asset('assets/js/jquery-ui.min.js')}}"></script>
   <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
   <script src="{{asset('assets/js/bootstrap.min.js')}}"></script>
+  <script src="{{asset('assets/js/jquery.timepicker.min.js')}}"></script>
+
   <link rel="stylesheet" type="text/css" href="{{asset('assets/css/jquery-ui.css')}}">
   <link rel="stylesheet" type="text/css" href="{{asset('assets/css/bootstrap.min.css')}}">
   <link rel="stylesheet" type="text/css" href="{{asset('assets/css/bootstrap-datepicker.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{asset('assets/css/timepicker.css')}}">
   <link rel="stylesheet" type="text/css" href="{{asset('assets/fonts/font-awesome/css/font-awesome.min.css')}}">
   <link rel="stylesheet" type="text/css" href="{{asset('assets/css/fonts.css')}}">
 

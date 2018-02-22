@@ -113,7 +113,7 @@ input[type='range']::-webkit-slider-thumb{
             <div class="row" style="margin-left: 0px;">
             <br><br>
               <span class="manage-band-heading">Manage Band</span>
-              <span class="btn btn-default pull-right" onclick="saveBand();" style="background: #E57C1F; color: #fafafa; border-color: #E57C1F; margin-right: 12px;">Save changes</span>
+              <span id="savebanddetailsbtn" class="btn btn-default pull-right" style="background: #E57C1F; color: #fafafa; border-color: #E57C1F; margin-right: 12px;">Save changes</span>
               <a href="{{url('/'.$band->band_name)}}"><span class="btn btn-default pull-right" style="margin-right: 10px; background: transparent; color: #fafafa">View Band Profile</span></a>
               <span class="btn btn-default pull-right hidden" style="margin-right: 10px;" data-toggle="modal" data-target="#invite-modal">Invite</span>
             </div>
@@ -202,8 +202,10 @@ input[type='range']::-webkit-slider-thumb{
                            @endforeach
                       </div>
                     </div>
-              </div>                  
+                <span id="genreValidationMessage" class="hidden" style="position: absolute; padding: 7px 15px; background: #E53935; border-radius: 4px;">*You must select 2 genres for your band</span>
+              </div>
             </form>
+
 
             </div>
             <br>
@@ -1264,6 +1266,19 @@ $(document).ready(function()
   $('input[type=checkbox]').on('change', function (e) {
     if ($('input[type=checkbox]:checked').length > 2) {
         $(this).prop('checked', false);
+    }
+    if($('input[type=checkbox]:checked').length >= 0 && $('input[type=checkbox]:checked').length < 2){
+        $('#genreValidationMessage').removeClass('hidden');
+        $('#savebanddetailsbtn').attr('disabled','true');
+    }else{
+        $('#genreValidationMessage').addClass('hidden');
+        $('#savebanddetailsbtn').removeAttr('disabled');
+    }
+  });
+
+  $('#savebanddetailsbtn').on('click', function() {
+    if (!$('#savebanddetailsbtn').is('[disabled=disabled]')) {
+      saveBand();
     }
   });
 

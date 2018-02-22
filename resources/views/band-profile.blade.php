@@ -183,7 +183,7 @@
 
 					<div class="col-md-2">
 						<a href="{{url($band->band_name.'/albums/'.$album->album_id)}}">
-						  <div class="panel-thumbnail">
+						  <div class="panel-thumbnail" style="background: transparent;">
 							<img src="{{$album->album_pic}}" class="img-responsive" style="height: 150px;">
 						  </div>
 						</a>

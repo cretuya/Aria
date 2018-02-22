@@ -160,7 +160,7 @@
                       @if(count($songs)==0)
                       <li class="current-song"><a href="{{asset('assets/music/'.$songs->song_audio)}}" value="{{$songs->song_id}}" class="songLiA">{{$songs->song_title}}</a></li>
                       @else
-                        <li><a href="{{asset('assets/music/'.$songs->song_audio)}}" data-id="{{$songs->song_id}}" class="songLiA">{{$songs->song_title}}</a></li>                      
+                        <li><a href="{{asset('assets/music/'.$songs->song_audio)}}" data-id="{{$songs->song_id}}" class="songLiA">{{$songs->album->band->band_name}} - {{$songs->song_title}}</a></li>                      
                       @endif            
                 @endforeach
                 </ul>

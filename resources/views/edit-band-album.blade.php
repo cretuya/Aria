@@ -175,7 +175,7 @@
                       @if(count($songs)==0)
                       <li class="current-song"><a href="{{asset('assets/music/'.$songs->song_audio)}}" onclick="playOrPauseFromSongClick();">{{$songs->song_title}}</a><span data-id="{{$songs->song_id}}" class="remlist btn fa fa-remove pull-right" title="Remove from song album"></span></li>
                       @else
-                        <li><a href="{{asset('assets/music/'.$songs->song_audio)}}" onclick="playOrPauseFromSongClick();">{{$songs->song_title}}</a><span data-id="{{$songs->song_id}}" class="remlist btn fa fa-remove pull-right" title="Remove from song album"></span></li>                      
+                        <li><a href="{{asset('assets/music/'.$songs->song_audio)}}" onclick="playOrPauseFromSongClick();">{{$songs->album->band->band_name}} - {{$songs->song_title}}</a><span data-id="{{$songs->song_id}}" class="remlist btn fa fa-remove pull-right" title="Remove from song album"></span></li>                      
                       @endif
                 @endforeach
                 </ul>

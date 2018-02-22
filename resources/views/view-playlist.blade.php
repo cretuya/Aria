@@ -148,7 +148,12 @@
                       @if(count($songs)==0)
                       <li class="current-song"><a href="{{asset('assets/music/'.$songs->songs->song_audio)}}" value="{{$songs->songs->song_id}}" class="songLiA">{{$songs->songs->song_title}}</a></li>
                       @else
-                        <li><a href="{{asset('assets/music/'.$songs->songs->song_audio)}}" data-id="{{$songs->songs->song_id}}" class="songLiA">{{$songs->songs->song_title}}</a><span data-id="{{$songs->songs->song_id}}" class="remlist btn fa fa-remove pull-right" style="font-size: 14px; color: #555555" title="Remove from playlist"></span></li>
+                        <li>
+                          <a href="{{asset('assets/music/'.$songs->songs->song_audio)}}" data-id="{{$songs->songs->song_id}}" class="songLiA">{{$songs->songs->album->band->band_name}} - {{$songs->songs->song_title}}</a>
+                          @if($pl->pl_creator == session('userSocial')['id'])
+                          <span data-id="{{$songs->songs->song_id}}" class="remlist btn fa fa-remove pull-right" style="font-size: 14px; color: #555555" title="Remove from playlist"></span>
+                          @endif
+                        </li>
                       @endif            
                 @endforeach
                 </ul>
