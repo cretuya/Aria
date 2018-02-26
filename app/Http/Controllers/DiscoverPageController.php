@@ -10,6 +10,7 @@ use App\BandGenre;
 use App\Band;
 use App\Album;
 use App\Song;
+use App\Preference;
 use Auth;
 class DiscoverPageController extends Controller
 {
@@ -35,29 +36,86 @@ class DiscoverPageController extends Controller
     public function recommend()
     {
         $user = Auth::user();
+        $preferences = Preference::where('user_id', $user->user_id)->get();
 
-        $genres = Genre::all();
+        $getBandPreferences = Array();
+        $getAlbumPreferences = Array();
 
-        // $songs = Song::all();
-        $sorted = Array();
-        $compact = Array();
-        foreach ($genres as $genre)
-        {
-            // foreach ($songs as $song)
-            // {
-            //     if ($song->genre_id == $genre->genre_id)
-            //     {
-            //         $data = array('genre' => $genre->genre_id, 'song' => $song);
-            //         array_push($sorted, $data);
-            //     }
-            // }
-            $songs = Song::where('genre_id', $genre->genre_id)->get();
-            if (count($songs) != null)
+        foreach($preferences as $preference){
+            if($preference->band_id != null)
             {
-                array_push($sorted, $genre);
+                array_push($getBandPreferences, $preference);
             }
-        } 
-        return $sorted;
+        }
+        foreach($preferences as $preference){
+            if($preference->album_id != null){
+                array_push($getAlbumPreferences, $preference);
+            }
+        }
+
+        $genres = Array();
+        if(count($getBandPreferences) > 0 ){
+            foreach($getBandPreferences as $getBand)
+            {
+                $band = Band::where('band_id', $getBand->band_id)->first();
+                $bandGenres = $band->bandgenres;
+                foreach($bandGenres as $bandGenre)
+                {
+                    array_push($genres, $bandGenre->genre_id);
+                }
+
+            }
+            $unique = array_unique($genres);
+            $sorted = Array();
+
+            foreach($unique as $un){
+                $songs = Song::where('genre_id', $un)->get();
+                if(count($songs) != null){
+                    $genre = Genre::where('genre_id', $un)->first();
+                    array_push($sorted, $genre);
+                }
+            }
+            return $sorted;
+        }
+        else if (count($getAlbumPreferences) > 0) {
+            foreach($getAlbumPreferences as $getAlbum)
+            {
+                $band = $getAlbum->album->band;
+                $bandGenres = $band->bandgenres;
+                foreach($bandGenres as $bandGenre)
+                {
+                    array_push($genres, $bandGenre->genre_id);
+                }
+
+            }
+            $unique = array_unique($genres);
+            $sorted = Array();
+
+            foreach($unique as $un){
+                $songs = Song::where('genre_id', $un)->get();
+                if(count($songs) != null){
+                    $genre = Genre::where('genre_id', $un)->first();
+                    array_push($sorted, $genre);
+                }
+            }
+            return $sorted;
+        }
+        else {
+
+            $genres = Genre::all();
+            $sorted = Array();
+
+            foreach ($genres as $genre)
+            {
+                $songs = Song::where('genre_id', $genre->genre_id)->get();
+                if (count($songs) != null)
+                {
+                    array_push($sorted, $genre);
+                }
+            } 
+            return $sorted;            
+        }
+
     }
 
     public function showSongsGenre($id)
