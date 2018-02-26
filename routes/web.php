@@ -112,5 +112,8 @@ Route::middleware(['auth'])->group(function(){
 	Route::get('deleteEvent/{event_id}' , 'EventController@deleteEvent');
 	Route::post('addSongPlayedForScore', 'AlbumController@addSongPlayedAsScore');
 	Route::post('addSongResultToPlaylist', 'SearchController@addToPlaylistFromSearchResult');
+	Route::post('followPlaylist', 'UserController@followPlaylist');
+	Route::post('unfollowPlaylist', 'UserController@unfollowPlaylist');
+
 
 });

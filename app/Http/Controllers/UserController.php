@@ -414,38 +414,19 @@ class UserController extends Controller
   {
     $pl = Playlist::join('users','playlists.pl_creator','=','users.user_id')->where('pl_id', $id)->first();
     $lists = Plist::where('pl_id', $id)->get();
-    // $rsongs = Song::inRandomOrder()->get();
+    $user = Auth::user();
+   $follower = Preference::where([
+          ['user_id' , $user->user_id],
+          ['pl_id', $id],
+          ])->first();
 
-    // $songs = Song::all();
-    // // get songs naa iya list
-    // $ulists = Array();
-    // $tmp = Array();
-    // $recsongs = Array();
-    // if (count($lists) > 0)
-    // {
-    //   // compute para recommendation
-    //   foreach ($songs as $song)
-    //   {
-    //     if($lists->contains('song_id', $song->song_id))
-    //     {
-
-    //     }
-    //     else
-    //     {
-    //       array_push($recsongs, $song);
-    //     }
-
-    //   }
-
-    // }
 
     $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
 
     $recommend = $this->recommendplaylist($id);
     // dd($recommend);
 
-
-    return view('view-playlist', compact('pl', 'lists', 'rsongs', 'recsongs', 'usernotifinvite', 'recommend'));
+    return view('view-playlist', compact('pl', 'lists', 'rsongs', 'recsongs', 'usernotifinvite', 'recommend', 'follower'));
   }
 
 
@@ -638,8 +619,50 @@ class UserController extends Controller
           return array_unique($songsToRecommend);
         }
         else {
-          $songs = Song::all();
-          return $songs;
+
+            $storeGenres = Array();
+            $topBands = Band::orderBy('weekly_score', 'DESC')->take(6)->get();
+            foreach($topBands as $band)
+            {
+              $bandGenres = $band->bandgenres;
+              foreach($bandGenres as $bandGenre)
+              {
+                 array_push($storeGenres, $bandGenre->genre_id);
+              }
+            }
+            $genreIdCount = array_count_values($storeGenres);
+              $collection = collect($genreIdCount);
+              $chunkedCollectionofGenres = $collection->chunk(3)->first();
+              // dd($chunkedCollectionofGenres);
+              $familyGenres = Array();
+              foreach ($chunkedCollectionofGenres as $key => $value) {
+                foreach($family as $fam){
+                  if ($fam[0]['genre_id'] == $key || $fam[1]['genre_id'] == $key){
+                    array_push($familyGenres, $fam);
+                  }
+                }
+              }
+
+              $songsToRecommend = Array();
+              foreach ($familyGenres as $key => $value) {
+                foreach ($value as $key => $val) {
+                  $songs = Song::where('genre_id', $val['genre_id'])->get();
+                  if(count($songs) == null){
+
+                  } else {
+                    foreach($songs as $song){
+                      if(!$lists->contains('song_id', $song->song_id)){
+                          array_push($songsToRecommend, $song);
+                      }
+                    }
+                  }
+                }
+              }
+          if ($songsToRecommend == null) {
+            $songsToRecommend = Song::all();
+          }
+     
+          return array_unique($songsToRecommend);
         }
     }
 
@@ -1007,6 +1030,42 @@ class UserController extends Controller
               return $storeAlbums;
     }
 
+  }
+
+  public function followPlaylist(Request $request){
+    $user = Auth::user();
+    $pid = $request->input('pid');
+
+      $create = Preference::create([
+        'user_id' => $user->user_id,
+        'pl_id' => $pid,
+      ]);
+
+      $followers = count(Preference::where('pl_id' ,$pid)->get());
+
+      $playlist = Playlist::where('pl_id', $pid)->update([
+      'followers' => $followers,
+      ]);
+
+    return response()->json($followers);
+  }
+
+  public function unfollowPlaylist(Request $request){
+    $user = Auth::user();
+    $pid = $request->input('pid');
+
+      $delete = Preference::where([
+      ['user_id' , $user->user_id],
+      ['pl_id', $pid],
+      ])->delete();
+
+      $followers = count(Preference::where('pl_id' ,$pid)->get());
+
+      $playlist = Playlist::where('pl_id', $pid)->update([
+      'followers' => $followers,
+      ]);
+
+    return response()->json($followers);
   }
 
 }
