@@ -62,7 +62,7 @@ html{
     margin-top: 5px;
     border: 1px solid #E57C1F;
     padding:5px;
-    color: #E57C1F;
+    color: #fafafa;
     font-size: 11px;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -72,7 +72,7 @@ html{
 }
 
 .btn-follow:hover {
-    color: #fafafa;
+    color: #E57C1F;
     border-color:#E57C1F;
 }
 .btn-follow:active{

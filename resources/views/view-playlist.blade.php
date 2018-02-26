@@ -82,6 +82,14 @@
     #playBtn{
       width: 50px; position: absolute; top: 32px; left: 47px;
     }
+    .btn-followPlaylist{
+      color: #fafafa !important;
+      background: transparent;
+      outline: none !important;
+    }
+    .unfollowPlaylist{
+      background: #E57C1F;
+    }
 </style>
 
 @include('layouts.sidebar')
@@ -108,11 +116,15 @@
               <p style="color: #E57C1F; font-size: 12px;">PLAYLIST</p>
               <h2 style="letter-spacing: 1px; margin: 0px;">{{$pl->pl_title}}</h2>
               <h4 style="font-size: 18px;">{{$pl->fullname}}</h4>
-              <p style="margin-top: 10px; font-size: 12px;" class="followers">{{$pl->followers}}</p>
-              @if($follower == null)
-              <button class="btn btn-followPlaylist followPlaylist" style="background: transparent; border: 1px solid #E57C1F">Follow Playlist</button>
+              @if($pl->followers == 0)
+              <p style="margin-top: 10px; font-size: 13px;" class="followers">0 people are following this playlist</p>
               @else
-              <button class="btn btn-followPlaylist unfollowPlaylist" style="background: transparent; border: 1px solid #E57C1F">Unfollow Playlist</button>
+              <p style="margin-top: 10px; font-size: 13px;" class="followers">{{$pl->followers}} people are following this playlist</p>
+              @endif
+              @if($follower == null)
+              <button class="btn btn-followPlaylist followPlaylist" style="border: 1px solid #E57C1F">Follow Playlist</button>
+              @else
+              <button class="btn btn-followPlaylist unfollowPlaylist" style="border: 1px solid #E57C1F">Unfollow Playlist</button>
 
               @endif
             </div>
@@ -204,7 +216,8 @@ $('#albumPicTop').on('click', '.followPlaylist' , function()
             console.log(data);
             $('.btn-followPlaylist').removeClass('followPlaylist');
             $('.btn-followPlaylist').addClass('unfollowPlaylist');
-            $('.followers').html(data);
+            $('.btn-followPlaylist').html('Unfollow Playlist');
+            $('.followers').html(data+" people are following this playlist");
 
           },
           error: function(a,b,c)
@@ -228,7 +241,8 @@ $('#albumPicTop').on('click', '.unfollowPlaylist' , function()
             console.log(data);
             $('.btn-followPlaylist').removeClass('unfollowPlaylist');
             $('.btn-followPlaylist').addClass('followPlaylist');
-            $('.followers').html(data);
+            $('.btn-followPlaylist').html('Follow Playlist');
+            $('.followers').html(data+" people are following this playlist");
           },
           error: function(a,b,c)
           {
