@@ -48,27 +48,27 @@ class UserController extends Controller
             return redirect('/user/profile');
         }
 
-    // public function homeshow(){
-    //        // $userRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->first();
-    //        //  return view('user-profile', compact('userRole'));
+    public function homeshow(){
+           // $userRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->first();
+           //  return view('user-profile', compact('userRole'));
         
 
-    //     $user = User::where('user_id',session('userSocial')['id'])->first();
+        $user = User::where('user_id',session('userSocial')['id'])->first();
 
-    //     $usersBand = Band::join('bandmembers', 'bands.band_id', '=', 'bandmembers.band_id')->select('band_name')->where('user_id', session('userSocial')['id'])->first();
-    //     $userHasBand = Bandmember::where('user_id',session('userSocial')['id'])->get();
-    //     $userBandRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->get();
+        $usersBand = Band::join('bandmembers', 'bands.band_id', '=', 'bandmembers.band_id')->select('band_name')->where('user_id', session('userSocial')['id'])->first();
+        $userHasBand = Bandmember::where('user_id',session('userSocial')['id'])->get();
+        $userBandRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->get();
 
-    //     $articlesfeed = BandArticle::join('preferences','bandarticles.band_id','=','preferences.band_id')->join('bands','preferences.band_id','=','bands.band_id')->join('articles','bandarticles.art_id','=','articles.art_id')->where('user_id',session('userSocial')['id'])->orderBy('created_at','desc')->distinct()->get(['preferences.band_id','art_title','content','band_name','band_pic','articles.created_at']);
+        $articlesfeed = BandArticle::join('preferences','bandarticles.band_id','=','preferences.band_id')->join('bands','preferences.band_id','=','bands.band_id')->join('articles','bandarticles.art_id','=','articles.art_id')->where('user_id',session('userSocial')['id'])->orderBy('created_at','desc')->distinct()->get(['preferences.band_id','art_title','content','band_name','band_pic','articles.created_at']);
 
-    //     $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
+        $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
 
-    //     // dd($articlesfeed);
-    //     // $recommend = $this->recommend();
-    //     // dd($recommend);
-    //     // dd($friends);
-    //     return view('home', compact('userHasBand','userBandRole','usersBand','user','articlesfeed','usernotifinvite'));
-    // }
+        // dd($articlesfeed);
+        $recommend = $this->recommend();
+        // dd($recommend);
+        // dd($friends);
+        return view('home', compact('userHasBand','userBandRole','usersBand','user','articlesfeed', 'recommend','usernotifinvite'));
+    }
 
     public function feedshow(){
            // $userRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->first();
@@ -503,12 +503,48 @@ class UserController extends Controller
           }
         }
       }
-        // dd($toArray);
-      // if(count($songsToRecommend) == null){
-      //   // get the top band charts nya kwaa mga genre nya songs nga ni relate sa kanta
-      //   // $songstorecommend == $newsongstorecommend;
-      // }
 
+      if(count($songsToRecommend) == null){
+        $storeGenres = Array();
+        $topBands = Band::orderBy('weekly_score', 'DESC')->take(6)->get();
+        foreach($topBands as $band)
+        {
+          $bandGenres = $band->bandgenres;
+          foreach($bandGenres as $bandGenre)
+          {
+             array_push($storeGenres, $bandGenre->genre_id);
+          }
+        }
+        $genreIdCount = array_count_values($storeGenres);
+          $collection = collect($genreIdCount);
+          $chunkedCollectionofGenres = $collection->chunk(3)->first();
+          // dd($chunkedCollectionofGenres);
+          $familyGenres = Array();
+          foreach ($chunkedCollectionofGenres as $key => $value) {
+            foreach($family as $fam){
+              if ($fam[0]['genre_id'] == $key || $fam[1]['genre_id'] == $key){
+                array_push($familyGenres, $fam);
+              }
+            }
+          }
+
+          $songsToRecommend = Array();
+          foreach ($familyGenres as $key => $value) {
+            foreach ($value as $key => $val) {
+              $songs = Song::where('genre_id', $val['genre_id'])->get();
+              if(count($songs) == null){
+
+              } else {
+                foreach($songs as $song){
+                  if(!$lists->contains('song_id', $song->song_id)){
+                      array_push($songsToRecommend, $song);
+                  }
+                }
+              }
+            }
+          }
+      }
+      // dd($lists);
       return array_unique($songsToRecommend);
 
     }
@@ -558,10 +594,47 @@ class UserController extends Controller
             }
           }
 
-          // if(count($songsToRecommend) == null){
-          //   // get the top band charts nya kwaa mga genre nya songs nga ni relate sa kanta
-          //   // $songstorecommend == $newsongstorecommend;
-          // }         
+          if(count($songsToRecommend) == null){
+            $storeGenres = Array();
+            $topBands = Band::orderBy('weekly_score', 'DESC')->take(6)->get();
+            foreach($topBands as $band)
+            {
+              $bandGenres = $band->bandgenres;
+              foreach($bandGenres as $bandGenre)
+              {
+                 array_push($storeGenres, $bandGenre->genre_id);
+              }
+            }
+            $genreIdCount = array_count_values($storeGenres);
+              $collection = collect($genreIdCount);
+              $chunkedCollectionofGenres = $collection->chunk(3)->first();
+              // dd($chunkedCollectionofGenres);
+              $familyGenres = Array();
+              foreach ($chunkedCollectionofGenres as $key => $value) {
+                foreach($family as $fam){
+                  if ($fam[0]['genre_id'] == $key || $fam[1]['genre_id'] == $key){
+                    array_push($familyGenres, $fam);
+                  }
+                }
+              }
+
+              $songsToRecommend = Array();
+              foreach ($familyGenres as $key => $value) {
+                foreach ($value as $key => $val) {
+                  $songs = Song::where('genre_id', $val['genre_id'])->get();
+                  if(count($songs) == null){
+
+                  } else {
+                    foreach($songs as $song){
+                      if(!$lists->contains('song_id', $song->song_id)){
+                          array_push($songsToRecommend, $song);
+                      }
+                    }
+                  }
+                }
+              }
+          }
+     
           return array_unique($songsToRecommend);
         }
         else {
