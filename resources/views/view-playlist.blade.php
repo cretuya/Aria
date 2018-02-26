@@ -4,7 +4,7 @@
   <link rel="stylesheet" type="text/css" href="{{asset('assets/css/playlistPlayer.css').'?'.rand()}}">
 
 @section('content')
-
+<meta name ="csrf-token" content = "{{csrf_token() }}"/>
 <style type="text/css">
     #albumPicTop{
       position: absolute;
@@ -86,7 +86,7 @@
 
 @include('layouts.sidebar')
 <br><br>
-<meta name ="csrf-token" content = "{{csrf_token() }}"/>
+
 <input type="text" value="{{$pl->pl_id}}" id="pid" hidden>
 
 <div class="container" id="main" style="background: #161616;">
@@ -108,8 +108,13 @@
               <p style="color: #E57C1F; font-size: 12px;">PLAYLIST</p>
               <h2 style="letter-spacing: 1px; margin: 0px;">{{$pl->pl_title}}</h2>
               <h4 style="font-size: 18px;">{{$pl->fullname}}</h4>
-              <p style="margin-top: 10px; font-size: 12px;">1300 people are following this playlist</p>
-              <button class="btn" style="background: transparent; border: 1px solid #E57C1F">Follow Playlist</button>
+              <p style="margin-top: 10px; font-size: 12px;" class="followers">{{$pl->followers}}</p>
+              @if($follower == null)
+              <button class="btn btn-followPlaylist followPlaylist" style="background: transparent; border: 1px solid #E57C1F">Follow Playlist</button>
+              @else
+              <button class="btn btn-followPlaylist unfollowPlaylist" style="background: transparent; border: 1px solid #E57C1F">Unfollow Playlist</button>
+
+              @endif
             </div>
           </div>
       </div>
@@ -185,6 +190,53 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+$('#albumPicTop').on('click', '.followPlaylist' , function()
+{
+    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+    var pid = $('#pid').val();
+        $.ajax({
+          method : "post",
+          url : "../followPlaylist",
+          data : { '_token' : CSRF_TOKEN,
+            'pid' : pid,
+          },
+          success: function(data){
+            console.log(data);
+            $('.btn-followPlaylist').removeClass('followPlaylist');
+            $('.btn-followPlaylist').addClass('unfollowPlaylist');
+            $('.followers').html(data);
+
+          },
+          error: function(a,b,c)
+          {
+            console.log('Error');
+
+          }
+        });  
+});
+$('#albumPicTop').on('click', '.unfollowPlaylist' , function()
+{
+    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+    var pid = $('#pid').val();
+        $.ajax({
+          method : "post",
+          url : "../unfollowPlaylist",
+          data : { '_token' : CSRF_TOKEN,
+            'pid' : pid,
+          },
+          success: function(data){
+            console.log(data);
+            $('.btn-followPlaylist').removeClass('unfollowPlaylist');
+            $('.btn-followPlaylist').addClass('followPlaylist');
+            $('.followers').html(data);
+          },
+          error: function(a,b,c)
+          {
+            console.log('Error');
+
+          }
+        });  
+});
 $('.recommendBody').on('click', '.addRecSong', function(){
   var sid = $(this).data('id');
   var pid = $('#pid').val();
