@@ -25,8 +25,6 @@ Route::middleware(['auth'])->group(function(){
 	});
 
 	Route::get('printscore','BandController@scoringfunc');
-
-	Route::get('home', 'UserController@homeshow');
 	Route::get('feed', 'UserController@feedshow');
 	Route::get('friends', 'UserController@friends');
 	Route::get('profile/{user_id}', 'UserController@friendprofile');

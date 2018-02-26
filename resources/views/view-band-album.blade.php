@@ -87,6 +87,9 @@
   }
   .unlikealbumbtn{
     color: #E57C1F;
+    background: none;
+    border: none;
+    font-size: 16px;
   }
   
 </style>
@@ -116,9 +119,9 @@
               <h2 style="letter-spacing: 1px; margin: 0px;">{{$albums->album_name}}</h2>
               <h4 style="font-size: 18px;">{{$band->band_name}}</h4>
               @if($liked == null)
-              <button class="fa fa-thumbs-up likealbumbtn" title="Like Album"></button><span class="likeText"> Like</span>
+              <button class="fa fa-thumbs-up likealbumbtn" title="Like Album"></button><span class="likeText">{{$albums->num_likes}} people like this album</span>
               @else
-              <button class="fa fa-thumbs-up unlikealbumbtn" title="Like Album"></button><span class="likeText"> Unlike</span>
+              <button class="fa fa-thumbs-up unlikealbumbtn" title="Like Album"></button><span class="likeText">{{$albums->num_likes}} people like this album</span>
               @endif
               <h6 style="margin-top: 10px;">Released on 10 Mar 2018</h6>
               <p style="margin-top: 20px; font-size: 12px; text-align: justify; word-wrap: break-word; width: 75%">{{$albums->album_desc}}</p>
@@ -130,7 +133,7 @@
   <br>
   <div class="row">
     <div class="col-md-1">&nbsp;</div>
-    <div class="col-md-7">
+    <div class="col-md-10">
       <div class="panel" style="border-radius: 0px; background: transparent;">
         <div class="panel-body" style="padding: 0;">
           <div class="media" style="border: 0; border-radius: 0px;">
@@ -160,8 +163,8 @@
                       @if(count($songs)==0)
                       <li class="current-song"><a href="{{asset('assets/music/'.$songs->song_audio)}}" value="{{$songs->song_id}}" class="songLiA">{{$songs->song_title}}</a></li>
                       @else
-                        <li><a href="{{asset('assets/music/'.$songs->song_audio)}}" data-id="{{$songs->song_id}}" class="songLiA">{{$songs->album->band->band_name}} - {{$songs->song_title}}</a></li>                      
-                      @endif            
+                        <li><a href="{{asset('assets/music/'.$songs->song_audio)}}" data-band="{{$songs->album->band->band_name}}" data-id="{{$songs->song_id}}" data-title="{{$songs->song_title}}" class="songLiA">{{$songs->album->band->band_name}} - {{$songs->song_title}}</a></li>                      
+                      @endif
                 @endforeach
                 </ul>
 
@@ -171,14 +174,14 @@
         </div>
       </div>
     </div>
-    <div class="col-md-3">
+    <!-- <div class="col-md-3">
       <div class="panel" style="border-radius: 0px;">
         <div class="panel-heading"><h5 style="color: #212121; text-align: center;">SOME PICKS FOR YOU</h5></div>
         <div class="panel-body">
           
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="col-md-1">&nbsp;</div>
   </div>
 
@@ -192,6 +195,8 @@ var globalInt;
 var currSong;
 var songId;
 var prevSong;
+var nextdataBand;
+var nextdataTitle;
 
 $(document).ready(function(){
 
@@ -245,7 +250,7 @@ $(document).ready(function(){
             console.log(json);
             $('button').removeClass('likealbumbtn');
             $('button').addClass('unlikealbumbtn');
-            $('.likeText').html(' Unlike');
+            $('.likeText').html(json.album.num_likes + " people like this album");
             // change ang name to unlike ug ang likebutton nga classname mahimo ug unlike
 
           },
@@ -270,7 +275,7 @@ $(document).ready(function(){
             console.log(json);
             $('button').removeClass('unlikealbumbtn');
             $('button').addClass('likealbumbtn');
-            $('.likeText').html(' Like');
+            $('.likeText').html(json.num_likes + " people like this album");
             // change ang name to like nya ang classname mahimo ug like
           },
           error: function(a,b,c)
@@ -352,14 +357,26 @@ $(document).ready(function(){
         usersDurationPlayed = 0;
         timerDurationPlayed();
 
-          var url = $('#albumSong')[0].src;
-          var url2 = "{{url('/assets/music/')}}";        
-          var songnamedilipa = url.replace(url2+'/',"");
-          // var songnamme = songnamedilipa.replace("%20/g"," ");
-          var songnamedilipajud = songnamedilipa.replace('.mp3','');
-          var songname = decodeURI(songnamedilipajud);
+          // var url = $('#albumSong')[0].src;
+          // var url2 = "{{url('/assets/music/')}}";        
+          // var songnamedilipa = url.replace(url2+'/',"");
+          // // var songnamme = songnamedilipa.replace("%20/g"," ");
+          // var songnamedilipajud = songnamedilipa.replace('.mp3','');
+          // var songname = decodeURI(songnamedilipajud);
 
-          $('#song-name').html("Currently Playing: "+songname);
+
+          $('#albumSong').attr('data-band',$("#albumlist li a")[currentSong].getAttribute('data-band'));
+          $('#albumSong').attr('data-title',$("#albumlist li a")[currentSong].getAttribute('data-title'));
+
+          $('#song-name').html("Currently Playing: "+$('#albumSong').attr('data-band')+" - "+$('#albumSong').attr('data-title'));
+
+          // nextdataBand = currSong.next().find('a').data('band');
+          // nextdataTitle = currSong.next().find('a').data('title');
+
+          // console.log($("#albumlist li a")[currentSong].getAttribute('data-title'));
+
+          // console.log(nextdataTitle);
+
 
           $('#albumSong')[0].addEventListener('loadedmetadata', function() {
               var minutes = Math.trunc(parseInt($('#albumSong')[0].duration)/60);
@@ -395,14 +412,14 @@ $(document).ready(function(){
       $('#playBtn').css('left','60px');
       $('#playBtn').css('top','38px');
       $("#albumSong")[0].play();
-      var url = $('#albumSong')[0].src;
-      var url2 = "{{url('/assets/music/')}}";        
-      var songnamedilipa = url.replace(url2+'/',"");
-      // var songnamme = songnamedilipa.replace("%20/g"," ");
-      var songnamedilipajud = songnamedilipa.replace('.mp3','');
-      var songname = decodeURI(songnamedilipajud);
+      // var url = $('#albumSong')[0].src;
+      // var url2 = "{{url('/assets/music/')}}";        
+      // var songnamedilipa = url.replace(url2+'/',"");
+      // // var songnamme = songnamedilipa.replace("%20/g"," ");
+      // var songnamedilipajud = songnamedilipa.replace('.mp3','');
+      // var songname = decodeURI(songnamedilipajud);
 
-      $('#song-name').html("Currently Playing: "+songname);
+      // $('#song-name').html("Currently Playing: "+$('#albumSong').data('band')+" - "+$('#albumSong').data('title'));
       updateTime = setInterval(update, 0);
       timerDurationPlayed();
     }
@@ -424,7 +441,9 @@ $(document).ready(function(){
     e.preventDefault();
 
     currSong = $(this).closest('li');
-    console.log(currSong.find('a').data('id'));
+    // console.log(currSong.find('a').data('id'));
+    // console.log(currSong.find('a').data('band'));
+    // console.log(currSong.find('a').data('title'));
     songId = currSong.find('a').data('id');
 
     prevSong = parseInt($('#albumSong')[0].duration);
@@ -434,7 +453,7 @@ $(document).ready(function(){
     }else{
       //push then usersDurationPlayed = 0;
       var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-      // console.log(CSRF_TOKEN, usersDurationPlayed, songId, prevSong);
+      console.log(CSRF_TOKEN, usersDurationPlayed, songId, prevSong);
       $.ajax({
         method : "post",
         url : '../../addSongPlayedForScore',
@@ -498,14 +517,15 @@ $(document).ready(function(){
         $('#playBtn').css('top','32px');
         updateTime = setInterval(update, 200);
 
-        var url = $('#albumSong')[0].src;
-        var url2 = "{{url('/assets/music/')}}";        
-        var songnamedilipa = url.replace(url2+'/',"");
+        // var url = $('#albumSong')[0].src;
+        // var url2 = "{{url('/assets/music/')}}";        
+        // var songnamedilipa = url.replace(url2+'/',"");
         // var songnamme = songnamedilipa.replace("%20/g"," ");
-        var songnamedilipajud = songnamedilipa.replace('.mp3','');
-        var songname = decodeURI(songnamedilipajud);
-
-        $('#song-name').html("Currently Playing: "+songname);
+        // var songnamedilipajud = songnamedilipa.replace('.mp3','');
+        // var songname = decodeURI(songnamedilipajud);
+        $('#song-name').html("Currently Playing: "+currSong.find('a').data('band')+" - "+currSong.find('a').data('title'));
+        $('#albumSong').attr('data-band',currSong.find('a').data('band'));
+        $('#albumSong').attr('data-title',currSong.find('a').data('title'));
         // console.log(url);
         // console.log(url2);
         // console.log(songnamedilipajud);

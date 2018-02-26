@@ -48,27 +48,27 @@ class UserController extends Controller
             return redirect('/user/profile');
         }
 
-    public function homeshow(){
-           // $userRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->first();
-           //  return view('user-profile', compact('userRole'));
+    // public function homeshow(){
+    //        // $userRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->first();
+    //        //  return view('user-profile', compact('userRole'));
         
 
-        $user = User::where('user_id',session('userSocial')['id'])->first();
+    //     $user = User::where('user_id',session('userSocial')['id'])->first();
 
-        $usersBand = Band::join('bandmembers', 'bands.band_id', '=', 'bandmembers.band_id')->select('band_name')->where('user_id', session('userSocial')['id'])->first();
-        $userHasBand = Bandmember::where('user_id',session('userSocial')['id'])->get();
-        $userBandRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->get();
+    //     $usersBand = Band::join('bandmembers', 'bands.band_id', '=', 'bandmembers.band_id')->select('band_name')->where('user_id', session('userSocial')['id'])->first();
+    //     $userHasBand = Bandmember::where('user_id',session('userSocial')['id'])->get();
+    //     $userBandRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->get();
 
-        $articlesfeed = BandArticle::join('preferences','bandarticles.band_id','=','preferences.band_id')->join('bands','preferences.band_id','=','bands.band_id')->join('articles','bandarticles.art_id','=','articles.art_id')->where('user_id',session('userSocial')['id'])->orderBy('created_at','desc')->distinct()->get(['preferences.band_id','art_title','content','band_name','band_pic','articles.created_at']);
+    //     $articlesfeed = BandArticle::join('preferences','bandarticles.band_id','=','preferences.band_id')->join('bands','preferences.band_id','=','bands.band_id')->join('articles','bandarticles.art_id','=','articles.art_id')->where('user_id',session('userSocial')['id'])->orderBy('created_at','desc')->distinct()->get(['preferences.band_id','art_title','content','band_name','band_pic','articles.created_at']);
 
-        $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
+    //     $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
 
-        // dd($articlesfeed);
-        $recommend = $this->recommend();
-        // dd($recommend);
-        // dd($friends);
-        return view('home', compact('userHasBand','userBandRole','usersBand','user','articlesfeed', 'recommend','usernotifinvite'));
-    }
+    //     // dd($articlesfeed);
+    //     $recommend = $this->recommend();
+    //     // dd($recommend);
+    //     // dd($friends);
+    //     return view('home', compact('userHasBand','userBandRole','usersBand','user','articlesfeed', 'recommend','usernotifinvite'));
+    // }
 
     public function feedshow(){
            // $userRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->first();

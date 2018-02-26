@@ -115,7 +115,7 @@
   <br>
   <div class="row">
     <div class="col-md-1">&nbsp;</div>
-    <div class="col-md-7">
+    <div class="col-md-10">
       <div class="panel" style="border-radius: 0px; background: transparent;">
         <div class="panel-body" style="padding: 0;">
           <div class="media" style="border: 0; border-radius: 0px;">
@@ -144,7 +144,7 @@
                       @if(count($song)==0)
                       <li class="current-song"><a href="{{asset('assets/music/'.$song->song_audio)}}" value="{{$song->song_id}}" class="songLiA">{{$song->song_title}}</a></li>
                       @else
-                        <li><a href="{{asset('assets/music/'.$song->song_audio)}}" data-id="{{$song->song_id}}" class="songLiA">{{$song->song_title}}</a></li>                      
+                        <li><a href="{{asset('assets/music/'.$song->song_audio)}}" data-band="{{$song->album->band->band_name}}" data-id="{{$song->song_id}}" data-title="{{$song->song_title}}" class="songLiA">{{$song->album->band->band_name}} - {{$song->song_title}}</a></li>                      
                       @endif            
                 @endforeach
                 </ul>
@@ -155,14 +155,14 @@
         </div>
       </div>
     </div>
-    <div class="col-md-3">
+    <!-- <div class="col-md-3">
       <div class="panel" style="border-radius: 0px;">
         <div class="panel-heading"><h5 style="color: #212121; text-align: center;">SOME PICKS FOR YOU</h5></div>
         <div class="panel-body">
           
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="col-md-1">&nbsp;</div>
   </div>
 
@@ -266,14 +266,26 @@ var prevSong;
         usersDurationPlayed = 0;
         timerDurationPlayed();
 
-          var url = $('#albumSong')[0].src;
-          var url2 = "{{url('/assets/music/')}}";        
-          var songnamedilipa = url.replace(url2+'/',"");
-          // var songnamme = songnamedilipa.replace("%20/g"," ");
-          var songnamedilipajud = songnamedilipa.replace('.mp3','');
-          var songname = decodeURI(songnamedilipajud);
+          // var url = $('#albumSong')[0].src;
+          // var url2 = "{{url('/assets/music/')}}";        
+          // var songnamedilipa = url.replace(url2+'/',"");
+          // // var songnamme = songnamedilipa.replace("%20/g"," ");
+          // var songnamedilipajud = songnamedilipa.replace('.mp3','');
+          // var songname = decodeURI(songnamedilipajud);
 
-          $('#song-name').html("Currently Playing: "+songname);
+
+          $('#albumSong').attr('data-band',$("#albumlist li a")[currentSong].getAttribute('data-band'));
+          $('#albumSong').attr('data-title',$("#albumlist li a")[currentSong].getAttribute('data-title'));
+
+          $('#song-name').html("Currently Playing: "+$('#albumSong').attr('data-band')+" - "+$('#albumSong').attr('data-title'));
+
+          // nextdataBand = currSong.next().find('a').data('band');
+          // nextdataTitle = currSong.next().find('a').data('title');
+
+          // console.log($("#albumlist li a")[currentSong].getAttribute('data-title'));
+
+          // console.log(nextdataTitle);
+
 
           $('#albumSong')[0].addEventListener('loadedmetadata', function() {
               var minutes = Math.trunc(parseInt($('#albumSong')[0].duration)/60);
@@ -309,14 +321,14 @@ var prevSong;
       $('#playBtn').css('left','60px');
       $('#playBtn').css('top','38px');
       $("#albumSong")[0].play();
-      var url = $('#albumSong')[0].src;
-      var url2 = "{{url('/assets/music/')}}";        
-      var songnamedilipa = url.replace(url2+'/',"");
-      // var songnamme = songnamedilipa.replace("%20/g"," ");
-      var songnamedilipajud = songnamedilipa.replace('.mp3','');
-      var songname = decodeURI(songnamedilipajud);
+      // var url = $('#albumSong')[0].src;
+      // var url2 = "{{url('/assets/music/')}}";        
+      // var songnamedilipa = url.replace(url2+'/',"");
+      // // var songnamme = songnamedilipa.replace("%20/g"," ");
+      // var songnamedilipajud = songnamedilipa.replace('.mp3','');
+      // var songname = decodeURI(songnamedilipajud);
 
-      $('#song-name').html("Currently Playing: "+songname);
+      // $('#song-name').html("Currently Playing: "+$('#albumSong').data('band')+" - "+$('#albumSong').data('title'));
       updateTime = setInterval(update, 0);
       timerDurationPlayed();
     }
@@ -338,7 +350,9 @@ var prevSong;
     e.preventDefault();
 
     currSong = $(this).closest('li');
-    console.log(currSong.find('a').data('id'));
+    // console.log(currSong.find('a').data('id'));
+    // console.log(currSong.find('a').data('band'));
+    // console.log(currSong.find('a').data('title'));
     songId = currSong.find('a').data('id');
 
     prevSong = parseInt($('#albumSong')[0].duration);
@@ -348,7 +362,7 @@ var prevSong;
     }else{
       //push then usersDurationPlayed = 0;
       var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-      // console.log(CSRF_TOKEN, usersDurationPlayed, songId, prevSong);
+      console.log(CSRF_TOKEN, usersDurationPlayed, songId, prevSong);
       $.ajax({
         method : "post",
         url : '../../addSongPlayedForScore',
@@ -412,14 +426,15 @@ var prevSong;
         $('#playBtn').css('top','32px');
         updateTime = setInterval(update, 200);
 
-        var url = $('#albumSong')[0].src;
-        var url2 = "{{url('/assets/music/')}}";        
-        var songnamedilipa = url.replace(url2+'/',"");
+        // var url = $('#albumSong')[0].src;
+        // var url2 = "{{url('/assets/music/')}}";        
+        // var songnamedilipa = url.replace(url2+'/',"");
         // var songnamme = songnamedilipa.replace("%20/g"," ");
-        var songnamedilipajud = songnamedilipa.replace('.mp3','');
-        var songname = decodeURI(songnamedilipajud);
-
-        $('#song-name').html("Currently Playing: "+songname);
+        // var songnamedilipajud = songnamedilipa.replace('.mp3','');
+        // var songname = decodeURI(songnamedilipajud);
+        $('#song-name').html("Currently Playing: "+currSong.find('a').data('band')+" - "+currSong.find('a').data('title'));
+        $('#albumSong').attr('data-band',currSong.find('a').data('band'));
+        $('#albumSong').attr('data-title',currSong.find('a').data('title'));
         // console.log(url);
         // console.log(url2);
         // console.log(songnamedilipajud);
