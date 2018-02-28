@@ -175,7 +175,7 @@
                       @if(count($songs)==0)
                       <li class="current-song"><a href="{{asset('assets/music/'.$songs->song_audio)}}" value="{{$songs->song_id}}" class="songLiA">{{$songs->song_title}}</a><span data-id="{{$songs->song_id}}" class="remlist btn fa fa-remove pull-right" title="Remove from song album"></span></li>
                       @else
-                        <li><a href="{{asset('assets/music/'.$songs->song_audio)}}" data-band="{{$songs->album->band->band_name}}" data-id="{{$songs->song_id}}" data-title="{{$songs->song_title}}" class="songLiA">{{$songs->album->band->band_name}} - {{$songs->song_title}}</a><span data-id="{{$songs->song_id}}" class="remlist btn fa fa-remove pull-right" title="Remove from song album"></span></li>                      
+                        <li><a href="{{asset('assets/music/'.$songs->song_audio)}}" data-band="{{$songs->album->band->band_name}}" data-id="{{$songs->song_id}}" data-title="{{$songs->song_title}}" class="songLiA">{{$songs->album->band->band_name}} - {{$songs->song_title}}</a><span class="btn fa fa-pencil pull-right editSong" data-toggle="modal" data-title="{{$songs->song_title}}" data-desc="{{$songs->song_desc}}" data-id="{{$songs->song_id}}" data-genreid="{{$songs->genre->genre_id}}" data-genre="{{$songs->genre->genre_name}}" title="Edit this song"></span><span data-id="{{$songs->song_id}}" class="remlist btn fa fa-remove pull-right" title="Remove from song album"></span></li>
                       @endif
                 @endforeach
                 </ul>
@@ -199,6 +199,45 @@
 
 </div>
 
+<!-- Edit Song Modal -->
+<div id="edit-song-modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+    <form method="post" action="{{'../updateSong'}}" enctype="multipart/form-data">
+        {{csrf_field()}}
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Song</h4>
+      </div>
+      <div class="modal-body edit-modal">
+        Song Title:<br>
+        <input type="text" name="song_title" id="song_title" class='form-control'><br>
+        Song Description:<br>
+        <input type="text" name="song_desc" id="song_desc" class='form-control'><br>
+        Song Genre:<br>
+        <select name="genre_id" id="genre_id" class='form-control'>
+            @foreach($genres as $genre)
+            <option class="showgenre" hidden></option>
+            <option value="{{$genre->genre_id}}">{{$genre->genre_name}}</option>
+            @endforeach
+        </select>
+        <br>
+        <input type="text" name="song_id" id="song_id" hidden>
+        <br>
+      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
 
 <script type="text/javascript">
 
@@ -211,6 +250,25 @@ var nextdataBand;
 var nextdataTitle;
 
 $(document).ready(function(){
+  
+  $('.songsInAblum').on('click', '.editSong', function()
+  {
+      var id = $(this).data('id');
+      var gid = $(this).data('genreid');
+      var genre = $(this).data('genre');
+      var desc = $(this).data('desc');
+      var title = $(this).data('title');
+      // console.log(gid);
+
+          $('.modal-body #song_title').val(title);
+          $('.modal-body #song_desc').val(desc);
+          $('.modal-body #song_id').val(id);
+          $('.showgenre').val(gid);
+          $('.showgenre').html(genre);
+
+          $('#edit-song-modal').modal('show');
+  });
+
 	$('.albums').on('click', '.showSongs', function()
 	{
 		var id = $(this).data('id');

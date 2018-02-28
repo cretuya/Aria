@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\UserNotification;
 use App\Band;
+use App\Genre;
 use App\Album;
 use App\Song;
 use App\SongsPlayed;
@@ -105,8 +106,9 @@ class AlbumController extends Controller
         $albums = Album::where('album_id', $aid)->first();
         $band = Band::where('band_name', $bname)->first();
         $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
+        $genres = Genre::all();
 
-        return view('edit-band-album', compact('albums', 'band', 'usernotifinvite'));
+        return view('edit-band-album', compact('albums', 'band', 'usernotifinvite','genres'));
     }
 
     public function updateAlbum(Request $request, $bname)

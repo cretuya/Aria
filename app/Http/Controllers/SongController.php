@@ -130,7 +130,7 @@ class SongController extends Controller
                 'album_id' => $album->album_id,
         	]);
 
-        	return redirect('/'.$band->band_name.'/manage');
+        	return redirect('/'.$band->band_name.'/editAlbum/'.$album->album_id);
         }
     }
     public function deleteSong($sid)
