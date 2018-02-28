@@ -13,6 +13,7 @@ use App\BandGenre;
 use App\BandArticle;
 use App\Bandmember;
 use App\BandVideo;
+use App\BandEvent;
 use App\Genre;
 use App\Song;
 use App\User;
@@ -307,6 +308,48 @@ class BandController extends Controller
     {
         $bands = Band::all();
 
-        return response() ->json($bands);
+        return response()->json($bands);
     }
+
+    public function getEvents(){
+        $events = BandEvent::all();
+
+        return response ()-> json($events);
+    }
+
+    public function addBandCoverPhoto(Request $request){
+        $bandName = $request->bandName;
+            $bandpic = $request->file('bandPic');
+            $bandID = $request->input('bandId');
+            \Cloudder::upload($bandpic);
+            $cloudder=\Cloudder::getResult();
+
+            $update = Band::where('band_id', $bandID)->update([
+            "band_coverpic" => $cloudder['url'],
+            ]);
+
+    }
+
+    public function addEvent(Request $request){
+        $bandID = $request->input('band_id');
+        $eventName = $request->input('event_name');
+        $date = $request->input('event_date');
+        $time = $request->input('event_time');
+        $eventVenue = $request->input('event_venue');
+        $eventLocation = $request->input('event_location');
+        $eventDate = date('Y-m-d', strtotime(str_replace('-', '/', $date)));
+    
+        $create = BandEvent::create([
+            'band_id' => $bandID,
+            'event_name' => $eventName,
+            'event_date' => $eventDate,
+            'event_time' => $time,
+            'event_venue' => $eventVenue,
+            'event_location' => $eventLocation,
+        ]);
+
+        return response() -> json($create);
+
+    }
+
 }

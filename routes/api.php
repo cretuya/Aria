@@ -72,13 +72,13 @@ Route::get('members', 'Api\BandMemberController@members');
 Route::get('bandmembers', 'Api\BandMemberController@bandmembers');
 
 Route::get('videos', 'Api\VideoController@videos');
-Route::get('bandvideos', 'Api\VideoController@bandvideos');
+Route::post('bandvideos', 'Api\VideoController@bandvideos');
 
 
 Route::get('bandalbums', 'Api\AlbumController@bandalbums');
 
 Route::get('songs', 'Api\SongController@songs');
-Route::get('bandsongs', 'Api\SongController@bandsongs');
+Route::post('bandsongs', 'Api\SongController@bandsongs');
 
 Route::get('articles', 'Api\ArticleController@articles');
 Route::get('bandarticles', 'Api\ArticleController@bandarticles');
@@ -98,3 +98,8 @@ Route::post('addSongToPlaylist', 'Api\UserController@addSongToPlaylist');
 Route::get('getAllPlist','Api\UserController@getAllPlist');
 Route::get('AllAlbums','Api\AlbumController@AllAlbums');
 Route::get('removeSongFromPlaylist','Api\UserController@removeSongFromPlaylist');
+
+Route::post('getPlistById', 'Api\UserController@getPlistById');
+Route::get('getEvents', 'Api\BandController@getEvents');
+Route::post('addBandCoverPhoto', 'Api\BandController@addBandCoverPhoto');
+Route::post('addEvent', 'Api\BandController@addEvent');

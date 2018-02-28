@@ -126,7 +126,6 @@ class UserController extends Controller
 
       $uid = $request->input('user_id');
       $title = $request->input('pl_title');
-      $desc = $request->input('pl_desc');
       $image = $request->file('pl_image');
 
       \Cloudder::upload($image);
@@ -134,7 +133,6 @@ class UserController extends Controller
 
       $create = Playlist::create([
             'pl_title' => $title,
-            'pl_desc' => $desc,
             'pl_creator' => $uid,
             'image' => $cloudder['url'],
           ]);

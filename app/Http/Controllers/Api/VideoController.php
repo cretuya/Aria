@@ -23,36 +23,21 @@ class VideoController extends Controller
             array_push($vids, $vid);
         }
 
-        return response ()->json(['band' => $band, 'videos' => $vids]);
+        return response ()->json($vids);
     }
 
 
     public function addVideo(Request $request)
     {
         $band = Band::where('band_id' , $request->input('band_id'))->first();
-
-        // $validate = $this->validate($request, [
-        //     'video_desc' => 'required|max:255',
-        //     'video_content' => 'required|mimes:mp4,x-flv,x-mpegURL,MP2T,3gpp,quicktime,x-msvideo,x-ms-wmv',
-        // ]);
-
-        // if ($validate->fails())
-        // {
-        //     return response ()->json($validate);
-        // }
-        // else
-        // {
+        $title = $request->input('video_title');
             $desc = $request->input('video_desc');
             $video = $request->file('video_content');
-
-            $vids = Array();
-            $bv = Array();
-            
-            // foreach ($videos as $video)
-            // {
+        
                 $videoPath = $this->addPathforVideos($video);
 
                 $create = Video::create([
+                   'video_title' => $title,
                    'video_desc' => $desc,
                     'video_content' => $videoPath,
                 ]);
@@ -61,14 +46,9 @@ class VideoController extends Controller
                     'band_id' => $band->band_id,
                     'video_id' => $create->video_id,
                 ]);
-                // array_push($vids, $create);
-                // array_push($bv, $bandvideo);
-            // }
-
-
-            
-            return response ()->json (['video' => $create, 'bandvideo' => $bandvideo]);
-        // }
+                
+            return response ()->json ($create);
+        
 
     }
     

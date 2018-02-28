@@ -23,11 +23,13 @@ class AlbumController extends Controller
 
     public function addAlbum(Request $request)
     {
+        $band = Band::where('band_id', $request->input('band_id'))->first();
         $name = $request->input('album_name');
         $desc = $request->input('album_desc');
         $albumpic = $request->file('album_pic');
+        $released_date = $request->input('released_date');
 
-        $band = Band::where('band_id', $request->input('band_id'))->first();
+        $rdate = date('Y-m-d', strtotime(str_replace('-', '/', $released_date)));
         if (count($band)>0)
         {
             \Cloudder::upload($albumpic);
@@ -37,6 +39,7 @@ class AlbumController extends Controller
                 'album_desc' => $desc,
                 'band_id' =>$band->band_id,
                 'album_pic' => $cloudder['url'],
+                'released_date' => $rdate,
             ]);
         }
         else
@@ -45,6 +48,7 @@ class AlbumController extends Controller
         }
         
         return response ()->json($create);
+
     }
 
     public function editAlbum(Request $request)
