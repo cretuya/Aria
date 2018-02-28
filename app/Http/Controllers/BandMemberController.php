@@ -137,11 +137,11 @@ class BandMemberController extends Controller
 	}
 
 	public function editrolemember(Request $request){
-		$bandName=$request->input('bandName');
-		$bandmemberID = $request->input('bandmemberIDeditrole');
+		$bandName=$request->input('band_name');
+		$bandmemberID = $request->input('member_id');
 		// dd($bandmemberID);
 		$bandmemberrole = $request->input('member_role');
-		$bandidofmember = $request->input('bandmemberroleedit_bandid');
+		$bandidofmember = $request->input('band_id');
 
 		$updaterole = Bandmember::where([
 					['user_id', $bandmemberID],

@@ -262,7 +262,8 @@ input[type='range']::-webkit-slider-thumb{
                  <td><input type="text" name="band-member-role" class="member-role" style="border: none; background: transparent;" value="{{$members->bandrole}}" readonly></td>
                  <input type="text" value="{{$band->band_name}}" name="bandName" hidden>
                  <!-- <td><a href="#"><span class="fa fa-pencil"></span></a></td> -->
-                 <td><button type="button" onclick="confirmDelAction({{$members->user->user_id}},{{$members->user->user_id}}, {{session('userSocial')['id']}});" style="background: transparent; border: none;" class="fa fa-close"></button></td>
+                 <td>
+                 <button type="button" data-name="{{$members->user->fullname}}" data-id="{{$members->user->user_id}}" data-role="{{$members->bandrole}}" style="background: transparent; border: none;" class="fa fa-pencil editmemberBtn"></button><button type="button" onclick="confirmDelAction({{$members->user->user_id}},{{$members->user->user_id}}, {{session('userSocial')['id']}});" style="background: transparent; border: none;" class="fa fa-close"></button></td>
                </tr>
              </form>
              @endforeach
@@ -557,6 +558,46 @@ input[type='range']::-webkit-slider-thumb{
   </div>
 </div>
 
+
+<div id="edit-member-modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+    <form method="post" action="{{'../editmember'}}">
+        {{csrf_field()}}
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Member</h4>
+      </div>
+      <div class="modal-body">
+        
+            <input type='text' name='band_id' class='form-control hidden' value="{{$band->band_id}}">
+            <input type='text' name='band_name' class='form-control hidden' value="{{$band->band_name}}">
+            <input type='text' id="edit-member-id" name='member_id' class='form-control hidden'>
+            Member Name:<br>
+            <input type='text' id="edit-member-name" name='member_name' class='form-control' readonly><br>
+            Band Role:<br>
+            <select class="form-control" name="member_role" required>
+              <option id="edit-member-role" value="" selected hidden></option>
+              <option value="Vocalist">Vocalist</option>
+              <option value="Lead Guitar">Lead Guitar</option>
+              <option value="Rythm Guitar">Rythm Guitar</option>
+              <option value="Keyboardist">Keyboardist</option>
+              <option value="Drummer">Drummer</option>
+              <option value="Bassist">Bassist</option>
+            </select>
+      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-default" >Submit</button>
+      </div>
+      </form>
+    </div>
+
+  </div>
+</div>
 
 <!-- Add Album Modal -->
 <div id="add-album-modal" class="modal fade" role="dialog">
@@ -1088,6 +1129,19 @@ function playPauseVid(){
 
 $(document).ready(function()
 {
+
+  $('.editmemberBtn').on('click', function(){
+       var memname = $(this).data('name');
+       var memid = $(this).data('id');
+       var bandrole = $(this).data('role');
+
+       $('.modal-body #edit-member-id').val(memid);
+       $('.modal-body #edit-member-name').val(memname);
+       $('.modal-body #edit-member-role').val(bandrole);
+       $('.modal-body #edit-member-role').html(bandrole);
+
+       $('#edit-member-modal').modal('show');
+  });
 
   $('input.datepicker').datepicker();
   $('input.timepicker').timepicker();
