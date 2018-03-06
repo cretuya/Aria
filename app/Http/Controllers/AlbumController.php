@@ -59,7 +59,7 @@ class AlbumController extends Controller
 
 
         $rdate = date('Y-m-d', strtotime(str_replace('-', '/', $released_date)));
-
+        // dd($rdate);
         // $band = Band::where('band_id', $request->input('band_id'))->first();
 
         if (count($band)>0)

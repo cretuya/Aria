@@ -15,6 +15,7 @@ class Album extends Model
 		'album_desc' , 
 		'band_id' , 
 		'album_pic',
+		'released_date',
 	];
 
 	public $rules = [

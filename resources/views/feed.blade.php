@@ -1,3 +1,4 @@
+
 @extends('layouts.master')
 
 @section('content')
@@ -37,18 +38,18 @@
             $event->event_time = date('h:i A', strtotime($time));
 
             ?>
-
               <div class="panel" style="background: #232323;">
                 <div class="panel-heading" style="border-bottom: 2px solid #E57C1F">
-                  <a href="{{url('/'.$event->band->band_name)}}"><img class="feed-band-pic img-circle" src="{{$event->band->band_pic}}"></a>
+                  <a href="{{url('/'.$event->band->band_name)}}"><img class="feed-band-pic img-circle" src="{{$event->band->band_pic}}" style="object-fit: cover;"></a>
                   <a href="{{url('/'.$event->band->band_name)}}"><span class="feed-band-name">{{$event->band->band_name}}</span></a>
                 </div>
                 <div class="panel-body">
-                  <h4 style="margin-top: 0px;">{{$event->event_name}}</h4>
-                  <span>{{$event->event_date}} {{$event->event_time}}</span><br>
-                  <span>{{$event->event_venue}}</span>, <span>{{$event->event_location}}</span>
+                  <h5 style="margin-top: 0px;">{{$event->event_name}}</h5>
+                  <span style="font-size: 12px;">{{$event->event_date}} {{$event->event_time}}</span> at
+                  <span style="font-size: 12px;">{{$event->event_venue}}</span>, <span style="font-size: 12px;">{{$event->event_location}}</span>
                 </div>
               </div>
+
             @endforeach
           @endif      
 

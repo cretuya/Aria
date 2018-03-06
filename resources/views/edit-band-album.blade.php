@@ -130,7 +130,11 @@
               <p style="color: #E57C1F; font-size: 12px;">ALBUM</p>
               <h2 style="letter-spacing: 1px;">{{$albums->album_name}}</h2>  
               <h4>{{$band->band_name}}</h4>
-              <h6 style="margin-top: 20px;">Released on 10 Mar 2018</h6>
+              <?php
+                $date = DateTime::createFromFormat("Y-m-d", $albums->released_date);
+                $albums->released_date = $date->format("M d Y");
+              ?>
+              <h6 style="margin-top: 20px;">Released on {{$albums->released_date}}</h6>
               <p style="margin-top: 20px; font-size: 12px; text-align: justify; word-wrap: break-word; width: 75%">{{$albums->album_desc}}</p>
             </div>
           </div>

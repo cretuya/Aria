@@ -123,7 +123,11 @@
               @else
               <button class="fa fa-thumbs-up unlikealbumbtn" title="Like Album"></button><span class="likeText">{{$albums->num_likes}} people like this album</span>
               @endif
-              <h6 style="margin-top: 10px;">Released on 10 Mar 2018</h6>
+              <?php
+                $date = DateTime::createFromFormat("Y-m-d", $albums->released_date);
+                $albums->released_date = $date->format("M d Y");
+              ?>
+              <h6 style="margin-top: 10px;">Released on {{$albums->released_date}}</h6>
               <p style="margin-top: 20px; font-size: 12px; text-align: justify; word-wrap: break-word; width: 75%">{{$albums->album_desc}}</p>
             </div>
           </div>
