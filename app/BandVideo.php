@@ -19,6 +19,6 @@ class BandVideo extends Model
     }
     public function bands()
     {
-    	return $this->belongsTo('App\Band', 'band_id');
+    	return $this->belongsTo('App\Band', 'band_id','band_id');
     }
 }

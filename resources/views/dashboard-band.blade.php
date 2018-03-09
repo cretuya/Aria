@@ -303,7 +303,7 @@ input[type='range']::-webkit-slider-thumb{
                    <td>{{$event->event_venue}}</td>
                    <td>{{$event->event_time}}</td>
                    <td>{{$event->event_location}}</td>
-                   <td><a href="#" id="editEvent" data-id="{{$event->event_id}}" data-name="{{$event->event_name}}" data-venue="{{$event->event_venue}}" data-time="{{$event->event_time}}" data-location="{{$event->event_location}}" data-date="{{$date1}}"><span class="fa fa-pencil" style="color: #fafafa;" title="Edit Event"></span></a></td>
+                   <td><a href="#" class="editEvent" data-id="{{$event->event_id}}" data-name="{{$event->event_name}}" data-venue="{{$event->event_venue}}" data-time="{{$event->event_time}}" data-location="{{$event->event_location}}" data-date="{{$date1}}"><span class="fa fa-pencil" style="color: #fafafa;" title="Edit Event"></span></a></td>
                    <td><a href="#" class="deleteEvent" data-id="{{$event->event_id}}"><span class="fa fa-trash" style="color: #fafafa;" title="Delete Event"></span></a></td>
                  </tr>
                  @endforeach
@@ -848,7 +848,7 @@ input[type='range']::-webkit-slider-thumb{
           <span aria-hidden="true" onclick="resetVid();">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" style="padding: 0px;">
         <div class="modal-video">
           <div class="embed-responsive embed-responsive-16by9" id="vidcontainer">
 
@@ -1221,7 +1221,7 @@ $(document).ready(function()
           $('#add-song-modal').modal('show');
      });
 
-     $('#editEvent').on('click', function(){
+     $('.editEvent').on('click', function(){
           var id = $(this).data('id');
           var name = $(this).data('name');
           var date = $(this).data('date');

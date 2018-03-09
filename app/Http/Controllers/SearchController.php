@@ -47,7 +47,7 @@ class SearchController extends Controller
         $allUserPlaylist = Playlist::where('pl_creator',session('userSocial')['id'])->get();
 
     	//for video tab
-    	$searchResultVideo = Video::where('video_desc', 'LIKE' , '%'.$termSearched.'%')->get();
+    	$searchResultVideo = Video::where('video_title', 'LIKE' , '%'.$termSearched.'%')->get();
 
         //for article tab
         // $searchResultArticle = Article::where('art_title', 'LIKE' , '%'.$termSearched.'%')->get();

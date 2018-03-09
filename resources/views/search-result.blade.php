@@ -20,7 +20,7 @@
 	}
 	input[type='range']{
 	  -webkit-appearance: none !important;
-	  background: #212121;
+	  background: #E57C1F;
 	  cursor: pointer;
 	  height: 5px;
 	  outline: none !important;
@@ -28,10 +28,10 @@
 
 	input[type='range']::-webkit-slider-thumb{
 	  -webkit-appearance: none !important;
-	  background: #E57C1F;
+	  background: #e4e4e4;
 	  height: 12px;
 	  width: 12px;
-	  border-radius: 2px;
+	  border-radius: 100%;
 	  cursor: pointer;
 	}
 
@@ -260,15 +260,21 @@
 		            @foreach($searchResultVideo as $srVideo)
 			           <div class="panel" style="background: transparent;">
 			           	<div class="panel-body">
-			 	          <div class="media">
+			 	          <div class="media" style="border: none; border-radius: 0px;">
 			 	            <div class="media-left">
-			 	              <video class="media-object" style="width:150px" controls>
+			 	              <div id="video-content{{$srVideo->video_id}}" onclick="videoOpen({{$srVideo->video_id}});">
+			 	              <video style="background: #000; width: 150px; height: inherit; cursor:pointer;" class="media-object embed-responsive-item vidContent{{$srVideo->video_id}}" data-name="{{$srVideo->video_title}}" data-content="{{asset('assets/video/'.$srVideo->video_content)}}">
 			 	              	<source src="{{asset('assets/video/'.$srVideo->video_content)}}" type="video/mp4">
 			 	              </video>
+			 	          	  </div>
 			 	            </div>
-			 	            <div class="media-body">
-			 	              <h4 class="media-heading">Video Title</h4>
-			 	              <p>{{$srVideo->video_desc}}</p>
+			 	            <div class="media-body" style="background: transparent; padding-left: 15px; padding-top: 5px;">
+			 	              <h5 class="media-heading">{{$srVideo->video_title}}</h5>
+			 	              @foreach($srVideo->bandvideos as $vids)
+			 	              	<a href="{{url('/'.$vids->bands->band_name)}}" style="font-size: 12px;">{{$vids->bands->band_name}} </a><span style="font-size: 12px;">• {{$vids->bands->num_followers}} Followers</span>
+			 	              @endforeach
+			 	              
+			 	              <p style="font-size: 11px; margin-top: 5px;">{{$srVideo->video_desc}}</p>
 			 	            </div>
 			 	          </div>
 			 	        </div>
@@ -311,7 +317,27 @@
   </div>
 </div>
 
-  
+
+<!-- Video modal -->
+
+<div class="modal fade" id="modal-video" tabindex="-1" role="dialog" aria-labelledby="modal-video-label" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header"><span id="vidName" style="margin: 0;"></span>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="resetVid();">
+          <span aria-hidden="true" onclick="resetVid();">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="padding: 0px;">
+        <div class="modal-video">
+          <div class="embed-responsive embed-responsive-16by9" id="vidcontainer">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 <script type="text/javascript">
@@ -486,6 +512,116 @@
 		});
 
 		$('#selectPlaylistModal').fadeTo(300, 1).modal('hide');
+	}
+
+	function resetVid(){
+	  // $('#actualVideo').children().filter("video").each(function(){
+	  //     this.pause(); // can't hurt
+	  //     delete this; // @sparkey reports that this did the trick (even though it makes no sense!)
+	  //     $(this).remove(); // this is probably what actually does the trick
+	  // });
+	  // $('#actualVideo').empty();
+	  var vid1 = document.getElementById('actualVideo');
+	  var vid2 = $('#actualVideo').html();
+	  vid1.pause();
+	  // vid2.remove();
+	}
+	function videoOpen(id){
+
+	    var vid = document.getElementById('vidcontainer');
+	    var content = $('.vidContent'+id).data('content');
+	    var playIcon = "{{asset('assets/img/play.png')}}";
+	    var vidname = $('.vidContent'+id).data('name');
+	    $('#vidName').html(vidname);
+
+	    // console.log(vidname,content);
+	    vid.innerHTML ='<video id="actualVideo" class="embed-responsive-item" autoplay><source id="vidsrc" src="'+content+'" type="video/mp4"></source></video><div id="controllerBox" class="video-controls-box" style="position: absolute;bottom: 0px;width: 100%;"><input id="seeksliderVid" type="range" min="0" max="100" value="0" step="1"><div style="padding-top: 5px; padding-bottom: 4px;"><span><img id="playPauseBottomOfVid" src="'+playIcon+'" onclick="playPauseVid()" style="cursor:pointer; width: 25px; padding-left: 5px; margin-top: -2px;"></span><span id="curtimeText" style="color:#fafafa; margin-left: 5px;">0:00</span> / <span id="durtimeText" style="color:#fafafa;">0:00</span></div></div>';
+
+	    $('#modal-video').modal('show');
+	    playPauseVid();
+	}
+	function playPauseVid(){
+	    // console.log(vid.id);
+	    var vid = document.getElementById('actualVideo');
+	    // var controller_vId = "controllOfVid"+vid.id;
+	    var vidForSlider = "seeksliderVid";
+	    var seekslider = document.getElementById(vidForSlider);
+	    var playPauseBottom = "playPauseBottomOfVid";
+	    var controlBox = "controllerBox";
+
+	    // console.log(controller_vId);
+	    var playBtn = "{{asset('assets/img/play.png')}}";
+	    var pauseBtn = "{{asset('assets/img/pause.png')}}";
+
+	    // var controllerVid = document.getElementById(controller_vId);
+	    var controllerVidBottom = document.getElementById(playPauseBottom);
+	    var controllerBox = document.getElementById(controlBox);
+	    
+	    if (vid.paused) {
+	      vid.play();
+	      // controllerVid.src = pauseBtn;
+	      controllerVidBottom.src = pauseBtn;
+	      // $(controllerVid).fadeOut();
+
+	      setTimeout(function(){
+	        $(controllerBox).fadeIn();
+	      }, 100);
+	      
+	      // setTimeout(function(){
+	      //   $(controllerBox).fadeOut();
+	      // }, 2000);
+
+	      // $(vId).mouseover(function(event) {
+	      //   $(controllerBox).fadeIn();
+	      //   setTimeout(function(){
+	      //     $(controllerBox).fadeOut();
+	      //   }, 2000);
+	      // });
+	      
+
+	    }else{
+	      vid.pause();
+	      // controllerVid.src = playBtn;
+	      controllerVidBottom.src = playBtn;
+	      // $(controllerVid).fadeIn();
+	      // $(controllerBox).fadeOut();
+	    }
+	    
+	    // console.log(vidForSlider);
+	    seekslider.addEventListener("change", function(){
+	        var seekTo = vid.duration * (seekslider.value/100);
+	        vid.currentTime = seekTo;
+	    });
+
+	    vid.addEventListener("timeupdate", function(){
+	        var newtime = vid.currentTime * (100/vid.duration);
+	        seekslider.value = newtime;
+
+	        var curtimeId = "curtimeText";
+	        var durtimeId = "durtimeText";
+	        var curtimeText = document.getElementById(curtimeId);
+	        var durtimeText = document.getElementById(durtimeId);
+
+	        var curmins = Math.floor(vid.currentTime/60);
+	        var cursecs = Math.floor(vid.currentTime-curmins*60);
+	        var durmins = Math.floor(vid.duration/60);
+	        var dursecs = Math.round(vid.duration-durmins*60);
+	        if (cursecs<10) {
+	          cursecs = "0"+cursecs;
+	        }
+	        if (dursecs<10) {          
+	          dursecs = "0"+dursecs;
+	        }
+	        curtimeText.innerHTML = curmins+":"+cursecs;
+	        durtimeText.innerHTML = durmins+":"+dursecs;
+
+	    });
+
+	    vid.addEventListener("ended", function(){
+	        var controllerVidBottom = document.getElementById(playPauseBottom);
+	        vid.currentTime = 0;
+	        controllerVidBottom.src = playBtn;
+	    });
 	}
 
 </script>

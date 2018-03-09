@@ -102,7 +102,7 @@ class UserController extends Controller
         // dd($storeBands);
 
         $collection = collect($storeEvents);
-        $events = $collection->sortBy('event_date');
+        $events = $collection->sortBy('created_at');
         $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
 
         $recommendBands = $this->recommendBands();
