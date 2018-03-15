@@ -93,11 +93,18 @@ class SearchController extends Controller
     $songId = $request->input('songID');
     $genreId = $request->input('genreID');
 
-        $create = Plist::create([
-          'genre_id' => $genreId,
-          'song_id' => $songId,
-          'pl_id' => $pId,
-        ]);
+        $doesExist = Plist::where('song_id',$songId)->get();
+
+        if ($doesExist->contains('song_id',$songId)) {
+            return response()->json('Song already exists in playlist.');
+        }else{            
+            $create = Plist::create([
+              'genre_id' => $genreId,
+              'song_id' => $songId,
+              'pl_id' => $pId,
+            ]);
+            return response() ->json('Successfully added to playlist!');
+        }
 
     }
 

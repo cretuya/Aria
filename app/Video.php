@@ -21,7 +21,7 @@ class Video extends Model
     ];
     public $updaterules = [
     'video_desc' => 'required|max:255',
-    'video_content' => 'required',
+    // 'video_content' => 'required',
     ];
 
     public function bandvideos()

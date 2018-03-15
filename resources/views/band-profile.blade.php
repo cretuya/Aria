@@ -152,7 +152,7 @@
 			@foreach($videos as $video)
 				<div class="col-md-3">
 					<div id="video-content{{$video->video->video_id}}" onclick="videoOpen({{$video->video->video_id}});">
-						<video style="background: #000; width: 100%; height: inherit; cursor:pointer;" class="embed-responsive-item vidContent{{$video->video->video_id}}" data-content="{{asset('assets/video/'.$video->video->video_content)}}">
+						<video style="background: #000; width: 100%; height: inherit; cursor:pointer;" class="embed-responsive-item vidContent{{$video->video->video_id}}" data-content="{{asset('assets/video/'.$video->video->video_content)}}" data-name="{{$video->video->video_title}}">
 						    <source src="{{asset('assets/video/'.$video->video->video_content)}}">
 						</video>
 					</div>
@@ -214,12 +214,12 @@
 <div class="modal fade" id="modal-video" tabindex="-1" role="dialog" aria-labelledby="modal-video-label" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header"><span id="vidName" style="margin: 0;"></span>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="resetVid();">
           <span aria-hidden="true" onclick="resetVid();">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" style="padding: 0px;">
         <div class="modal-video">
           <div class="embed-responsive embed-responsive-16by9" id="vidcontainer">
 
@@ -243,6 +243,8 @@
 	    var vid = document.getElementById('vidcontainer');
 	    var content = $('.vidContent'+id).data('content');
 	    var playIcon = "{{asset('assets/img/play.png')}}";
+	    var vidname = $('.vidContent'+id).data('name');
+	    $('#vidName').html(vidname);
 
 	    // console.log(content);
 	    vid.innerHTML ='<video id="actualVideo" class="embed-responsive-item" autoplay><source id="vidsrc" src="'+content+'" type="video/mp4"></source></video><div id="controllerBox" class="video-controls-box" style="position: absolute;bottom: 0px;width: 100%;"><input id="seeksliderVid" type="range" min="0" max="100" value="0" step="1"><div style="padding-top: 5px; padding-bottom: 4px;"><span><img id="playPauseBottomOfVid" src="'+playIcon+'" onclick="playPauseVid()" style="cursor:pointer; width: 25px; padding-left: 5px; margin-top: -2px;"></span><span id="curtimeText" style="color:#fafafa; margin-left: 5px;">0:00</span> / <span id="durtimeText" style="color:#fafafa;">0:00</span></div></div>';

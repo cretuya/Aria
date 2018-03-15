@@ -85,6 +85,7 @@ class VideoController extends Controller
     {
         $id = $request->input('video_id');
         $band = Band::where('band_name' , $bname)->first();
+        $title = $request->input('video_title');
         $desc = $request->input('video_desc');
 
         $rules = new Video;
@@ -96,6 +97,7 @@ class VideoController extends Controller
         else
         {        
             $update = Video::where('video_id' , $id)->update([
+                'video_title' => $title,
                 'video_desc' => $desc,
                 ]);
 

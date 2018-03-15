@@ -20,7 +20,7 @@
 	}
 	input[type='range']{
 	  -webkit-appearance: none !important;
-	  background: #E57C1F;
+	  background: #212121;
 	  cursor: pointer;
 	  height: 5px;
 	  outline: none !important;
@@ -28,10 +28,10 @@
 
 	input[type='range']::-webkit-slider-thumb{
 	  -webkit-appearance: none !important;
-	  background: #e4e4e4;
+	  background: #E57C1F;
 	  height: 12px;
 	  width: 12px;
-	  border-radius: 100%;
+	  /*border-radius: 100%;*/
 	  cursor: pointer;
 	}
 
@@ -269,7 +269,7 @@
 			 	          	  </div>
 			 	            </div>
 			 	            <div class="media-body" style="background: transparent; padding-left: 15px; padding-top: 5px;">
-			 	              <h5 class="media-heading">{{$srVideo->video_title}}</h5>
+			 	              <h5 class="media-heading" onclick="videoOpen({{$srVideo->video_id}});" style="cursor: pointer">{{$srVideo->video_title}}</h5>
 			 	              @foreach($srVideo->bandvideos as $vids)
 			 	              	<a href="{{url('/'.$vids->bands->band_name)}}" style="font-size: 12px;">{{$vids->bands->band_name}} </a><span style="font-size: 12px;">• {{$vids->bands->num_followers}} Followers</span>
 			 	              @endforeach
@@ -503,7 +503,8 @@
 		  data : { '_token' : CSRF_TOKEN, 'plID' : plID , 'songID' : songID , 'genreID' : genreID
 		  },
 		  success: function(json){
-		    console.log(json);
+		    // console.log(json);
+		    alert(json);
 		  },
 		  error: function(a,b,c)
 		  {

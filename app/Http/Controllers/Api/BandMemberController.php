@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Bandmember;
 use App\User;
+use App\UserNotification;
 use \Session;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -23,21 +24,21 @@ class BandMemberController extends Controller
 	}
 	public function addBandMember(Request $request)
 	{	
-		// dd($request->input('add-band-member-band-id'));
-		$findMembertoAdd = User::Where('user_id',$request->input('add-band-member-id'))->first();
-		// dd($findMembertoAdd);
-		$bandmember = Bandmember::create([
+		try {
+
+			$findMembertoAdd = User::Where('user_id',$request->input('add-band-member-id'))->first();
+		
+			$bandmember = Bandmember::create([
 				'band_id' => $request->input('add-band-member-band-id'),
 				'user_id' => $findMembertoAdd->user_id,
 				'bandrole' => $request->input('add-band-member-role')
-				// 'band_desc' => $desc,
 			]);
 
-		// $bandName=$request->input('add-band-member-band-name');
-		
-
-		// return redirect('/'.$bandName."/manage");
-		return response ()->json(['user' => $findMembertoAdd, 'member' => $bandmember]);
+			return $bandmember;
+			
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
 	}
 
 	public function deleteBandMember(Request $request){
@@ -63,6 +64,58 @@ class BandMemberController extends Controller
 		$members = Bandmember::where('band_id', $request->input('band_id'))->get();
 
 		return response() ->json($members);
+	}
+
+	public function inviteUser(Request $request){
+
+		$bandId = $request->input('band_id');
+		$userId = $request->input('user_id');
+		$bandRole = $request->input('band_role');
+		$invitorId = $request->input('invitor_id');
+
+		try{
+			$invitation = UserNotification::create([
+				'band_id' => $bandId,
+				'user_id' => $userId,
+				'bandrole' => $bandRole,
+				'invitor' => $invitorId
+			]);
+			return "true";
+		}
+		catch(\Exception $e){
+			return $e->getMessage();
+		}
+		
+	}
+
+	public function getUserNotification(Request $request){
+
+		$notifs = UserNotification::where('user_id', $request->input('user_id'))->get();
+
+		return response()->json($notifs);
+	}
+
+	public function declineInvitation(Request $request){
+
+		$bandId = $request->input('band_id');
+		$userId = $request->input('user_id');
+		$bandRole = $request->input('bandrole');
+		$invitorId = $request->input('invitor');
+
+		try {
+
+			$decline = UserNotification::where([
+				'band_id' => $bandId,
+				'user_id' => $userId,
+				'bandrole' => $bandRole,
+				'invitor' => $invitorId
+			])->delete();
+
+			return "true";
+			
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
 	}
 
 

@@ -10,6 +10,11 @@ use App\Preference;
 use App\UserHistory;
 use App\Playlist;
 use App\Plist;
+use App\Band;
+use App\Song;
+use App\Album;
+use App\Video;
+
 
 class UserController extends Controller
 {
@@ -98,14 +103,7 @@ class UserController extends Controller
     {
         $preferences = Preference::where('user_id', $request->input('user_id'))->get();
 
-        if (count($preferences) > 0)
-        {
-           return response() ->json($preferences);            
-        }
-        else
-        {
-            return response() ->json(['message' => 'No preferences found in the table.']);   
-        }
+        return response() ->json($preferences); 
     }
 
     public function userhistory(Request $request)
@@ -210,5 +208,70 @@ class UserController extends Controller
     public function getPlistById(Request $request){
         $plist = Plist::where('pl_id', $request->input('pl_id'))->get();
         return response()->json($plist);
+    }
+
+    public function followPlaylist(Request $request){
+        
+        $userId = $request->input('user_id');
+        $pid = $request->input('pid');
+
+        $create = Preference::create([
+            'user_id' => $userId,
+            'pl_id' => $pid,
+        ]);
+
+        $followers = count(Preference::where('pl_id' ,$pid)->get());
+
+        $playlist = Playlist::where('pl_id', $pid)->update([
+            'followers' => $followers,
+        ]);
+
+        return response()->json($followers);
+        
+    }
+
+    public function unFollowPlaylist(Request $request){
+
+        $user = $request->input('user_id');
+        $pid = $request->input('pid');
+
+        $delete = Preference::where([
+        ['user_id' , $user],
+        ['pl_id', $pid],
+        ])->delete();
+
+        $followers = count(Preference::where('pl_id' ,$pid)->get());
+
+        $playlist = Playlist::where('pl_id', $pid)->update([
+        'followers' => $followers,
+        ]);
+
+        return response()->json($followers);
+
+    }
+
+
+    public function searchFunction(Request $request){
+        $termSearched = $request->input('term');
+
+        $userResult = User::where('fullname', 'LIKE', '%'.$termSearched.'%')->get();
+
+        $bandResult = Band::where('band_name', 'LIKE', '%'.$termSearched.'%')->get();
+
+        $playlistResult = Playlist::where('pl_title', 'LIKE', '%'.$termSearched.'%')->get();
+
+        $songResult = Song::where('song_title', 'LIKE', '%'.$termSearched.'%')->get();
+
+        $albumResult = Album::where('album_name', 'LIKE', '%'.$termSearched.'%')->get();
+
+        $videoResult = Video::where('video_title', 'LIKE', '%'.$termSearched.'%')->get();
+
+        return response()->json([
+            'band' => $bandResult, 
+            'user' => $userResult, 
+            'playlist' => $playlistResult,
+            'song' => $songResult,
+            'album' => $albumResult,
+            'video' => $videoResult]);
     }
 }

@@ -10,6 +10,7 @@ use App\Album;
 use App\Song;
 use App\Album_Contents;
 use App\Genre;
+use App\Preference;
 // use App\Cloudder;
 class AlbumController extends Controller
 {
@@ -108,5 +109,49 @@ class AlbumController extends Controller
     public function AllAlbums(Request $request){
         $albums = Album::all();
         return response()->json($albums);
+    }
+
+    public function likeAlbum(Request $request){
+        $userId = $request->input('user_id');
+        $albumId =  $request->input('album_id');
+        $likes = count(Preference::where('album_id' ,$albumId)->get());
+        $newlikes = $likes + 1;
+
+         $create = Preference::create([
+                'user_id' => $userId,
+                'album_id' => $albumId,
+            ]);     
+        $update = Album::where('album_id', $albumId)->update([
+                'num_likes' => $newlikes
+        ]);
+
+        return response ()->json($create);
+    }
+
+    public function unLikeAlbum(Request $request){
+        $userId = $request->input('user_id');
+        $liker = Preference::where([
+            ['user_id' , $userId],
+            ['album_id', $request->input('album_id')],
+            ])->first();
+
+        if (count($liker) > 0)
+        {
+
+            $album = Album::where('album_id', $request->input('album_id'))->first();
+            $likes = $album->num_likes;
+            $newlikes = $likes - 1;
+
+            $update = Album::where('album_id', $album->album_id)->update([
+                'num_likes' => $newlikes
+             ]);
+
+            $delete = Preference::where([
+            ['user_id' , $userId],
+            ['album_id', $request->input('album_id')],
+            ])->delete();       
+        }
+
+        return response ()->json("success");   
     }
 }

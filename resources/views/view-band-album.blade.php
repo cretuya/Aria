@@ -119,7 +119,7 @@
               <h2 style="letter-spacing: 1px; margin: 0px;">{{$albums->album_name}}</h2>
               <h4 style="font-size: 18px;">{{$band->band_name}}</h4>
               @if($liked == null)
-              <button class="fa fa-thumbs-up likealbumbtn" title="Like Album"></button><span class="likeText">{{$albums->num_likes}} people like this album</span>
+              <button class="fa fa-thumbs-up likealbumbtn" title="Like Album"></button><span class="likeText">0 people like this album</span>
               @else
               <button class="fa fa-thumbs-up unlikealbumbtn" title="Like Album"></button><span class="likeText">{{$albums->num_likes}} people like this album</span>
               @endif

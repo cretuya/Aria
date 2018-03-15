@@ -56,12 +56,12 @@ Route::post('updateArticle', 'Api\ArticleController@updateArticle');
 
 
 
-Route::get('followBand', 'Api\BandController@followBand');
-Route::get('unfollowBand', 'Api\BandController@unfollowBand');
-Route::get('likeAlbum', 'Api\AlbumController@likeAlbum');
-Route::get('unlikeAlbum', 'Api\AlbumController@unlikeAlbum');
+Route::post('followBand', 'Api\BandController@followBand');
+Route::post('unfollowBand', 'Api\BandController@unfollowBand');
+Route::post('likeAlbum', 'Api\AlbumController@likeAlbum');
+Route::post('unLikeAlbum', 'Api\AlbumController@unLikeAlbum');
 Route::get('addSongPlayed', 'Api\SongController@addSongPlayed');
-Route::get('visitCount', 'Api\BandController@visitCount');
+Route::post('visitCount', 'Api\BandController@visitCount');
 
 Route::get('getusers', 'Api\UserController@getusers');
 
@@ -87,7 +87,7 @@ Route::get('getArticle', 'Api\ArticleController@getArticle');
 Route::get('genres', 'Api\AlbumController@genres');
 Route::get('bandgenres', 'Api\AlbumController@bandgenres');
 
-Route::get('preferences', 'Api\UserController@preferences');
+Route::post('preferences', 'Api\UserController@preferences');
 Route::get('userhistory','Api\UserController@userhistory');
 
 Route::post('AddPlayList', 'Api\UserController@AddPlayList');
@@ -103,3 +103,13 @@ Route::post('getPlistById', 'Api\UserController@getPlistById');
 Route::get('getEvents', 'Api\BandController@getEvents');
 Route::post('addBandCoverPhoto', 'Api\BandController@addBandCoverPhoto');
 Route::post('addEvent', 'Api\BandController@addEvent');
+Route::post('followPlaylist','Api\UserController@followPlaylist');
+Route::post('unFollowPlaylist','Api\UserController@unFollowPlaylist');
+Route::get('getBandGenres', 'Api\BandController@getBandGenres');
+Route::get('genreFamily', 'Api\SongController@genreFamily');
+Route::get('searchFunction','Api\UserController@searchFunction');
+Route::post('inviteUser', 'Api\BandMemberController@inviteUser');
+Route::get('getUserNotification', 'Api\BandMemberController@getUserNotification');
+Route::post('declineInvitation', 'Api\BandMemberController@declineInvitation');
+Route::get('scoringfunc', 'Api\BandController@scoringfunc');
+Route::post('songPlayed', 'Api\SongController@songPlayed');

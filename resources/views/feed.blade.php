@@ -23,7 +23,7 @@
                 
           @if(count($events)==0)
           <br><br><br>
-            <p style="text-align:center; color: #a4a4a4; font-size: 16px;">Not seeing updates from bands? </p>
+            <p style="text-align:center; color: #a4a4a4; font-size: 16px;">Not seeing events from bands? </p>
             <p style="text-align:center; color: #a4a4a4; font-size: 16px;">Head over to home and start following some!</p>
           @else
             @foreach($events as $event)
@@ -72,7 +72,7 @@
             @else($recommendBands != null)
               @foreach($recommendBands as $rec)
                 <li class="list-group-item" style="border: 0;background: transparent;">
-                  <a href="#"><img class="friends-in-aria-pic img-circle" src="{{$rec['band']->band_pic}}" style="object-fit: cover;"></a>
+                  <a href="{{url($rec['band']->band_name)}}"><img class="friends-in-aria-pic img-circle" src="{{$rec['band']->band_pic}}" style="object-fit: cover;"></a>
                   <a href="{{url($rec['band']->band_name)}}"><span class="feed-band-name">{{$rec['band']->band_name}}</span></a>
                 </li>
               @endforeach

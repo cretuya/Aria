@@ -9,6 +9,7 @@ use App\Song;
 use App\Album;
 use App\Band;
 use App\BandSong;
+use App\SongsPlayed;
 
 class SongController extends Controller
 {
@@ -124,5 +125,20 @@ class SongController extends Controller
         }
 
 
+    }
+
+    public function songPlayed(Request $request){
+
+        $userId = $request->input('user_id');
+        $songId = $request->input('song_id');
+        $category = $request->input('category');
+
+        $songsPlayed = SongsPlayed::create([
+            'user_id' => $userId,
+            'song_id' => $songId,
+            'category' => $category
+        ]);
+
+        return "success";
     }
 }
