@@ -113,3 +113,9 @@ Route::get('getUserNotification', 'Api\BandMemberController@getUserNotification'
 Route::post('declineInvitation', 'Api\BandMemberController@declineInvitation');
 Route::get('scoringfunc', 'Api\BandController@scoringfunc');
 Route::post('songPlayed', 'Api\SongController@songPlayed');
+
+Route::get('recommendBands', 'Api\UserController@recommendBands'); // user_id ang need nga input
+Route::get('recommendAlbums', 'Api\UserController@recommendAlbums'); // user_id ang need nga input
+Route::get('recommendplaylist', 'Api\UserController@recommendplaylist'); // user_id ug playlist_id ang need nga input
+Route::get('recommendplaylists', 'Api\UserController@recommendplaylists'); // user_id ug playlist_id ang need nga input
+Route::get('showSongsGenre', 'Api\UserController@showSongsGenre'); // genre_id ang need nga parameter

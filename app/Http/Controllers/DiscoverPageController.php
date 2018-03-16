@@ -138,7 +138,7 @@ class DiscoverPageController extends Controller
             }
           }
 
-          if ($getSongs != null){
+          if ($getSongs != null) {
               $collectSongs = collect($getSongs);
               $groupedSongsbyId = $collectSongs->groupBy('song_id');
               $storeSongwithScore = Array();
@@ -167,6 +167,7 @@ class DiscoverPageController extends Controller
                 $song = Song::where('song_id', $value['song_id'])->first();
                 array_push($songs, $song);
               }
+
           } else {
                 $getSongs = Song::where('genre_id', $id)->get();
                 $getBandsofSong = Array();

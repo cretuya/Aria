@@ -86,7 +86,7 @@ class UserController extends Controller
 
         $recommendBands = $this->recommendBands();
         $recommendAlbums = $this->recommendAlbums();
-        // dd($recommendAlbums);
+        // dd($recommendBands);
         return view('feed', compact('userHasBand','userBandRole','usersBand','user','events', 'recommendBands','usernotifinvite', 'recommendAlbums'));
     }
 
@@ -120,6 +120,10 @@ class UserController extends Controller
       ['band_id', '!=', 'null'],
       ])->get();
 
+      // scores for certain category
+      $category1 = 10;
+      $category2 = 6;
+      $category3 = 2;
       // check if user naay preference
       if($getSongPlays != null) {
 
@@ -138,11 +142,16 @@ class UserController extends Controller
           $genreScores = Array();
 
           foreach ($groupedSongsbyGenre as $key => $value) {
-            $sumForCertainGenre = $value->sum('category');
-            $scoreForCertainGenre = $sumForCertainGenre / count($value);
-            $arrayScore = array('genre_id' => $key, 'score' => $scoreForCertainGenre);
-            array_push($genreScores, $arrayScore);
+              $countforcat1 = $value->where('category', 1);
+              $countforcat2 = $value->where('category', 2);
+              $countforcat3 = $value->where('category', 3);
+
+              $getScoreforCats = ($category1 * count($countforcat1)) + ($category2 * count($countforcat2)) + ($category3 * count($countforcat3));
+
+              $arrayScore = array('genre_id' => $key, 'score' => $getScoreforCats);
+              array_push($genreScores, $arrayScore);
           }
+
       
           $bands = Band::all();
           $notPrefBands = Array();
@@ -355,6 +364,11 @@ class UserController extends Controller
   public function recommendplaylist($id){
       $user = Auth::user();
 
+      // scores for certain category
+      $category1 = 10;
+      $category2 = 6;
+      $category3 = 2;
+
       // get all songs nga g paminaw sa user and group same song genre 
       $getSongPlays = SongsPlayed::where('user_id', $user->user_id)->get();
 
@@ -389,11 +403,16 @@ class UserController extends Controller
           $genreScores = Array();
 
           foreach ($groupedSongsbyGenre as $key => $value) {
-            $sumForCertainGenre = $value->sum('category');
-            $scoreForCertainGenre = $sumForCertainGenre / count($value);
-            $arrayScore = array('genre_id' => $key, 'score' => $scoreForCertainGenre);
-            array_push($genreScores, $arrayScore);
+              $countforcat1 = $value->where('category', 1);
+              $countforcat2 = $value->where('category', 2);
+              $countforcat3 = $value->where('category', 3);
+
+              $getScoreforCats = ($category1 * count($countforcat1)) + ($category2 * count($countforcat2)) + ($category3 * count($countforcat3));
+
+              $arrayScore = array('genre_id' => $key, 'score' => $getScoreforCats);
+              array_push($genreScores, $arrayScore);
           }
+
           $collectGenreScores = collect($genreScores);
           $totalGenreScore = $collectGenreScores->sum('score'); // add genre scores
 
@@ -417,13 +436,19 @@ class UserController extends Controller
               $genreScores = Array();
 
               foreach ($groupedSongsbyGenre as $key => $value) {
-                $sumForCertainGenre = $value->sum('category');
-                $scoreForCertainGenre = $sumForCertainGenre / count($value);
-                $arrayScore = array('genre_id' => $key, 'score' => $scoreForCertainGenre);
+                $countforcat1 = $value->where('category', 1);
+                $countforcat2 = $value->where('category', 2);
+                $countforcat3 = $value->where('category', 3);
+
+                $getScoreforCats = ($category1 * count($countforcat1)) + ($category2 * count($countforcat2)) + ($category3 * count($countforcat3));
+
+                $arrayScore = array('genre_id' => $key, 'score' => $getScoreforCats);
                 array_push($genreScores, $arrayScore);
               }
+
               $collectGenreScores = collect($genreScores);
               $totalGenreScoreofFriend = $collectGenreScores->sum('score'); // add genre scores
+
               // get difference of my genre score and my friend's genre score
               $difference = $totalGenreScore - $totalGenreScoreofFriend;
               if($totalGenreScoreofFriend != null) {
@@ -431,16 +456,13 @@ class UserController extends Controller
                 array_push($getGenreScoresofFriends, $array);
               }
 
-
           }          
+
           // ranked friends based on score genres
           $collectGenreScoresofFriends = collect($getGenreScoresofFriends);
           $sortGenreScores = $collectGenreScoresofFriends->sortBy('difference');
 
           // get ranked friends most played
-          $category1 = 10;
-          $category2 = 6;
-          $category3 = 2;
           $getCorScore = Array();
           $getCorScoreofFriends = Array();
           foreach ($sortGenreScores as $sortGenreScore) {
@@ -486,6 +508,7 @@ class UserController extends Controller
 
        } else {
           if($getSongPlays == null){
+            
                 // get songs of the  top bands
                 $songPlays = SongsPlayed::all();
                 $bands = Band::orderBy('band_score', 'DESC')->take('5')->get();
@@ -509,9 +532,6 @@ class UserController extends Controller
                   // compute scores of the songs of each band
                   $collectBands = collect($showPlays);
                   $groupByBandIds = $collectBands->groupBy('band_id');
-                  $category1 = 10;
-                  $category2 = 6;
-                  $category3 = 2;
                   $getCorScore = Array();
 
                   // get most played music of bands
@@ -570,10 +590,14 @@ class UserController extends Controller
                     $genreScores = Array();
 
                     foreach ($groupedSongsbyGenre as $key => $value) {
-                      $sumForCertainGenre = $value->sum('category');
-                      $scoreForCertainGenre = $sumForCertainGenre / count($value);
-                      $arrayScore = array('genre_id' => $key, 'score' => $scoreForCertainGenre);
-                      array_push($genreScores, $arrayScore);
+                        $countforcat1 = $value->where('category', 1);
+                        $countforcat2 = $value->where('category', 2);
+                        $countforcat3 = $value->where('category', 3);
+
+                        $getScoreforCats = ($category1 * count($countforcat1)) + ($category2 * count($countforcat2)) + ($category3 * count($countforcat3));
+
+                        $arrayScore = array('genre_id' => $key, 'score' => $getScoreforCats);
+                        array_push($genreScores, $arrayScore);
                     }
 
                     // get top ranked bands
@@ -673,6 +697,11 @@ class UserController extends Controller
       // get all songs nga g paminaw sa user and group same song genre 
       $getSongPlays = SongsPlayed::where('user_id', $user->user_id)->get();
 
+      // scores for certain category
+      $category1 = 10;
+      $category2 = 6;
+      $category3 = 2;
+
       $prefBands = Preference::where([
       ['user_id' , $user->user_id],
       ['band_id', '!=', 'null'],
@@ -701,10 +730,14 @@ class UserController extends Controller
           $genreScores = Array();
 
           foreach ($groupedSongsbyGenre as $key => $value) {
-            $sumForCertainGenre = $value->sum('category');
-            $scoreForCertainGenre = $sumForCertainGenre / count($value);
-            $arrayScore = array('genre_id' => $key, 'score' => $scoreForCertainGenre);
-            array_push($genreScores, $arrayScore);
+              $countforcat1 = $value->where('category', 1);
+              $countforcat2 = $value->where('category', 2);
+              $countforcat3 = $value->where('category', 3);
+
+              $getScoreforCats = ($category1 * count($countforcat1)) + ($category2 * count($countforcat2)) + ($category3 * count($countforcat3));
+              
+              $arrayScore = array('genre_id' => $key, 'score' => $getScoreforCats);
+              array_push($genreScores, $arrayScore);
           }
       
           $bands = Band::all();
