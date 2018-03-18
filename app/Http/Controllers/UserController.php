@@ -16,6 +16,7 @@ use App\Plist;
 use App\Genre;
 use App\BandEvent;
 use App\Album;
+use App\SongsPlayed;
 use Auth;
 use Validator;
 class UserController extends Controller
@@ -47,28 +48,6 @@ class UserController extends Controller
 
             return redirect('/user/profile');
         }
-
-    // public function homeshow(){
-    //        // $userRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->first();
-    //        //  return view('user-profile', compact('userRole'));
-        
-
-    //     $user = User::where('user_id',session('userSocial')['id'])->first();
-
-    //     $usersBand = Band::join('bandmembers', 'bands.band_id', '=', 'bandmembers.band_id')->select('band_name')->where('user_id', session('userSocial')['id'])->first();
-    //     $userHasBand = Bandmember::where('user_id',session('userSocial')['id'])->get();
-    //     $userBandRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->get();
-
-    //     $articlesfeed = BandArticle::join('preferences','bandarticles.band_id','=','preferences.band_id')->join('bands','preferences.band_id','=','bands.band_id')->join('articles','bandarticles.art_id','=','articles.art_id')->where('user_id',session('userSocial')['id'])->orderBy('created_at','desc')->distinct()->get(['preferences.band_id','art_title','content','band_name','band_pic','articles.created_at']);
-
-    //     $usernotifinvite = UserNotification::where('user_id',session('userSocial')['id'])->join('bands','usernotifications.band_id','=','bands.band_id')->get();
-
-    //     // dd($articlesfeed);
-    //     $recommend = $this->recommend();
-    //     // dd($recommend);
-    //     // dd($friends);
-    //     return view('home', compact('userHasBand','userBandRole','usersBand','user','articlesfeed', 'recommend','usernotifinvite'));
-    // }
 
     public function feedshow(){
            // $userRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->first();
@@ -107,7 +86,7 @@ class UserController extends Controller
 
         $recommendBands = $this->recommendBands();
         $recommendAlbums = $this->recommendAlbums();
-        // dd($recommendAlbums);
+        // dd($recommendBands);
         return view('feed', compact('userHasBand','userBandRole','usersBand','user','events', 'recommendBands','usernotifinvite', 'recommendAlbums'));
     }
 
@@ -130,162 +109,115 @@ class UserController extends Controller
         return view('friends', compact('friends','usernotifinvite'));
     }
 
-  public function recommendBands()
-  {
-        $user = User::where('user_id',session('userSocial')['id'])->first();
-        $preferences = Preference::where('user_id', $user->user_id)->whereNotNull('band_id')->get();
-        $temp = Array();
-        $get = Array();
-        $bands = Band::all();
-        $genreArray= Array();
-        $data = Array();
-        $scores = Array();
+    public function recommendBands(){
+      $user = Auth::user();
 
-        if (count($preferences) > 0)
-        {
-            // get all preferences
+      // get all songs nga g paminaw sa user and group same song genre 
+      $getSongPlays = SongsPlayed::where('user_id', $user->user_id)->get();
 
-            foreach ($preferences as $preference)
-            {
-                  array_push($temp, $preference->band->band_id);
-            }
-            // add in array those bands not in his preference
-            foreach ($bands as $band)
-            {
-              if (!in_array($band->band_id, $temp))
-              {
-                array_push($get, $band);
-              }
-            }
-            // compare genres
-            $test = Array();
-            if ($get == null)
-            {
-              return null;
-            }
-            else{
-                foreach($get as $g)
-              {
-                $genres = $g->bandgenres;
-                foreach ($genres as $genre)
-                {
-                  foreach ($preferences as $preference)
-                  {
-                    $pgenres = $preference->band->bandgenres;
-                      if ($pgenres->contains('genre_id', $genre->genre_id))
-                      {
-                        array_push($genreArray, $genre->band->band_id);
-                      } 
-                  }                
-                }            
-            }
-            // dd($genreArray);
+      $prefBands = Preference::where([
+      ['user_id' , $user->user_id],
+      ['band_id', '!=', 'null'],
+      ])->get();
 
+      // scores for certain category
+      $category1 = 10;
+      $category2 = 6;
+      $category3 = 2;
+      // check if user naay preference
+      if($getSongPlays != null) {
 
+          $getSongs = Array();
 
-              
-              $count = count(Band::all()); 
-              $weight = $count * 100 * .03;
-              // calculate ranking
-              $rankpartial = $g->band_id - 1;
-              $rankPart = $count - $rankpartial;
-              $rtotal = $rankPart / $weight;
-              // // calculate popularity
-              $pref = Preference::where('band_id', $g->band_id)->get();
-              $countPref = count($pref);
-              $poppartial = $countPref - 1;
-              $popPart = $count - $poppartial;
-              $ptotal = $popPart / $weight;
-
-              $compact = array('band_id' => $g->band_id, 'rankscore' => $rtotal, 'followerscore' => $ptotal);
-
-              array_push($scores, $compact);
-
-            }
-            
-            $total = Array();
-
-            if (count($genreArray) > 0)
-            {
-              $shows = array_count_values($genreArray);
-              foreach ($shows as $key => $value) {
-                if ($value > 1)
-                {
-                  $gband = Band::where('band_id',$key)->first();
-                  array_push($data, $gband);
-
-                  $scoreGenre = 4;
-                }
-                else
-                {
-                  $gband = Band::where('band_id',$key)->first();
-                  array_push($data, $gband);
-                  $scoreGenre = 2;
-                }
-                $k = Band::where('band_id', $key)->first();
-                $compute = null;
-                foreach ($scores as $score)
-                {
-                  if ($key == $score['band_id'])
-                  {
-                    $compute = $score['rankscore'] + $score['followerscore'] + $scoreGenre;
-                  }
-                  $insert = array('band' => $k,'total' => $compute);
-                }
-                array_push($total, $insert);
-                // array_push($scoreGenres, $key=>$scoreGenre);
-              }
-              // $data = array($wholeGenre, $halfGenre);
-              // array_push($display, $data);
-                    // dd($score);
-
-              return $total;
-            }
-            else
-            {
-              $comp = Array();
-              $return = Array();
-
-              // $randomBands = Band::inRandomOrder()->get();
-              // foreach ($randomBands as $randomBand)
-              // {
-              //   $compact = array('band' => $randomBand);
-              //   array_push($comp, $compact);
-              // }
-              // return $comp;
-              // return $randomBands;
-
-                foreach ($preferences as $preference)
-                {
-                  array_push($temp, $preference->band->band_id);
-                }
-                // add in array those bands not in his preference
-                foreach ($bands as $band)
-                {
-                  if (!in_array($band->band_id, $temp))
-                  {
-                    $comp = array('band' => $band);
-                    array_push($return, $comp);
-                  }
-                }
-                return $return;
-            }
-        }
-        else
-        {
-          $comp = Array();
-
-          $randomBands = Band::inRandomOrder()->get();
-          $randomSongs = Song::inRandomOrder()->get();
-          foreach ($randomBands as $randomBand)
-          {
-            $compact = array('band' => $randomBand);
-            array_push($comp, $compact);
+          foreach($getSongPlays as $getSongPlay){
+            $getGenre = $getSongPlay->songs->genre_id;
+            $array = array('song_id' => $getSongPlay->song_id, 'genre_id' => $getGenre, 'category' => $getSongPlay->category);
+            array_push($getSongs, $array);
           }
-          return $comp;
-        }
 
+          $collectSongs = collect($getSongs);
+          $groupedSongsbyGenre = $collectSongs->groupBy('genre_id');
+
+          // add corresponding score to each genre
+          $genreScores = Array();
+
+          foreach ($groupedSongsbyGenre as $key => $value) {
+              $countforcat1 = $value->where('category', 1);
+              $countforcat2 = $value->where('category', 2);
+              $countforcat3 = $value->where('category', 3);
+
+              $getScoreforCats = ($category1 * count($countforcat1)) + ($category2 * count($countforcat2)) + ($category3 * count($countforcat3));
+
+              $arrayScore = array('genre_id' => $key, 'score' => $getScoreforCats);
+              array_push($genreScores, $arrayScore);
+          }
+
+      
+          $bands = Band::all();
+          $notPrefBands = Array();
+          $getGenresofNotPrefBands = Array();
+
+          foreach($bands as $band){
+            if(!$prefBands->contains('band_id', $band->band_id)){
+              array_push($notPrefBands, $band);
+              // get genres of not preferred bands
+              $bandgenres = $band->bandgenres;
+              foreach($bandgenres as $bandgenre){
+                array_push($getGenresofNotPrefBands, $bandgenre);
+              }
+            }
+          }
+
+          $storeBandsBasedOnSameGenres = Array();
+          // get bands with same genre
+          foreach ($genreScores as $genreScore) {
+            foreach ($getGenresofNotPrefBands as $getGenre) {
+              if($genreScore['genre_id'] == $getGenre->genre_id){
+                array_push($storeBandsBasedOnSameGenres, $getGenre->band);
+              }
+            }
+          }
+
+          if ($storeBandsBasedOnSameGenres != null){
+            $collectBands = collect($storeBandsBasedOnSameGenres);
+            $rankBands = $collectBands->sortByDesc('band_score')->take('5');
+
+            return $rankBands;
+
+          } else {
+            // get not followed bands and rank bands
+              $bands = Band::all();
+              $notPrefBands = Array();
+
+              foreach($bands as $band){
+                if(!$prefBands->contains('band_id', $band->band_id)){
+                  array_push($notPrefBands, $band);
+                }
+              }
+
+              $collectBands = collect($notPrefBands);
+              $rankBands = $collectBands->sortByDesc('band_score')->take('5');
+              return $rankBands;
+          }
+
+
+    } else {
+            // get not followed bands and rank bands
+              $bands = Band::all();
+              $notPrefBands = Array();
+
+              foreach($bands as $band){
+                if(!$prefBands->contains('band_id', $band->band_id)){
+                  array_push($notPrefBands, $band);
+                }
+              }
+
+              $collectBands = collect($notPrefBands);
+              $rankBands = $collectBands->sortByDesc('band_score')->take('5');
+              return $rankBands;
     }
+  }
+
     public function profileshow(){
            // $userRole = Bandmember::select('bandrole')->where('user_id',session('userSocial')['id'])->first();
            //  return view('user-profile', compact('userRole'));
@@ -429,248 +361,306 @@ class UserController extends Controller
     return view('view-playlist', compact('pl', 'lists', 'rsongs', 'recsongs', 'usernotifinvite', 'recommend', 'follower'));
   }
 
-
   public function recommendplaylist($id){
-    $family = collect([
-    [['genre_id' => 1, 'name' => 'Alternative'],[ 'genre_id' => 16 ,'name' => 'Rock']],
-    [['genre_id' => 2, 'name'=> 'Blues'],['genre_id' => 9,'name' => 'Jazz']],
-    [['genre_id' => 3,'name' => 'Classical'],['genre_id' => 10, 'name' => 'Opera']],
-    [['genre_id' => 4,  'name'=> 'Country'],['genre_id' => 15, 'name'=> 'Reggae']], 
-    [['genre_id' => 5, 'name' => 'Dance'],['genre_id' => 7,  'name'=> 'Hiphop']],
-    [['genre_id' =>6, 'name'=> 'Electronic'],[ 'genre_id' =>14, 'name'=> 'Rap']],
-    [['genre_id' => 8,'name' => 'Inspirational'],[ 'genre_id' =>17, 'name'=> 'Romance']],[['genre_id' => 11, 'name'=> 'Pop' ],['genre_id' => 12, 'name'=> 'Punk']],
-    [['genre_id' =>13,'name' =>'R&B'],['genre_id' => 18, 'name'=> 'Soul']]]);
+      $user = Auth::user();
 
-    $user = User::where('user_id',session('userSocial')['id'])->first();
-    $lists = Plist::where('pl_id', $id)->get();
-    
-    if (count($lists) > 0){
-      // kwaon ang mga genre sa list nya kwaon ang mga related genres for that certain list
-      $genreOfSongsinPlaylist = Array();
-      $songsInaPlaylist = Array();
-      foreach ($lists as $list)
-      {
-        array_push($genreOfSongsinPlaylist, $list->genre_id);
-        array_push($songsInaPlaylist, $list->song_id);
-      }      
-        // $test = Song::all();
-        // return $test;
+      // scores for certain category
+      $category1 = 10;
+      $category2 = 6;
+      $category3 = 2;
 
-      $familyGenres = Array();
-      foreach ($genreOfSongsinPlaylist as $key => $value) {
-        foreach($family as $fam){
-          if ($fam[0]['genre_id'] == $value || $fam[1]['genre_id'] == $value){
-            array_push($familyGenres, $fam);
+      // get all songs nga g paminaw sa user and group same song genre 
+      $getSongPlays = SongsPlayed::where('user_id', $user->user_id)->get();
+
+      // get friends
+      $socialfriends = session('userSocial')['friends']['data'];
+      $friends = Array();
+      foreach ($socialfriends as $socialfriend) {
+          $friend = $socialfriend['id'];
+          $thisuser = User::where('user_id', $friend)->first();
+
+          if(count($thisuser) > 0)
+          {
+              array_push($friends, $thisuser);
           }
-        }
       }
-      // dd($familyGenres);
 
-      $songsToRecommend = Array();
-      
+      // check if user naay friends
+      if($friends != null) {
 
-      foreach ($familyGenres as $key => $value) {
-        foreach ($value as $key => $val) {
-          $songs = Song::where('genre_id', $val['genre_id'])->get();
-          if(count($songs) == null){
+          $getSongs = Array();
+
+          foreach($getSongPlays as $getSongPlay){
+            $getGenre = $getSongPlay->songs->genre_id;
+            $array = array('song_id' => $getSongPlay->song_id, 'genre_id' => $getGenre, 'category' => $getSongPlay->category);
+            array_push($getSongs, $array);
+          }
+
+          $collectSongs = collect($getSongs);
+          $groupedSongsbyGenre = $collectSongs->groupBy('genre_id');
+
+          // add corresponding score to each genre
+          $genreScores = Array();
+
+          foreach ($groupedSongsbyGenre as $key => $value) {
+              $countforcat1 = $value->where('category', 1);
+              $countforcat2 = $value->where('category', 2);
+              $countforcat3 = $value->where('category', 3);
+
+              $getScoreforCats = ($category1 * count($countforcat1)) + ($category2 * count($countforcat2)) + ($category3 * count($countforcat3));
+
+              $arrayScore = array('genre_id' => $key, 'score' => $getScoreforCats);
+              array_push($genreScores, $arrayScore);
+          }
+
+          $collectGenreScores = collect($genreScores);
+          $totalGenreScore = $collectGenreScores->sum('score'); // add genre scores
+
+          // get genre score of each friend
+          $getGenreScoresofFriends = Array();
+
+          foreach ($friends as $friend) {
+              $getSongPlaysofFriend = SongsPlayed::where('user_id', $friend->user_id)->get();
+              $getSongsofFriend = Array();
+
+              foreach($getSongPlaysofFriend as $getSongPlayofFriend){
+                $getGenre = $getSongPlayofFriend->songs->genre_id;
+                $array = array('song_id' => $getSongPlayofFriend->song_id, 'genre_id' => $getGenre, 'category' => $getSongPlayofFriend->category);
+                array_push($getSongsofFriend, $array);
+              }
+
+              $collectSongs = collect($getSongsofFriend);
+              $groupedSongsbyGenre = $collectSongs->groupBy('genre_id');
+
+              // add corresponding score to each genre
+              $genreScores = Array();
+
+              foreach ($groupedSongsbyGenre as $key => $value) {
+                $countforcat1 = $value->where('category', 1);
+                $countforcat2 = $value->where('category', 2);
+                $countforcat3 = $value->where('category', 3);
+
+                $getScoreforCats = ($category1 * count($countforcat1)) + ($category2 * count($countforcat2)) + ($category3 * count($countforcat3));
+
+                $arrayScore = array('genre_id' => $key, 'score' => $getScoreforCats);
+                array_push($genreScores, $arrayScore);
+              }
+
+              $collectGenreScores = collect($genreScores);
+              $totalGenreScoreofFriend = $collectGenreScores->sum('score'); // add genre scores
+
+              // get difference of my genre score and my friend's genre score
+              $difference = $totalGenreScore - $totalGenreScoreofFriend;
+              if($totalGenreScoreofFriend != null) {
+                $array = array('user_id' => $friend->user_id, 'total' => $totalGenreScoreofFriend, 'difference' => $difference);
+                array_push($getGenreScoresofFriends, $array);
+              }
+
+          }          
+
+          // ranked friends based on score genres
+          $collectGenreScoresofFriends = collect($getGenreScoresofFriends);
+          $sortGenreScores = $collectGenreScoresofFriends->sortBy('difference');
+
+          // get ranked friends most played
+          $getCorScore = Array();
+          $getCorScoreofFriends = Array();
+          foreach ($sortGenreScores as $sortGenreScore) {
+            $plays = SongsPlayed::where('user_id', $sortGenreScore['user_id'])->get();
+            $collectPlays = collect($plays);
+            $groupBySongIds = $collectPlays->groupBy('song_id');
+            foreach ($groupBySongIds as $key => $value) {
+              $countforcat1 = $value->where('category', 1);
+              $countforcat2 = $value->where('category', 2);
+              $countforcat3 = $value->where('category', 3);
+
+              $getScoreforCats = ($category1 * count($countforcat1)) + ($category2 * count($countforcat2)) + ($category3 * count($countforcat3));
+              $array = array('song_id' => $key, 'scoreforsong' => $getScoreforCats);
+              array_push($getCorScore, $array);
+            }
+
+            array_push($getCorScoreofFriends, $getCorScore);
+          }          
+
+          // sorted songs
+          $songs = Array();
+          foreach ($getCorScoreofFriends as $key => $value) {
+            $collectValues = collect($value);
+            $sorts = $collectValues->sortByDesc('scoreforsong');
+            foreach ($sorts as $sort) {
+            $sortedSongs = Song::where('song_id', $sort['song_id'])->first();
+            array_push($songs, $sortedSongs);
+
+            }
+          }
+
+          $filteredSongs = Array();
+
+          $lists = Plist::where('pl_id', $id)->get();
+          // remove songs already in the playlist
+          foreach ($songs as $song) {
+            if(!$lists->contains('song_id', $song->song_id)){
+              array_push($filteredSongs, $song);
+            }
+          }
+
+          return $filteredSongs;
+
+       } else {
+          if($getSongPlays == null){
+            
+                // get songs of the  top bands
+                $songPlays = SongsPlayed::all();
+                $bands = Band::orderBy('band_score', 'DESC')->take('5')->get();
+
+                $storePlays = Array();
+                foreach($songPlays as $songPlay){
+                  $band = $songPlay->songs->album->band->band_id;
+                  if($bands->contains('band_id', $band)){
+                    array_push($storePlays, $songPlay);
+                  }
+                }
+                  // remove songs nga naa sa playlist
+                  $showPlays = Array();
+                  foreach ($storePlays as $storePlay) {
+                    if(!$lists->contains('song_id', $storePlay->songs->song_id)){
+                      $array = array('band_id' => $storePlay->songs->album->band->band_id, 'song_id' => $storePlay->songs->song_id, 'category' => $storePlay['category']);
+                      array_push($showPlays, $array);
+                    }
+                  }
+
+                  // compute scores of the songs of each band
+                  $collectBands = collect($showPlays);
+                  $groupByBandIds = $collectBands->groupBy('band_id');
+                  $getCorScore = Array();
+
+                  // get most played music of bands
+                  foreach ($groupByBandIds as $bkey => $bvalue) {
+                    $groupBySongIds = $bvalue->groupBy('song_id');
+
+                    foreach ($groupBySongIds as $key => $value) {
+                          $countforcat1 = $value->where('category', 1);
+                          $countforcat2 = $value->where('category', 2);
+                          $countforcat3 = $value->where('category', 3);
+
+                          $getScoreforCats = ($category1 * count($countforcat1)) + ($category2 * count($countforcat2)) + ($category3 * count($countforcat3));
+                          $array = array('song_id' => $key, 'scoreforsong' => $getScoreforCats, 'band_id' => $bkey);
+                          array_push($getCorScore, $array);
+                    }
+                    
+                  }
+
+
+                  // sort songs based on score
+                  $collectScores = collect($getCorScore);
+                  $sorts = $collectScores->sortByDesc('scoreforsong');
+
+                  // display songs
+                  $displaySongs = Array();
+                  foreach ($sorts as $sort) {
+                      $song = Song::where('song_id', $sort['song_id'])->first();
+                      array_push($displaySongs, $song);
+                  }
+                  
+                  return $displaySongs;
 
           } else {
-            foreach($songs as $song){
-              if(!in_array($song->song_id, $songsInaPlaylist)){
-                 array_push($songsToRecommend, $song);
-              }
+                $user = Auth::user();
 
-            }
-          }
-        }
-      }
+                // get all songs nga g paminaw sa user and group same song genre 
+                $getSongPlays = SongsPlayed::where('user_id', $user->user_id)->get();
 
-      if(count($songsToRecommend) == null){
-        $storeGenres = Array();
-        $topBands = Band::orderBy('weekly_score', 'DESC')->take(6)->get();
-        foreach($topBands as $band)
-        {
-          $bandGenres = $band->bandgenres;
-          foreach($bandGenres as $bandGenre)
-          {
-             array_push($storeGenres, $bandGenre->genre_id);
-          }
-        }
-        $genreIdCount = array_count_values($storeGenres);
-          $collection = collect($genreIdCount);
-          $chunkedCollectionofGenres = $collection->chunk(3)->first();
-          // dd($chunkedCollectionofGenres);
-          $familyGenres = Array();
-          foreach ($chunkedCollectionofGenres as $key => $value) {
-            foreach($family as $fam){
-              if ($fam[0]['genre_id'] == $key || $fam[1]['genre_id'] == $key){
-                array_push($familyGenres, $fam);
-              }
-            }
-          }
+                $prefBands = Preference::where([
+                ['user_id' , $user->user_id],
+                ['band_id', '!=', 'null'],
+                ])->get();
 
-          $songsToRecommend = Array();
-          foreach ($familyGenres as $key => $value) {
-            foreach ($value as $key => $val) {
-              $songs = Song::where('genre_id', $val['genre_id'])->get();
-              if(count($songs) == null){
+                    $getSongs = Array();
 
-              } else {
-                foreach($songs as $song){
-                  if(!$lists->contains('song_id', $song->song_id)){
-                      array_push($songsToRecommend, $song);
-                  }
-                }
-              }
-            }
-          }
-      }
-      // dd($lists);
-      return array_unique($songsToRecommend);
+                    foreach($getSongPlays as $getSongPlay){
+                      $getGenre = $getSongPlay->songs->genre_id;
+                      $array = array('song_id' => $getSongPlay->song_id, 'genre_id' => $getGenre, 'category' => $getSongPlay->category);
+                      array_push($getSongs, $array);
+                    }
 
-    }
-    else {
-        $preferences = Preference::where('user_id', $user->user_id)->get();
+                    $collectSongs = collect($getSongs);
+                    $groupedSongsbyGenre = $collectSongs->groupBy('genre_id');
 
-        if (count($preferences) > 0) {
-          // get bands genre nya recommend songs based sa genre sa band
-          $bands = Array();
-          $storeGenres = Array();
+                    // add corresponding score to each genre
+                    $genreScores = Array();
 
-          foreach ($preferences as $preference){
-            if($preference->band_id != null) {
-              $band = Band::where('band_id', $preference->band_id)->first();
-              $genresOfBand = BandGenre::where('band_id', $band->band_id)->get(); 
-              foreach($genresOfBand as $genreOfBand){
-                array_push($storeGenres, $genreOfBand->genre->genre_id);
-              }
-            }
-          }
+                    foreach ($groupedSongsbyGenre as $key => $value) {
+                        $countforcat1 = $value->where('category', 1);
+                        $countforcat2 = $value->where('category', 2);
+                        $countforcat3 = $value->where('category', 3);
 
-          $genreIdCount = array_count_values($storeGenres);
-          $collection = collect($genreIdCount);
-          $chunkedCollectionofGenres = $collection->chunk(3)->first();
-          // dd($chunkedCollectionofGenres);
-          $familyGenres = Array();
-          foreach ($chunkedCollectionofGenres as $key => $value) {
-            foreach($family as $fam){
-              if ($fam[0]['genre_id'] == $key || $fam[1]['genre_id'] == $key){
-                array_push($familyGenres, $fam);
-              }
-            }
-          }
+                        $getScoreforCats = ($category1 * count($countforcat1)) + ($category2 * count($countforcat2)) + ($category3 * count($countforcat3));
 
-          $songsToRecommend = Array();
-          foreach ($familyGenres as $key => $value) {
-            foreach ($value as $key => $val) {
-              $songs = Song::where('genre_id', $val['genre_id'])->get();
-              if(count($songs) == null){
+                        $arrayScore = array('genre_id' => $key, 'score' => $getScoreforCats);
+                        array_push($genreScores, $arrayScore);
+                    }
 
-              } else {
-                foreach($songs as $song){
-                array_push($songsToRecommend, $song);
+                    // get top ranked bands
+                    $topbands = Band::orderBy('band_score', 'DESC')->take('5')->get();
+                    $collectGenreScores = collect($genreScores);
 
-                }
-              }
-            }
-          }
-
-          if(count($songsToRecommend) == null){
-            $storeGenres = Array();
-            $topBands = Band::orderBy('weekly_score', 'DESC')->take(6)->get();
-            foreach($topBands as $band)
-            {
-              $bandGenres = $band->bandgenres;
-              foreach($bandGenres as $bandGenre)
-              {
-                 array_push($storeGenres, $bandGenre->genre_id);
-              }
-            }
-            $genreIdCount = array_count_values($storeGenres);
-              $collection = collect($genreIdCount);
-              $chunkedCollectionofGenres = $collection->chunk(3)->first();
-              // dd($chunkedCollectionofGenres);
-              $familyGenres = Array();
-              foreach ($chunkedCollectionofGenres as $key => $value) {
-                foreach($family as $fam){
-                  if ($fam[0]['genre_id'] == $key || $fam[1]['genre_id'] == $key){
-                    array_push($familyGenres, $fam);
-                  }
-                }
-              }
-
-              $songsToRecommend = Array();
-              foreach ($familyGenres as $key => $value) {
-                foreach ($value as $key => $val) {
-                  $songs = Song::where('genre_id', $val['genre_id'])->get();
-                  if(count($songs) == null){
-
-                  } else {
-                    foreach($songs as $song){
-                      if(!$lists->contains('song_id', $song->song_id)){
-                          array_push($songsToRecommend, $song);
+                    // store all sames genres of top bands
+                    $storeBandGenres = Array();
+                    foreach ($topbands as $topband) {
+                      $bandgenres = $topband->bandgenres;
+                      foreach ($bandgenres as $bandgenre) {
+                        if($collectGenreScores->contains('genre_id', $bandgenre->genre_id)){
+                            array_push($storeBandGenres, $bandgenre);
+                        }
                       }
                     }
-                  }
-                }
-              }
-          }
-     
-          return array_unique($songsToRecommend);
-        }
-        else {
-
-            $storeGenres = Array();
-            $topBands = Band::orderBy('weekly_score', 'DESC')->take(6)->get();
-            foreach($topBands as $band)
-            {
-              $bandGenres = $band->bandgenres;
-              foreach($bandGenres as $bandGenre)
-              {
-                 array_push($storeGenres, $bandGenre->genre_id);
-              }
-            }
-            $genreIdCount = array_count_values($storeGenres);
-              $collection = collect($genreIdCount);
-              $chunkedCollectionofGenres = $collection->chunk(3)->first();
-              // dd($chunkedCollectionofGenres);
-              $familyGenres = Array();
-              foreach ($chunkedCollectionofGenres as $key => $value) {
-                foreach($family as $fam){
-                  if ($fam[0]['genre_id'] == $key || $fam[1]['genre_id'] == $key){
-                    array_push($familyGenres, $fam);
-                  }
-                }
-              }
-
-              $songsToRecommend = Array();
-              foreach ($familyGenres as $key => $value) {
-                foreach ($value as $key => $val) {
-                  $songs = Song::where('genre_id', $val['genre_id'])->get();
-                  if(count($songs) == null){
-
-                  } else {
-                    foreach($songs as $song){
-                      if(!$lists->contains('song_id', $song->song_id)){
-                          array_push($songsToRecommend, $song);
+                    // get songs with same genre
+                    $getSongswSameGenres = Array();
+                    foreach ($storeBandGenres as $storeBandGenre) {
+                      $songs = Song::where('genre_id', $storeBandGenre->genre_id)->get();
+                      foreach ($songs as $song) {
+                        array_push($getSongswSameGenres, $song);
                       }
                     }
-                  }
-                }
-              }
-          if ($songsToRecommend == null) {
-            $songsToRecommend = Song::all();
-          }
-     
-          return array_unique($songsToRecommend);
-        }
-    }
+                    // sort by songsPlayed
+                    $getAllSongPlays = Array();
+                    foreach ($getSongswSameGenres as $song) {
+                      $songplays = SongsPlayed::where('song_id', $song->song_id)->get();
+                      foreach ($songplays as $songplay) {
+                          array_push($getAllSongPlays, $songplay);
+                      }
+                    }
+                    $collectSongPlays = collect($getAllSongPlays);
+                    $groupBySids = $collectSongPlays->groupBy('song_id');
 
+                    // calculate the scores
+                    $scoreBasedOnCategory = Array();
+                    foreach ($groupBySids as $key => $value) {
+                          $countforcat1 = $value->where('category', 1);
+                          $countforcat2 = $value->where('category', 2);
+                          $countforcat3 = $value->where('category', 3);
 
+                          $getScoreforCats = ($category1 * count($countforcat1)) + ($category2 * count($countforcat2)) + ($category3 * count($countforcat3));
+                          $array = array('song_id' => $key, 'scoreforsong' => $getScoreforCats);
+                          array_push($scoreBasedOnCategory, $array);
 
+                    }
+                    
+                    // sort Calculated songs
+                    $collectNewSongs = collect($scoreBasedOnCategory);
+                    $sortNewSongs = $collectNewSongs->sortByDesc('scoreforsong');
 
+                    // display songs
+                    $displaySongs = Array();
+                    foreach ($sortNewSongs as $key => $value) {
+                      $song = Song::where('song_id', $value['song_id'])->first();
+                      array_push($displaySongs, $song);
+                    }
 
-    // return $storeGenres;
+                    return $displaySongs;
+
+            }
+      }
   }
 
   public function addSongToPlaylist(Request $request){
@@ -692,136 +682,6 @@ class UserController extends Controller
       return response ()->json(['create' => $create, 'song' => $song]);
   }
 
-
-  // public function addtonlist(Request $request)
-  // {
-  //   $id = $request->input('id');
-  //   $pid = $request->input('pid');
-
-  //   $song = Song::where('song_id', $id)->first();
-  //   $genre = $song->genre;
-
-  //   if (count($song) > 0)
-  //   {
-  //     $create = Plist::create([
-  //       'genre_id' => $genre->genre_id,
-  //       'song_id' => $song->song_id,
-  //       'pl_id' => $pid,
-  //     ]);
-  //   }
-
-  //   return response ()->json(['create' => $create, 'song' => $song]);
-  // }
-
-  // public function nrecommend(Request $request)
-  // {
-  //   $id = $request->input('id');
-  //   $pid = $request->input('pid');
-
-  //   $song = Song::where('song_id', $id)->first();
-  //   $origs = Song::all();
-  //   $recs = Array();
-  //   $genres = Array();
-  //   $lists = Plist::where('pl_id', $pid)->get();
-
-  //   foreach($origs as $orig)
-  //   {
-  //     if($lists->contains('song_id', $orig->song_id))
-  //     {
-
-  //     }
-  //     else
-  //     {
-  //       $data = array($orig, $orig->genre->genre_name);
-  //       array_push($recs, $orig);
-  //       // array_push($genres, $orig->genre);
-  //     }
-  //     // if ($song->song_id == $orig->song_id && $song->genre == $orig->genre)
-  //     // {
-
-  //     // }
-  //     // else
-  //     // {
-  //     //   if ($song->genre == $orig->genre)
-  //     //   {
-  //     //     array_push($recs, $orig);
-  //     //   }
-  //     // }
-  //   }
-
-  //   return response ()->json($recs);
-  // }
-
-  // public function addtolist(Request $request)
-  // {
-  //   $id = $request->input('id');
-  //   $pid = $request->input('pid');
-
-  //   $song = Song::where('song_id', $id)->first();
-  //   $genre = $song->genre;
-
-  //   if (count($song) > 0)
-  //   {
-  //     $create = Plist::create([
-  //       'genre_id' => $genre->genre_id,
-  //       'song_id' => $song->song_id,
-  //       'pl_id' => $pid,
-  //     ]);
-  //   }
-
-  //   return response ()->json(['create' => $create, 'song' => $song]);
-  // }  
-
-  // public function listrecommend(Request $request)
-  // {
-  //   $id = $request->input('id');
-  //   $pid = $request->input('pid');
-
-  //   $song = Song::where('song_id', $id)->first();
-  //   $origs = Song::all();
-  //   $recs = Array();
-  //   $lists = Plist::where('pl_id', $pid)->get();
-
-  //   foreach($origs as $orig)
-  //   {
-  //     if($lists->contains('song_id', $orig->song_id))
-  //     {
-
-  //     }
-  //     else
-  //     {
-  //       array_push($recs, $orig);
-  //     }
-  //     // if ($song->song_id == $orig->song_id && $song->genre == $orig->genre)
-  //     // {
-
-  //     // }
-  //     // else
-  //     // {
-  //     //   if ($song->genre == $orig->genre)
-  //     //   {
-  //     //     array_push($recs, $orig);
-  //     //   }
-  //     // }
-  //   }
-  //   // foreach($origs as $orig)
-  //   // {
-  //   //   if ($song->song_id == $orig->song_id && $song->genre == $orig->genre)
-  //   //   {
-
-  //   //   }
-  //   //   else
-  //   //   {
-  //   //     if ($song->genre == $orig->genre)
-  //   //     {
-  //   //       array_push($recs, $orig);
-  //   //     }
-  //   //   }
-  //   // }
-
-  //   return response ()->json($recs);
-  // }
-
   public function delplsong($sid, $pid)
   {
     $song = PList::where([
@@ -831,206 +691,149 @@ class UserController extends Controller
     return redirect('playlist/'.$pid);
   }  
 
-
-
   public function recommendAlbums(){
-    $user = User::where('user_id',session('userSocial')['id'])->first();
-    $getPreferredBands = Preference::where([
-            ['user_id' , $user->user_id],
-            ['band_id', '!=', null],
-            ])->get(); 
+      $user = Auth::user();
 
-    $socialfriends = session('userSocial')['friends']['data'];
-    $friends = Array();
-    foreach ($socialfriends as $socialfriend) {
-        $friend = $socialfriend['id'];
-        $thisuser = User::where('user_id', $friend)->first();
+      // get all songs nga g paminaw sa user and group same song genre 
+      $getSongPlays = SongsPlayed::where('user_id', $user->user_id)->get();
 
-        if(count($thisuser) > 0)
-        {
-            array_push($friends, $thisuser);
-        }
-    }
+      // scores for certain category
+      $category1 = 10;
+      $category2 = 6;
+      $category3 = 2;
 
-    if(count($friends) > 0 || count($getPreferredBands) > 0){
-      // kwaon ang albums sa mga banda
-      $storeAllAlbums = Array();
-      foreach ($getPreferredBands as $band){
-        $albums = Album::where('band_id', $band->band_id)->get();
+      $prefBands = Preference::where([
+      ['user_id' , $user->user_id],
+      ['band_id', '!=', 'null'],
+      ])->get();
 
-        foreach ($albums as $album) {
-          array_push($storeAllAlbums, $album);
-        }
-      }
-      // kwaon ang wala pa na like sa user
-      $getPreferredAlbums = Preference::where([
-            ['user_id' , $user->user_id],
-            ['album_id', '!=', null],
-            ])->get(); 
+      $prefAlbums = Preference::where([
+      ['user_id' , $user->user_id],
+      ['album_id', '!=', 'null'],
+      ])->get();
 
-      $storeNotPreferredAlbums = Array();
+      // check if user naay preference
+      if($getSongPlays != null) {
 
-      foreach($storeAllAlbums as $storeAllAlbum){
-        if(!$getPreferredAlbums->contains('album_id',$storeAllAlbum->album_id)) {
-          array_push($storeNotPreferredAlbums, $storeAllAlbum);
-        }
-      }
-      // if na like na nya tanan albums sa iyang mga banda
-      if(count($storeNotPreferredAlbums) > 0){
-        //gi kuha ang mga album nga wala niya na like
-        // e sort based on release date
-        $collect = collect($storeNotPreferredAlbums);
-        $sortedAlbums = $collect->sortBy('released_date');
-        return $sortedAlbums;
-      } else {
-        // kwaon ang mga albums nga g like sa iyang mga friends
-          $storeFriendsPreferences = Array();
-          foreach ($friends as $friend) {
-            $getFriendPreferences = Preference::where([
-              ['user_id' , $friend->user_id],
-              ['album_id', '!=', null],
-              ])->get(); 
+          $getSongs = Array();
 
-            foreach($getFriendPreferences as $getFriendPreference){
-              array_push($storeFriendsPreferences, $getFriendPreference);
+          foreach($getSongPlays as $getSongPlay){
+            $getGenre = $getSongPlay->songs->genre_id;
+            $array = array('song_id' => $getSongPlay->song_id, 'genre_id' => $getGenre, 'category' => $getSongPlay->category);
+            array_push($getSongs, $array);
+          }
+
+          $collectSongs = collect($getSongs);
+          $groupedSongsbyGenre = $collectSongs->groupBy('genre_id');
+
+          // add corresponding score to each genre
+          $genreScores = Array();
+
+          foreach ($groupedSongsbyGenre as $key => $value) {
+              $countforcat1 = $value->where('category', 1);
+              $countforcat2 = $value->where('category', 2);
+              $countforcat3 = $value->where('category', 3);
+
+              $getScoreforCats = ($category1 * count($countforcat1)) + ($category2 * count($countforcat2)) + ($category3 * count($countforcat3));
+              
+              $arrayScore = array('genre_id' => $key, 'score' => $getScoreforCats);
+              array_push($genreScores, $arrayScore);
+          }
+      
+          $bands = Band::all();
+          $notPrefBands = Array();
+          $getGenresofNotPrefBands = Array();
+
+          foreach($bands as $band){
+            if(!$prefBands->contains('band_id', $band->band_id)){
+              array_push($notPrefBands, $band);
+              // get genres of not preferred bands
+              $bandgenres = $band->bandgenres;
+              foreach($bandgenres as $bandgenre){
+                array_push($getGenresofNotPrefBands, $bandgenre);
+              }
             }
           }
-        // kwaon ang mga albums nga na like na nimo
-          // dd($storeFriendsPreferences);
-          $storeNotSamePreferredAlbums = Array();
-          foreach($storeFriendsPreferences as $storeFriendsPreference) {
-            if(!$getPreferredAlbums->contains('album_id', $storeFriendsPreference->album_id)){
-                  array_push($storeNotSamePreferredAlbums, $storeFriendsPreference->album);
+
+          $storeBandsBasedOnSameGenres = Array();
+          // get bands with same genre
+          foreach ($genreScores as $genreScore) {
+            foreach ($getGenresofNotPrefBands as $getGenre) {
+              if($genreScore['genre_id'] == $getGenre->genre_id){
+                array_push($storeBandsBasedOnSameGenres, $getGenre->band);
               }
+            }
           }
-          // if na like na nya tanan album
-          if(count($storeNotSamePreferredAlbums) > 0){
-            // order by released date
-            $collect = collect($storeNotSamePreferredAlbums);
-            $sortedAlbums = $collect->sortBy('released_date');
-            return $sortedAlbums;
+
+          if ($storeBandsBasedOnSameGenres != null){
+            // get albums of bands
+            // sort by album likes
+            $albums = Array();
+            foreach ($storeBandsBasedOnSameGenres as $band) {
+              $getAlbums = $band->albums;
+              foreach ($getAlbums as $getAlbum) {
+                if(!$prefAlbums->contains('album_id', $getAlbum->album_id)){
+                   array_push($albums, $getAlbum);
+                }
+              }
+            }
+            $collectAlbums = collect($albums);
+            $sortAlbums = $collectAlbums->sortByDesc('num_likes')->take('5');
+
+            return $sortAlbums;
 
           } else {
-            // kwaon ang user's preferred genre
-            $storeBandGenres = Array();
-            foreach($getPreferredBands as $band){
-              $getBand = $band->band;
-              $genres = $getBand->bandgenres;
-              foreach($genres as $genre){
-                array_push($storeBandGenres, $genre);
-              }
-
-            }
-
-            $collection = collect($storeBandGenres);
-            $uniqueGenres = $collection->unique('genre_id');
-
+            // get not followed bands
+            // get albums of bands
+            // remove albums already liked
+            // sort by album likes
             $bands = Band::all();
-            $storeBandsWhereSamePrefGenre = Array();
-            foreach ($bands as $band) {
-              $genres = $band->bandgenres;
-              foreach ($genres as $genre) {
-                if($uniqueGenres->contains('genre_id', $genre->genre_id)) {
-                  array_push($storeBandsWhereSamePrefGenre, $band);
-                }
-              }
-            }
-            $collectBands = collect($storeBandsWhereSamePrefGenre);
-            $uniqueBands = $collectBands->unique('band_id');
+            $albums = Array();
 
-            $storeAlbumsofBand = Array();
-            foreach($uniqueBands as $uniqueBand){
-              $albums = $uniqueBand->albums;
-              foreach ($albums as $album) {
-                array_push($storeAlbumsofBand, $album);
-              }
-            }
-
-            // kwaon ang mga albums nga na like na nya
-            $getAlbumsBasedOnGenre = Array();
-            foreach ($storeAlbumsofBand as $album) {
-              if(!$getPreferredAlbums->contains('album_id', $album->album_id)){
-                array_push($getAlbumsBasedOnGenre, $album);
-              }
-            }
-
-            // if na like na nya tanan albums
-            if(count($getAlbumsBasedOnGenre) > 0){
-              $collect = collect($getAlbumsBasedOnGenre);
-              $sortedAlbums = $collect->sortBy('released_date');
-              return $sortedAlbums;
-            } else {
-            // kwaon ang mga wala sa iyang preferences
-              $bands = Band::all();
-              $bandPreferences = Preference::where([
-                    ['user_id' , $user->user_id],
-                    ['band_id', '!=', null],
-                    ])->get();
-              $albumPreferences = Preference::where([
-                    ['user_id' , $user->user_id],
-                    ['album_id', '!=', null],
-                    ])->get();  
-              $getNotPrefBands = Array();
-              foreach ($bands as $band) {
-                if(!$bandPreferences->contains('band_id', $band->band_id)){
-                  array_push($getNotPrefBands, $band);
-                }
-
-              }
-              
-              $storeAlbums = Array();
-              foreach ($getNotPrefBands as $getNotPrefBand) {
-                $albums = $getNotPrefBand->albums;
-                foreach ($albums as $album) {
-                  if(!$albumPreferences->contains('album_id', $album->album_id))
-                  {
-                    array_push($storeAlbums, $album);
+              foreach($bands as $band){
+                if(!$prefBands->contains('band_id', $band->band_id)){
+                  $getAlbums = $band->albums;
+                  foreach ($getAlbums as $getAlbum) {
+                    if(!$prefAlbums->contains('album_id', $getAlbum->album_id)){
+                       array_push($albums, $getAlbum);
+                    }
                   }
                 }
               }
-              
-              return $storeAlbums;
-            }
 
+            $collectAlbums = collect($albums);
+            $sortAlbums = $collectAlbums->sortByDesc('num_likes')->take('5');
 
+            return $sortAlbums;
           }
 
-      }
 
     } else {
-            // kwaon ang mga wala sa iyang preferences
-              $bands = Band::all();
-              $bandPreferences = Preference::where([
-                    ['user_id' , $user->user_id],
-                    ['band_id', '!=', null],
-                    ])->get();
-              $albumPreferences = Preference::where([
-                    ['user_id' , $user->user_id],
-                    ['album_id', '!=', null],
-                    ])->get();  
-              $getNotPrefBands = Array();
-              foreach ($bands as $band) {
-                if(!$bandPreferences->contains('band_id', $band->band_id)){
-                  array_push($getNotPrefBands, $band);
-                }
+            // get not followed bands
+            // get albums of bands
+            // remove albums already liked
+            // sort by album likes
+            $bands = Band::all();
+            $albums = Array();
 
-              }
-              
-              $storeAlbums = Array();
-              foreach ($getNotPrefBands as $getNotPrefBand) {
-                $albums = $getNotPrefBand->albums;
-                foreach ($albums as $album) {
-                  if(!$albumPreferences->contains('album_id', $album->album_id))
-                  {
-                    array_push($storeAlbums, $album);
+              foreach($bands as $band){
+                if(!$prefBands->contains('band_id', $band->band_id)){
+                  $getAlbums = $band->albums;
+                  foreach ($getAlbums as $getAlbum) {
+                    if(!$prefAlbums->contains('album_id', $getAlbum->album_id)){
+                       array_push($albums, $getAlbum);
+                    }
                   }
                 }
               }
-              
-              return $storeAlbums;
-    }
 
+            $collectAlbums = collect($albums);
+            $sortAlbums = $collectAlbums->sortByDesc('num_likes')->take('5');
+
+            return $sortAlbums;
+       }
   }
+
 
   public function followPlaylist(Request $request){
     $user = Auth::user();

@@ -72,8 +72,8 @@
             @else($recommendBands != null)
               @foreach($recommendBands as $rec)
                 <li class="list-group-item" style="border: 0;background: transparent;">
-                  <a href="{{url($rec['band']->band_name)}}"><img class="friends-in-aria-pic img-circle" src="{{$rec['band']->band_pic}}" style="object-fit: cover;"></a>
-                  <a href="{{url($rec['band']->band_name)}}"><span class="feed-band-name">{{$rec['band']->band_name}}</span></a>
+                  <a href="{{url($rec->band_name)}}"><img class="friends-in-aria-pic img-circle" src="{{$rec->band_pic}}" style="object-fit: cover;"></a>
+                  <a href="{{url($rec->band_name)}}"><span class="feed-band-name">{{$rec->band_name}}</span></a>
                 </li>
               @endforeach
             @endif
