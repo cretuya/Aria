@@ -15,6 +15,7 @@ use App\BandVideo;
 use App\Genre;
 use App\BandEvent;
 use App\Song;
+use App\SongsPlayed;
 use App\User;
 use App\UserNotification;
 use App\Preference;
@@ -373,119 +374,100 @@ class BandController extends Controller
 
     public function scoringfunc(){
 
-        $bands = Band::all();
-        $albums = Album::all();
-        $maxalbumlikes = 0;
-        $maxvisitcount = 0;
-        $maxfollowers = 0;
+            $bands = Band::all();
+            $albums = Album::all();
+            $maxUseralbumlikes = Preference::distinct()->where('album_id','!=',null)->get(['user_id']);
+            $numUsersDunayGiLike = count($maxUseralbumlikes);
+            $maxvisitcount = 0;
+            $maxUserfollowers = Preference::distinct()->where('band_id','!=',null)->get(['user_id']);
+            $numUsersDunayGiFollow = count($maxUserfollowers);
+            $visitcountArray = array();
 
+            // dd($numUsersDunayGiFollow);
 
-        //get the total number of likes sa tanan album
-        foreach ($albums as $tananalbums) {
-            $maxalbumlikes += $tananalbums->num_likes;
-        }
+            //get the total number of likes sa tanan album
+            // foreach ($albums as $tananalbums) {
+            //     $maxalbumlikes += $tananalbums->num_likes;
+            // }
 
-        //get the total number of visit counts sa tanan bands
-        //get the total number of followers
-        foreach ($bands as $tananbanda) {
-            $maxvisitcount += $tananbanda->visit_counts;
-            $maxfollowers += $tananbanda->num_followers;
-        }
+            //get the total number of visit counts sa tanan bands
+            //get the total number of followers
+            // foreach ($bands as $tananbanda) {
+            //     $maxvisitcount += $tananbanda->visit_counts;
+            //     $maxfollowers += $tananbanda->num_followers;
+            // }
 
-        //start for scoring
-        foreach ($bands as $tananbanda) {
-            $bandAlbumLikes = 0;
-            $bandFollowers = $tananbanda->num_followers;
-            $bandVisitCounts = $tananbanda->visit_counts;
-            $songScore=0;
-            $score = 0;
-            $bandScore = 0;
-            $maxSongScore = 0;
-            $maxSongCount = 0;
-
-            foreach ($tananbanda->albums as $album) {
-                $bandAlbumLikes += $album->num_likes;
-                foreach ($album->songs as $songs) {
-                    $maxSongCount += count($songs->songsplayed);
-                    foreach($songs->songsplayed as $songsplayed){
-                        // echo $songsplayed->category."<br>";
-                        if ($songsplayed->category == 1) {
-                            $songScore += 10;
-                        }else if ($songsplayed->category == 2) {
-                            $songScore += 6;
-                        }else{
-                            $songScore += 2;
+            //start for scoring
+            foreach ($bands as $tananbanda) {
+                $bandAlbumLikes = 0;
+                $bandFollowers = $tananbanda->num_followers;
+                $bandVisitCounts = $tananbanda->visit_counts;
+                $songScore=0;
+                $score = 0;
+                $bandScore = 0;
+                $maxSongScore = 0;
+                $maxSongCount = 0;
+                array_push($visitcountArray,$bandVisitCounts);
+                foreach ($tananbanda->albums as $album) {
+                    $bandAlbumLikes += $album->num_likes;
+                    foreach ($album->songs as $songs) {
+                        $maxSongCount += count($songs->songsplayed);
+                        foreach($songs->songsplayed as $songsplayed){
+                            // echo $songsplayed->category."<br>";
+                            // echo "song id: ".$songsplayed->song_id." category: ".$songsplayed->category." band name: ".$songsplayed->songs->album->band->band_name."<br>";
+                            if ($songsplayed->category == 1) {
+                                $songScore += 10;
+                            }else if ($songsplayed->category == 2) {
+                                $songScore += 6;
+                            }else{
+                                $songScore += 2;
+                            }
                         }
                     }
+                    // echo $songScore."<br>";
+                    // echo $maxSongCount."<br>";
                 }
-                // echo $songScore."<br>";
-                // echo $maxSongCount."<br>";
-            }
 
-            if ($maxalbumlikes != 0) {
-                $albumlikeScore = ((($bandAlbumLikes/$maxalbumlikes)*100)*0.25);
-            }else{
-                $albumlikeScore = 0;
-            }
+                $highestVisitCount = max($visitcountArray);
 
-            if ($maxfollowers != 0) {
-                $followerScore = ((($bandFollowers/$maxfollowers)*100)*0.10);
-            }else{
-                $followerScore = 0;
-            }
+                if ($numUsersDunayGiLike != 0) {
+                    $albumlikeScore = (($bandAlbumLikes/$numUsersDunayGiLike)*15);
+                }else{
+                    $albumlikeScore = 0;
+                }
 
-            if ($maxvisitcount != 0) {
-                $visitScore = ((($bandVisitCounts/$maxvisitcount)*100)*0.05);
-            }else{
-                $visitScore = 0;
-            }
+                if ($numUsersDunayGiFollow != 0) {
+                    $followerScore = (($bandFollowers/$numUsersDunayGiFollow)*10);
+                }else{
+                    $followerScore = 0;
+                }
 
-            if ($maxSongCount != 0) {
-                $songsplayedScore = ((($songScore/($maxSongCount*10))*100)*0.60);
-            }else{
-                $songsplayedScore = 0;
-            }
+                if ($highestVisitCount != 0) {
+                    $rangeForVisit = $highestVisitCount/5;
+                    $visitScore = ($bandVisitCounts/$rangeForVisit);
+                }else{
+                    $visitScore = 0;
+                }
 
-            $score = $albumlikeScore + $followerScore + $visitScore + $songsplayedScore;
+                if ($maxSongCount != 0) {
+                    $songsplayedScore = ((($songScore/($maxSongCount*10))*100)*0.60);
+                }else{
+                    $songsplayedScore = 0;
+                }
 
-            // echo $score."<br>";
-            $weeklyscore = $score;
+                $score = $albumlikeScore + $followerScore + $visitScore + $songsplayedScore;
 
-            $createweeklyscore = Band::where('band_id',$tananbanda->band_id)->update([
-                'weekly_score' => $weeklyscore
-            ]);
-            // dd($tananbanda->band_score,$tananbanda->band_id);
-            $bandscore = $tananbanda->band_score;    
+                // echo $score."<br>";
+                $bandScore = $score;
 
-            if ($tananbanda->band_score != null) {
-                $bandscore += $weeklyscore;
-            }
-            else{
-                $bandscore = $weeklyscore;
-            }
-            
-            date_default_timezone_set("Asia/Manila");
-            $dateToday = date('Y-m-d');
-            // $advDate = date('Y-m-d', strtotime($dateToday . '+ 7 day'));
-            // $checkifWeekNa = date('Y-m-d', strtotime($advDate . '- 7 day'));
-            $checkifWeekNa = date('Y-m-d', strtotime($dateToday . '- 7 day'));
-            // dd($advDate, $checkifWeekNa);
-            // dd($dateToday);
-
-            if ($checkifWeekNa == $tananbanda->scored_updated_date) {
-                $updatebandscore = Band::where('band_id',$tananbanda->band_id)->update([
-                    'band_score' => $bandscore
+                $bandScoreUpdate  = Band::where('band_id',$tananbanda->band_id)->update([
+                    'band_score' => $bandScore
                 ]);
-                $weeklyscore = 0;
-                $updateScoredUpdatedDate = Band::where('band_id',$tananbanda->band_id)->update([
-                    // 'scored_updated_date' => $advDate
-                    'scored_updated_date' => $dateToday
-                ]);
+                // dd($tananbanda->band_score,$tananbanda->band_id);
+
+                
             }
-            
+
         }
-
-    }
-    
 
 }
