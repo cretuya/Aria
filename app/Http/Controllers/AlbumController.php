@@ -12,6 +12,7 @@ use App\Song;
 use App\SongsPlayed;
 use App\Album_Contents;
 use App\Preference;
+use App\Visit;
 use Auth;   
 use Validator;
 class AlbumController extends Controller

@@ -444,8 +444,8 @@ class BandController extends Controller
                 // echo $highestVisitCount."<br>";
                 // echo $numUsersDunayGiLike."like<br>";
                 // echo $numUsersDunayGiFollow."follow<br>";
-                echo $totalariavisits." ang total distinct users naka visit sa aria page after login<br>";
-                echo $bandVisitCounts." distinct visit counts ".$tananbanda->band_name."<br>";
+                // echo $totalariavisits." ang total distinct users naka visit sa aria page after login<br>";
+                // echo $bandVisitCounts." distinct visit counts ".$tananbanda->band_name."<br>";
                 if ($numUsersDunayGiLike != 0) {
                     $albumlikeScore = (($bandAlbumLikes/$numUsersDunayGiLike)*15);
                 }else{
