@@ -182,7 +182,8 @@ class UserController extends Controller
             $collectBands = collect($storeBandsBasedOnSameGenres);
             $rankBands = $collectBands->sortByDesc('band_score')->take('5');
 
-            return $rankBands;
+            $unique = $rankBands->unique();
+            return $unique;
 
           } else {
             // get not followed bands and rank bands
@@ -197,7 +198,8 @@ class UserController extends Controller
 
               $collectBands = collect($notPrefBands);
               $rankBands = $collectBands->sortByDesc('band_score')->take('5');
-              return $rankBands;
+             $unique = $rankBands->unique();
+              return $unique;
           }
 
 
@@ -214,7 +216,9 @@ class UserController extends Controller
 
               $collectBands = collect($notPrefBands);
               $rankBands = $collectBands->sortByDesc('band_score')->take('5');
-              return $rankBands;
+             $unique = $rankBands->unique();
+
+              return $unique;
     }
   }
 
@@ -387,7 +391,6 @@ class UserController extends Controller
 
       // check if user naay friends
       if($friends != null) {
-
           $getSongs = Array();
 
           foreach($getSongPlays as $getSongPlay){
@@ -398,7 +401,6 @@ class UserController extends Controller
 
           $collectSongs = collect($getSongs);
           $groupedSongsbyGenre = $collectSongs->groupBy('genre_id');
-
           // add corresponding score to each genre
           $genreScores = Array();
 
@@ -433,7 +435,7 @@ class UserController extends Controller
               $groupedSongsbyGenre = $collectSongs->groupBy('genre_id');
 
               // add corresponding score to each genre
-              $genreScores = Array();
+              $fgenreScores = Array();
 
               foreach ($groupedSongsbyGenre as $key => $value) {
                 $countforcat1 = $value->where('category', 1);
@@ -443,11 +445,17 @@ class UserController extends Controller
                 $getScoreforCats = ($category1 * count($countforcat1)) + ($category2 * count($countforcat2)) + ($category3 * count($countforcat3));
 
                 $arrayScore = array('genre_id' => $key, 'score' => $getScoreforCats);
-                array_push($genreScores, $arrayScore);
+
+                //remove genres not preferred by user
+                if($collectGenreScores->contains('genre_id', $arrayScore['genre_id'])){
+                    array_push($fgenreScores, $arrayScore);
+                }
               }
 
-              $collectGenreScores = collect($genreScores);
+              $collectGenreScores = collect($fgenreScores);
               $totalGenreScoreofFriend = $collectGenreScores->sum('score'); // add genre scores
+
+
 
               // get difference of my genre score and my friend's genre score
               $difference = $totalGenreScore - $totalGenreScoreofFriend;
@@ -456,7 +464,8 @@ class UserController extends Controller
                 array_push($getGenreScoresofFriends, $array);
               }
 
-          }          
+          }         
+
 
           // ranked friends based on score genres
           $collectGenreScoresofFriends = collect($getGenreScoresofFriends);
@@ -465,10 +474,13 @@ class UserController extends Controller
           // get ranked friends most played
           $getCorScore = Array();
           $getCorScoreofFriends = Array();
+          $store = Array();
+
           foreach ($sortGenreScores as $sortGenreScore) {
             $plays = SongsPlayed::where('user_id', $sortGenreScore['user_id'])->get();
             $collectPlays = collect($plays);
             $groupBySongIds = $collectPlays->groupBy('song_id');
+            $countSongs = count($groupBySongIds);
             foreach ($groupBySongIds as $key => $value) {
               $countforcat1 = $value->where('category', 1);
               $countforcat2 = $value->where('category', 2);
@@ -476,11 +488,19 @@ class UserController extends Controller
 
               $getScoreforCats = ($category1 * count($countforcat1)) + ($category2 * count($countforcat2)) + ($category3 * count($countforcat3));
               $array = array('song_id' => $key, 'scoreforsong' => $getScoreforCats);
+
               array_push($getCorScore, $array);
+
             }
 
-            array_push($getCorScoreofFriends, $getCorScore);
+            if($countSongs == count($getCorScore)){
+              array_push($getCorScoreofFriends, $getCorScore);
+              unset($getCorScore);
+              $getCorScore = Array();
+            }
           }          
+
+
 
           // sorted songs
           $songs = Array();
@@ -503,8 +523,10 @@ class UserController extends Controller
               array_push($filteredSongs, $song);
             }
           }
+          // dd($filteredSongs);
 
-          return $filteredSongs;
+          $slice = array_slice($filteredSongs,0 , 5);
+          return $slice;
 
        } else {
           if($getSongPlays == null){
@@ -562,7 +584,9 @@ class UserController extends Controller
                       array_push($displaySongs, $song);
                   }
                   
-                  return $displaySongs;
+                  $slice = array_slice($displaySongs,0 , 5);
+                  return $slice;
+                  // return $displaySongs;
 
           } else {
                 $user = Auth::user();
@@ -657,7 +681,8 @@ class UserController extends Controller
                       array_push($displaySongs, $song);
                     }
 
-                    return $displaySongs;
+                  $slice = array_slice($displaySongs,0 , 5);
+                  return $slice;
 
             }
       }
@@ -780,7 +805,9 @@ class UserController extends Controller
             $collectAlbums = collect($albums);
             $sortAlbums = $collectAlbums->sortByDesc('num_likes')->take('5');
 
-            return $sortAlbums;
+            $unique = $sortAlbums->unique();
+
+            return $unique;
 
           } else {
             // get not followed bands
@@ -804,7 +831,8 @@ class UserController extends Controller
             $collectAlbums = collect($albums);
             $sortAlbums = $collectAlbums->sortByDesc('num_likes')->take('5');
 
-            return $sortAlbums;
+            $unique = $sortAlbums->unique();
+            return $unique;
           }
 
 
@@ -829,8 +857,9 @@ class UserController extends Controller
 
             $collectAlbums = collect($albums);
             $sortAlbums = $collectAlbums->sortByDesc('num_likes')->take('5');
+            $unique = $sortAlbums->unique();
 
-            return $sortAlbums;
+            return $unique;
        }
   }
 
