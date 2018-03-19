@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\User;
+use App\Visit;
 use \Session;
 use \DateTime;
 
@@ -100,10 +101,16 @@ class LoginController extends Controller
 
             // dd($interval->y); // age
 
+            $aria_id = "AR_032418";
+
             $findUser = User::Where('email',$userSocial->email)->first();
 
             if ($findUser) {
                 Auth::login($findUser);
+                $createVisit = Visit::create([
+                'user_id' => $userSocial->user['id'],
+                'aria_visits' => $aria_id
+                ]);
                 return redirect('/home');
             }
             else
@@ -126,6 +133,11 @@ class LoginController extends Controller
 
                 
                 Auth::login($user);
+
+                $createVisit = Visit::create([
+                'user_id' => $userSocial->user['id'],
+                'aria_visits' => $aria_id
+                ]);
 
                 // return 'done';
                 $_SESSION= '';

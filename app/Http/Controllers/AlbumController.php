@@ -280,7 +280,10 @@ class AlbumController extends Controller
             $maxvisitcount = 0;
             $maxUserfollowers = Preference::distinct()->where('band_id','!=',null)->get(['user_id']);
             $numUsersDunayGiFollow = count($maxUserfollowers);
-            $visitcountArray = array();
+            $ariavisits = Visit::distinct('user_id')->where('aria_visits','!=',null)->get();
+            $totalariavisits= count($ariavisits);
+            
+            // $visitcountArray = array();
 
             // dd($numUsersDunayGiFollow);
 
@@ -298,17 +301,20 @@ class AlbumController extends Controller
 
             //start for scoring
             foreach ($bands as $tananbanda) {
+                $visits = Visit::distinct()->where('band_id',$tananbanda->band_id)->get(['user_id']);
+                $bandVisitCounts = count($visits);
                 $bandAlbumLikes = 0;
                 $bandFollowers = $tananbanda->num_followers;
-                $bandVisitCounts = $tananbanda->visit_counts;
+                // $bandVisitCounts = $tananbanda->visit_counts;
                 $songScore=0;
                 $score = 0;
                 $bandScore = 0;
                 $maxSongScore = 0;
                 $maxSongCount = 0;
-                array_push($visitcountArray,$bandVisitCounts);
+                // array_push($visitcountArray,$bandVisitCounts);
                 foreach ($tananbanda->albums as $album) {
                     $bandAlbumLikes += $album->num_likes;
+                    // echo $album->band->band_name." ".$album->album_name." ".$album->num_likes."<br>";
                     foreach ($album->songs as $songs) {
                         $maxSongCount += count($songs->songsplayed);
                         foreach($songs->songsplayed as $songsplayed){
@@ -323,12 +329,16 @@ class AlbumController extends Controller
                             }
                         }
                     }
-                    // echo $songScore."<br>";
-                    // echo $maxSongCount."<br>";
+                    // echo $songScore." song score<br>";
+                    // echo $maxSongCount."max song count<br>";
                 }
 
-                $highestVisitCount = max($visitcountArray);
-
+                // $highestVisitCount = max($visitcountArray);
+                // echo $highestVisitCount."<br>";
+                // echo $numUsersDunayGiLike."like<br>";
+                // echo $numUsersDunayGiFollow."follow<br>";
+                // echo $totalariavisits." ang total distinct users naka visit sa aria page after login<br>";
+                // echo $bandVisitCounts." distinct visit counts ".$tananbanda->band_name."<br>";
                 if ($numUsersDunayGiLike != 0) {
                     $albumlikeScore = (($bandAlbumLikes/$numUsersDunayGiLike)*15);
                 }else{
@@ -341,20 +351,22 @@ class AlbumController extends Controller
                     $followerScore = 0;
                 }
 
-                if ($highestVisitCount != 0) {
-                    $rangeForVisit = $highestVisitCount/5;
-                    $visitScore = ($bandVisitCounts/$rangeForVisit);
+                if ($bandVisitCounts != 0) {
+                    // $rangeForVisit = $highestVisitCount/5;
+                    $visitScore = ($bandVisitCounts/$totalariavisits)*5;
                 }else{
                     $visitScore = 0;
                 }
 
                 if ($maxSongCount != 0) {
-                    $songsplayedScore = ((($songScore/($maxSongCount*10))*100)*0.60);
+                    $songsplayedScore = ((($songScore/($maxSongCount*10))*100)*0.70);
                 }else{
                     $songsplayedScore = 0;
                 }
 
-                $score = $albumlikeScore + $followerScore + $visitScore + $songsplayedScore;
+                // echo "album score: ".$albumlikeScore." "."follower score: ".$followerScore." "."visit score: ".(int)$visitScore.""."song score: ".$songsplayedScore."<br>";
+                // echo "band: ".$tananbanda->band_name." album score: ".$albumlikeScore." "."follower score: ".$followerScore." "."visit score: ".(int)$visitScore." "."song score: ".$songsplayedScore."<br>";
+                $score = $albumlikeScore + $followerScore + (int)$visitScore + $songsplayedScore;
 
                 // echo $score."<br>";
                 $bandScore = $score;
