@@ -280,7 +280,7 @@ class AlbumController extends Controller
             $maxvisitcount = 0;
             $maxUserfollowers = Preference::distinct()->where('band_id','!=',null)->get(['user_id']);
             $numUsersDunayGiFollow = count($maxUserfollowers);
-            $ariavisits = Visit::distinct('user_id')->where('aria_visits','!=',null)->get();
+            $ariavisits = Visit::distinct()->where('aria_visits','!=',null)->get(['user_id']);
             $totalariavisits= count($ariavisits);
             
             // $visitcountArray = array();

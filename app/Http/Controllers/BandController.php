@@ -387,7 +387,7 @@ class BandController extends Controller
             $maxvisitcount = 0;
             $maxUserfollowers = Preference::distinct()->where('band_id','!=',null)->get(['user_id']);
             $numUsersDunayGiFollow = count($maxUserfollowers);
-            $ariavisits = Visit::distinct('user_id')->where('aria_visits','!=',null)->get();
+            $ariavisits = Visit::distinct()->where('aria_visits','!=',null)->get(['user_id']);
             $totalariavisits= count($ariavisits);
             
             // $visitcountArray = array();
@@ -444,8 +444,8 @@ class BandController extends Controller
                 // echo $highestVisitCount."<br>";
                 // echo $numUsersDunayGiLike."like<br>";
                 // echo $numUsersDunayGiFollow."follow<br>";
-                // echo $totalariavisits." ang total distinct users naka visit sa aria page after login<br>";
-                // echo $bandVisitCounts." distinct visit counts ".$tananbanda->band_name."<br>";
+                echo $totalariavisits." ang total distinct users naka visit sa aria page after login<br>";
+                echo $bandVisitCounts." distinct visit counts ".$tananbanda->band_name."<br>";
                 if ($numUsersDunayGiLike != 0) {
                     $albumlikeScore = (($bandAlbumLikes/$numUsersDunayGiLike)*15);
                 }else{
@@ -472,11 +472,13 @@ class BandController extends Controller
                 }
 
                 // echo "album score: ".$albumlikeScore." "."follower score: ".$followerScore." "."visit score: ".(int)$visitScore.""."song score: ".$songsplayedScore."<br>";
-                // echo "band: ".$tananbanda->band_name." album score: ".$albumlikeScore." "."follower score: ".$followerScore." "."visit score: ".(int)$visitScore." "."song score: ".$songsplayedScore."<br>";
+                
                 $score = $albumlikeScore + $followerScore + (int)$visitScore + $songsplayedScore;
 
                 // echo $score."<br>";
                 $bandScore = $score;
+
+                // echo "band: ".$tananbanda->band_name." album score: ".$albumlikeScore." "."follower score: ".$followerScore." "."visit score: ".(int)$visitScore." "."song score: ".$songsplayedScore." band score: ".$bandScore."<br>";
 
                 $bandScoreUpdate  = Band::where('band_id',$tananbanda->band_id)->update([
                     'band_score' => $bandScore
